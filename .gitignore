@@ -27,11 +27,6 @@ speed-measure-plugin*.json
 *.sublime-workspace
 
 # IDE - VSCode
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
 .history/*
 
 # misc
@@ -50,4 +45,7 @@ Thumbs.db
 
 # .env
 /server/.env
-.vscode/launch.json
+temp_auto_push.bat
+temp_interactive_push.bat
+.gitignore
+branch_structure.json
