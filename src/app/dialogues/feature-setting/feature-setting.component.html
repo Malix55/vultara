@@ -1,0 +1,177 @@
+<h2 class="featureSettingTopTitle">{{featureSettingTitle}}</h2>
+<h3 class="featureSettingTitle">Feature {{featureName}}</h3>
+<div class="displayHeading">
+  <button style="margin-left: 150px" mat-raised-button preventDoubleClick (throttledClick)="featureSettingConfirm()" [throttleTime]="700" [disabled]="featureForm.invalid || isSpace || noRole" color="primary">
+    {{confirmButton}}
+  </button>
+  <button *ngIf="data.featureEdit._id && (pageFlag == 'basic')" style="margin-left: 20px" mat-raised-button (click)="deleteFeature()" color="accent">
+    Delete Feature
+  </button>
+  <button *ngIf="pageFlag != 'basic'" style="margin-left: 20px" mat-raised-button (click)="returnToBasicPage()" color="accent">
+    Return To Basic Settings
+  </button>
+  <button mat-raised-button style="margin-left: 20px" (click)="onNoClick()">close</button>
+</div>
+<br />
+<form #featureForm="ngForm">
+<mat-form-field class="featureInputForm" appearance="fill">
+  <mat-label>Feature Name</mat-label>
+  <input matInput [(ngModel)]="featureName" required name="featureName" (ngModelChange)="moduleNameChange($event)"/>
+  <mat-error *ngIf="featureForm.controls['featureName']?.errors?.required">Feature Name is required.</mat-error>
+</mat-form-field>
+</form>
+<mat-form-field class="featureInputForm" appearance="fill">
+  <mat-label>Feature Type</mat-label>
+  <mat-select [ngModel]="featureUnderEdit.featureType" (ngModelChange)="featureTypeChange($event)">
+    <mat-optgroup [disabled]="pageFlag != 'basic'">
+      <mat-option *ngFor="let selectedFeatureType of FeatureTypes" [value]="selectedFeatureType.value">{{ selectedFeatureType.viewValue }}</mat-option>
+    </mat-optgroup>
+  </mat-select>
+</mat-form-field>
+<br />
+<mat-form-field class="assetChipsForm" appearance="fill">
+  <mat-label>Feature Assets</mat-label>
+  <mat-chip-list id="featureAssetsChip" aria-label="Feature Assets">
+    <mat-chip *ngFor="let featureAsset of featureUnderEdit.assets" [selectable]="selectable" [removable]="removable"
+      (removed)="removeFeatureAsset(featureAsset)">
+      {{ featureAsset }}
+      <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+    </mat-chip>
+  </mat-chip-list>
+</mat-form-field>
+<button mat-raised-button (click)="showOrHideAssetLib()" style="margin-left: 1em">
+  {{ showOrHideAssetLibText }}
+</button>
+<button mat-raised-button (click)="editFeatureRoleAssets()" style="margin-left: 1em" [matMenuTriggerFor]="featureRoleMenu"
+  matTooltip="Assets can be different when this feature is applied in different feature roles."
+  *ngIf="data.featureEdit._id">
+  Edit Feature Roles
+  <mat-menu #featureRoleMenu="matMenu">
+    <ng-container *ngFor="let featureRoleView of dynamicFeatureRole">
+      <button mat-menu-item (click)="switchToFeatureRoleView(featureRoleView)">{{ featureRoleView.viewValue }}</button>
+    </ng-container>
+  </mat-menu>
+</button>
+<br />
+<mat-form-field class="featureInputForm" appearance="fill" *ngIf="showAssetLib">
+  <mat-label>Search Available Assets</mat-label>
+  <input matInput [(ngModel)]="searchTerm" (ngModelChange)="availableAssetChangedHandler(0)"/>
+</mat-form-field>
+<br />
+<mat-form-field class="assetChipsForm" *ngIf="showAssetLib">
+  <mat-label>Assets</mat-label>
+  <mat-progress-spinner diameter="20" [color]="'primary'" [mode]="'indeterminate'" *ngIf="assetsloading">
+  </mat-progress-spinner>
+  <mat-chip-list #assetLibChip aria-label="All Available Assets" multiple>
+    <mat-chip *ngFor="let asset of assetLibReformed.name; let i = index" [selected]="assetLibReformed.selected[i]"
+      (selectionChange)="changeSelectedAsset($event, i)" (click)="assetLibReformed.selected[i] = !assetLibReformed.selected[i]">
+      {{ asset }}
+    </mat-chip>
+  </mat-chip-list>
+</mat-form-field>
+<button mat-raised-button style="margin-right: 2em" *ngIf="showAssetLib" (click)="addAssetToFeature()">
+  <mat-icon>add</mat-icon>
+  Add to Feature
+</button>
+<!-- <button mat-raised-button *ngIf="showAssetLib" (click)="editAssetLib()">
+  <mat-icon>edit</mat-icon>
+  Edit Asset Library
+</button> -->
+<br />
+<h4 style="display: inline-block">Feature Applications in Modules</h4>
+<button style="margin-left: 50px; display: inline-block" mat-raised-button (click)="addAFeatureApplication()">
+  <mat-icon>add</mat-icon>
+  Add Application
+</button>
+<br />
+<mat-list style="margin-top: 5px;">
+  <mat-progress-spinner diameter="20" [color]="'primary'" [mode]="'indeterminate'" *ngIf="featuresLoading" class="featSpin">
+  </mat-progress-spinner>
+  <mat-list-item style="margin-top: 20px;" *ngFor="let app of featureUnderEdit.application; let i=index">
+      <mat-form-field class="featureModuleInputForm" appearance="fill">
+          <mat-label>Module</mat-label>
+          <mat-select [(ngModel)]="app.module">
+              <mat-optgroup *ngFor="let group of controlUnitGroups" [label]="group.category"
+                          [disabled]="group.disabled">
+                  <mat-option *ngFor="let selectedModule of group.model" [value]="selectedModule" (onSelectionChange)="featureSettingModuleChange($event, i, group.category)">
+                      {{selectedModule}}
+                  </mat-option>
+              </mat-optgroup>
+          </mat-select>
+      </mat-form-field>
+      <br>
+      <mat-form-field style="width: 15%; margin-top: 5px;margin-left: 10px;" appearance="fill">
+        <mat-label>Feature Role</mat-label>
+        <mat-select [(ngModel)]="featureUnderEdit.application[i].featureRole">
+          <mat-optgroup [disabled]="pageFlag != 'basic'">
+            <mat-option *ngFor="let selectedFeatureRole of dynamicFeatureRole" [value]="selectedFeatureRole.value" (onSelectionChange)="checkRoles()">
+                {{selectedFeatureRole.viewValue}}
+            </mat-option>
+          </mat-optgroup>
+        </mat-select>
+    </mat-form-field>
+      <br>
+      <mat-form-field class="featureImpactInputForm" appearance="fill">
+          <mat-label>S-Impact</mat-label>
+          <mat-select [(ngModel)]="featureUnderEdit.application[i].SLevel" (selectionChange)="impactSLevelChange($event, i)">
+              <mat-option *ngFor="let selectedLevel of ImpactLevels" [value]="selectedLevel">
+                  {{selectedLevel}}
+              </mat-option>
+          </mat-select>
+      </mat-form-field>
+      <mat-form-field class="featureImpactInputForm" appearance="fill">
+          <mat-label>F-Impact</mat-label>
+          <mat-select [(ngModel)]="featureUnderEdit.application[i].FLevel" (selectionChange)="impactFLevelChange($event, i)">
+              <mat-option *ngFor="let selectedLevel of ImpactLevels" [value]="selectedLevel">
+                  {{selectedLevel}}
+              </mat-option>
+          </mat-select>
+      </mat-form-field>
+      <mat-form-field class="featureImpactInputForm" appearance="fill">
+          <mat-label>O-Impact</mat-label>
+          <mat-select [(ngModel)]="featureUnderEdit.application[i].OLevel" (selectionChange)="impactOLevelChange($event, i)">
+              <mat-option *ngFor="let selectedLevel of ImpactLevels" [value]="selectedLevel">
+                  {{selectedLevel}}
+              </mat-option>
+          </mat-select>
+      </mat-form-field>
+      <mat-form-field class="featureImpactInputForm" appearance="fill">
+          <mat-label>P-Impact</mat-label>
+          <mat-select [(ngModel)]="featureUnderEdit.application[i].PLevel" (selectionChange)="impactPLevelChange($event, i)">
+              <mat-option *ngFor="let selectedLevel of ImpactLevels" [value]="selectedLevel">
+                  {{selectedLevel}}
+              </mat-option>
+          </mat-select>
+      </mat-form-field>
+      <mat-form-field style="width: 30%;  margin-left: 10px;" matTooltip="Optional. It can be filled out manually in final report.">
+          <mat-label>Damage Scenario</mat-label>
+          <textarea matInput [(ngModel)]="featureUnderEdit.application[i].damageScenario"></textarea>
+      </mat-form-field>
+      <button mat-button [matMenuTriggerFor]="featureImpactBtnMenu" style="margin-left: 10px;">
+          <mat-icon>expand_more</mat-icon>
+      </button>
+      <mat-menu #featureImpactBtnMenu="matMenu" xPosition="before">
+          <!-- <button mat-menu-item (click)="commitNewFeatureApplication(i)" *ngIf="!featureUnderEdit.application[i]._id && featureUnderEdit._id">
+              <mat-icon>cloud_upload</mat-icon>
+              Confirm New Application
+          </button> -->
+          <button mat-menu-item (click)="cancelNewFeatureApplication(i)" *ngIf="!featureUnderEdit.application[i]._id">
+              <mat-icon>clear</mat-icon>
+              Cancel New Application
+          </button>
+          <button mat-menu-item (click)="createNewFeatureApplication(i)" *ngIf="featureUnderEdit.application[i]._id">
+              <mat-icon>add</mat-icon>
+              Add Another Application
+          </button>
+          <button mat-menu-item (click)="deleteFeatureImpactModule(i)" *ngIf="featureUnderEdit.application[i]._id">
+              <mat-icon>remove</mat-icon>
+              Delete This Application
+          </button>
+          <button mat-menu-item (click)="goToModulePage(i)"
+              matTooltip="This action will leave this page. Changes may not be saved.">
+              <mat-icon>double_arrow</mat-icon>
+              Go To Module Editing Page
+          </button>
+      </mat-menu>
+  </mat-list-item>
+</mat-list>

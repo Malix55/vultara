@@ -1,0 +1,14 @@
+<h3 mat-dialog-title>Delete a project</h3>
+<div mat-dialog-content>
+  <mat-selection-list #deleteProjectSelect [multiple]="false">
+    <mat-list-option class="disabledList" *ngFor="let dataLoadProject of dataLoadProjects; let i=index" [value]="dataLoadProject"
+      [disabled]="i==dataLoadProjectInput.index" (click)="selectProjectToDelete(i)">
+      <mat-icon matListIcon>folder</mat-icon>
+      {{dataLoadProject}}
+    </mat-list-option>
+  </mat-selection-list>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button (click)="cancelDeleteProject()">Cancel</button>
+  <button mat-raised-button [disabled]="!selectedProjectId" (click)="checkDeleteProject()">Delete</button>
+</div>

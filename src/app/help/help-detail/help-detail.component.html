@@ -1,0 +1,19 @@
+<div id="detailPage">
+    <div class="detailViewMain">
+       <div class="back-arrow">
+          <button mat-flat-button  (click)= "switchToHelpPage()" style="padding: inherit; color:#A6A6A6;"> <mat-icon>arrow_back</mat-icon><h2 class="back-text">Back</h2> </button>
+       </div>
+       <!-- Filter document using doument Id  -->
+       <div  *ngFor="let txt of dbData |documentFilter:docId">
+          <p style="font-weight: bold; font-size: large;" *ngIf="txt.displayType=='heading'">{{txt.text}}</p> 
+          <p style="font-weight: 900 ;" *ngIf="txt.displayType=='subHeading'">{{txt.text}}</p>
+          <p *ngIf="txt.displayType=='text'">{{txt.text}}</p>
+          <!-- Filter images using image Id in db -->
+          <div style="text-align: center;" *ngFor="let img of awsData|mediaPipe:txt.imageId" >
+            <img [src]='img' alt="not found" style="max-width: 700px;">
+          </div>
+          <br>
+       </div>
+     </div>
+   </div>
+   <ngx-spinner name="help spinner"></ngx-spinner>

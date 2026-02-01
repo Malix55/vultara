@@ -1,0 +1,24 @@
+<div class="controlBeforeConfirmation" mat-dialog-title>
+    <span>Threat Before Control​</span>
+    <span class="controlBeforeSpace"></span>
+    <span>
+        <mat-icon aria-hidden="false" aria-label="Example home icon" mat-dialog-close>close</mat-icon>
+    </span>
+</div>
+
+<mat-dialog-content>
+    <span>
+        How would you like to treat this threat after merge?​
+    </span>
+
+    <p class="controlBeforeText">
+        A threat will not show up again in future runs if it is permanently deleted, but will show up again in the next
+        run if deleted temporarily.​
+    </p>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button mat-raised-button color="warn" (click)="deletePermanently()" [disabled]="data.threat.threatSource === 'userManual' || data.threat.threatSource === 'userAddedThreatLib' || data.threat.threatSource === 'merged'">Delete Permanently</button>
+    <button mat-raised-button color="primary" (click)="deleteTemporarily()">Delete Temporarily</button>
+    <button mat-raised-button mat-dialog-close>Cancel</button>
+</mat-dialog-actions>

@@ -1,0 +1,83 @@
+mat-drawer {
+    margin-top: 10px;
+    padding: 4px;
+    width: 400px;
+    background-color: #F0E687;
+    border: solid black thin;
+}
+
+.featureAssets .mat-button-toggle-checked {
+    background-color: #FDC108;
+    color: #FFFFFF;
+}
+
+.sidePanelMatForm {
+    margin-left: 20px;
+}
+
+.sidePanelMatFormTitle {
+    padding-top: 20px;
+}
+
+.sidePanelChips {
+    margin-top: 8px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidePanelChips mat-chip-list {
+    display: flex;
+    width: 400px;
+}
+
+.sidePanelCard {
+    margin: 20px;
+}
+
+.sidePanelCard .accessibleFeatureContent {
+    display: flex;
+    justify-content: baseline;
+}
+
+.sidePanelCard .accessibleFeatureContent .featureDirection {
+    cursor: pointer;
+}
+
+.featureAssets {
+    display: flex;
+    gap: 5px;
+    justify-items: center;
+    align-items: center;
+    padding: 0px 0px 0px 25px;
+    margin: 0 0 4px 0;
+}
+
+.featureAssets .mat-button-toggle-group {
+    height: 14px;
+    font-size: 12px;
+    align-items: center;
+}
+
+.sidePanelCardHeader {
+    padding: 0;
+}
+
+.inputForm {
+    width: 100%;
+}
+
+#microAssetInput,
+#controlUnitAssetInput {
+    width: 100%;
+}
+
+.sidePanelCard.mat-card {
+    box-shadow: none;
+    border: 1px solid #3C98CF;
+}
+
+.mat-raised-button.mat-warn {
+    width: 50% !important;
+    margin-bottom: 100px;
+}

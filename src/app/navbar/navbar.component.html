@@ -1,0 +1,295 @@
+<mat-toolbar class="navBarMenu" *ngIf="currentUserProfile.isAuth" color="primary">
+    <span id="logo" >
+        <img width="150px" style="cursor:pointer;" height="200px" (click)="!newDesign.project.name ? '' : switchToNavigationView()" src="../../assets/images/VULTARA_WHITE.svg" >
+    </span>
+    <div *ngIf="currentUserProfile.isAuth">
+        <button mat-raised-button color="primary" [matMenuTriggerFor]="fileMenu">Project</button>
+        <mat-menu #fileMenu="matMenu">
+            <button mat-menu-item (click)="createNewProject()"
+                [disabled]="editDesignShared.projectStatus?.milestoneView"
+                *ngIf="currentUserProfile.role == 'Admin' || currentUserProfile.role == 'Super Admin'">
+                New Project</button>
+            <button mat-menu-item (click)="changeProjectName()"
+                *ngIf="currentUserProfile.role == 'Admin' || currentUserProfile.role == 'Super Admin'"
+                [disabled]="(currentUrl != relativeUrlModelingView) && (currentUrl != relativeUrlThreatsView) || !newDesign.project.name || editDesignShared.projectStatus?.milestoneView">
+                Change Project Name</button>
+            <button mat-menu-item (click)="deleteProject()"
+                [disabled]="editDesignShared.projectStatus?.milestoneView"
+                *ngIf="currentUserProfile.role == 'Admin' || currentUserProfile.role == 'Super Admin'">
+                Delete Project</button>
+            <button mat-menu-item (click)="saveProject()"
+                [disabled]="(currentUrl != relativeUrlModelingView) && (currentUrl != relativeUrlThreatsView) || !newDesign.project.name || editDesignShared.projectStatus?.milestoneView">Save
+                Project</button>
+            <button mat-menu-item (click)="saveAsNewProject()"
+                [disabled]="editDesignShared.projectStatus?.milestoneView || !newDesign.project.name"
+                *ngIf="currentUserProfile.role == 'Admin' || currentUserProfile.role == 'Super Admin'">
+                Save As New Project</button>
+            <button mat-menu-item (click)="loadProject()"
+                [disabled]="editDesignShared.projectStatus?.milestoneView">
+                Load Project</button>
+            <button mat-menu-item (click)="switchToProject()"
+                *ngIf="editDesignShared.projectStatus?.milestoneView">
+                Switch To Current Project</button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item (click)="createNewMilestone()"
+                [disabled]="(currentUrl != relativeUrlModelingView) && (currentUrl != relativeUrlThreatsView) || !newDesign.project.name || editDesignShared.projectStatus?.milestoneView">
+                New Milestone</button>
+            <!-- <button mat-menu-item (click)="showMilestone()"
+                [disabled]="(currentUrl != relativeUrlModelingView) && (currentUrl != relativeUrlThreatsView) || !newDesign.project.name || editDesignShared.projectStatus?.milestoneView">
+                Show Milestone</button> -->
+            <button mat-menu-item (click)="loadMilestone()"
+                [disabled]="(currentUrl != relativeUrlModelingView) && (currentUrl != relativeUrlThreatsView) && (currentUrl != relativeUrlAssumptionView) &&
+                 (currentUrl != relativeUrlSecurityGoalAdminView) && (currentUrl|loadMilestoneCheck)
+                 && (currentUrl != relativeUrlNotificationsAdminView) && (currentUrl != relativeUrlSecurityControlView) && (currentUrl != relativeUrlTableWeaknessView) && (currentUrl|loadMilestoneCheck) || !newDesign.project.name">
+                Load Milestone</button>
+            <!-- <button mat-menu-item (click)="loadResult()">Load Threat List</button> -->
+        </mat-menu>
+        <button mat-raised-button color="primary" [matMenuTriggerFor]="editMenu">Edit</button>
+        <mat-menu #editMenu="matMenu">
+            <button mat-menu-item (click)="createNewDesign()"
+                [disabled]="(currentUrl != relativeUrlModelingView) && (currentUrl != relativeUrlThreatsView) || !newDesign.project.name || (currentUserProfile.role == 'Product Engineer') || editDesignShared.projectStatus?.milestoneView">
+                New Design</button>
+            <mat-divider></mat-divider>
+            <!-- The Scan Threat List button is disabled until clearer use case is defined -->
+            <!-- <button mat-menu-item (click)="scanResult()"
+                [disabled]="currentUrl != relativeUrlThreatsView || !newDesign.project.name || (editDesignShared.projectStatus && editDesignShared.projectStatus.milestoneView)">
+                Scan Threat List</button> -->
+            <button mat-menu-item [disabled]="(currentUrl != relativeUrlThreatsView) || !newDesign.project.name || editDesignShared.projectStatus?.milestoneView" (click)="restoreDeletedThreats()">
+                Restore Threat</button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item (click)="checkWP29()"
+                [disabled]="currentUrl != relativeUrlThreatsView || !newDesign.project.name || editDesignShared.projectStatus?.milestoneView">
+                Map Threat List to WP29</button>
+            <button mat-menu-item (click)="showMapping()"
+                [disabled]="currentUrl != relativeUrlThreatsView || !newDesign.project.name || !newDesign.project.mappedThreatList || editDesignShared.projectStatus?.milestoneView">
+                Show Mapping</button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item (click)="executeProgram()"
+                [disabled]="currentUrl != relativeUrlModelingView || !newDesign.project.name || editDesignShared.projectStatus?.milestoneView">
+                Run The Model</button>
+            <button mat-menu-item (click)="executeProgramStartOver()"
+                [disabled]="currentUrl != relativeUrlModelingView || !newDesign.project.name || currentUserProfile.role == 'Product Engineer' || editDesignShared.projectStatus?.milestoneView"
+                matTooltip="this will delete Reviewed threats">Start Over - Run The Model</button>
+            <!-- <div *ngIf="protectModuleLicense">
+                <mat-divider></mat-divider>
+                <button mat-menu-item (click)="executeProtectProgram()" 
+                    [disabled]="currentUrl != relativeUrlThreatsView || (projectName == '') || (editDesignShared.projectStatus && editDesignShared.projectStatus.milestoneView)">
+                    Protect The Model</button>
+            </div> -->
+        </mat-menu>
+        <button mat-raised-button color="primary" [matMenuTriggerFor]="viewMenu">View</button>
+        <mat-menu #viewMenu="matMenu">
+            <!-- <button mat-menu-item routerLink="/home">Home</button> -->
+            <button mat-menu-item (click)="switchToDashboardView()">Dashboard</button>
+            <button mat-menu-item (click)="switchToModelingView()" [disabled]="!newDesign.project.name">Modeling</button>
+            <button mat-menu-item (click)="switchToTableView()" [disabled]="!newDesign.project.name">Threat List</button>
+            <button mat-menu-item (click)="switchToWeaknessView()" [disabled]="!newDesign.project.name" >Weakness List</button>
+            <button mat-menu-item (click)="switchToVulnerabilityView()" [disabled]="!newDesign.project.name">Vulnerability List</button>
+            <button mat-menu-item (click)="switchToNotifications()"[disabled]="!newDesign.project.name">Notifications</button>
+            <button mat-menu-item (click)="cybersecurityGoal()" [disabled]="!newDesign.project.name">Cybersecurity Goal & Claim</button>
+            <button mat-menu-item (click)="cybersecurityControl()" [disabled]="!newDesign.project.name">Cybersecurity Control</button>
+            <button mat-menu-item [disabled]="!newDesign.project.name" (click)="switchToAssumptionsView()">Assumptions</button>
+            <button *ngIf="industryType=='automotive'" mat-menu-item (click)="switchToNavigationView()">Navigation</button>
+        </mat-menu>
+        <button mat-raised-button color="primary" [matMenuTriggerFor]="exportMenu">Export</button>
+        <mat-menu #exportMenu="matMenu">
+            <button mat-menu-item (click)="exportReportToExcel()"
+                [disabled]="currentUrl != relativeUrlThreatsView || editDesignShared.projectStatus?.milestoneView"
+                *ngIf="(exportReportEnabled != 'trial') || (currentUserProfile.role == 'Admin' || currentUserProfile.role == 'Super Admin')">Generate
+                Report in Excel</button>
+            <button [disabled]="!project.id || currentUrl != relativeUrlThreatsView || (editDesignShared.projectStatus && editDesignShared.projectStatus.milestoneView)"
+             mat-menu-item (click)="generateReport()" *ngIf="exportReportEnabled == 'trial' || exportReportEnabled == 'local'"
+               >Generate Report in Word</button>
+            <!-- <button mat-menu-item (click)="exportWP29ReportToExcel()" [disabled]="currentUrl != relativeUrlThreatsView || !wp29ThreatService.isShowMapping"
+                *ngIf="(exportReportEnabled != 'trial') || (currentUserProfile.role == 'Admin')">Export WP29 Threat Mapping Report</button> -->
+        </mat-menu>
+        <button mat-raised-button color="primary" [matMenuTriggerFor]="settingsMenu">Settings</button>
+        <mat-menu #settingsMenu="matMenu">
+            <button mat-menu-item (click)="switchToAccountAdminView()"
+                *ngIf="currentUserProfile.role == 'Admin' || currentUserProfile.role == 'Super Admin'">Admin</button>
+            <button mat-menu-item (click)="switchToSystemConfigView()"
+                *ngIf="currentUserProfile.role == 'Admin' || currentUserProfile.role == 'Super Admin'">System</button>
+            <button mat-menu-item (click)="switchToDatabaseView()"
+                *ngIf="currentUserProfile.role != 'Product Engineer'">Library</button>
+            <!-- <button mat-menu-item routerLink="/database">Risk Calculation</button> -->
+        </mat-menu>
+        <!-- <button mat-raised-button color="primary" [matMenuTriggerFor]="vulnerabilityMenu">Vulnerability</button>
+        <mat-menu #vulnerabilityMenu="matMenu">
+            <button mat-menu-item routerLink="/materials">BOM</button>
+        </mat-menu> -->
+        <!-- <mat-button-toggle-group #group="matButtonToggleGroup" style="margin-top:15px; height: 36px;">
+            <mat-button-toggle routerLink="/modeling" (click)="switchToModelingView()" aria-label="Modeling View"
+            style="background-color:rgb(44, 116, 224); color:white;" matTooltip="Modeling View">
+                <mat-icon style=>account_tree</mat-icon>
+            </mat-button-toggle>
+            <mat-button-toggle routerLink="/table" aria-label="Threat List View"
+            style="background-color:rgb(44, 116, 224); color:white;" matTooltip="Threat List View">
+                <mat-icon>list</mat-icon>
+            </mat-button-toggle>
+        </mat-button-toggle-group> -->
+   </div>
+   <mat-divider vertical style="height:40px"></mat-divider>
+   <div *ngIf="currentUserProfile.isAuth">     
+        <button mat-button class="quickAccessBtnHorizontalMargin" (click)="switchToModelingView()"
+            aria-label="Modeling View" matTooltip="Modeling View" [disabled]="!newDesign.project.name">
+            <mat-icon>account_tree</mat-icon>
+        </button>
+        <button mat-button class="quickAccessBtnHorizontalMargin" (click)="switchToTableView()"
+            aria-label="Threat List View" matTooltip="Threat List View" [disabled]="!newDesign.project.name">
+            <!-- <mat-icon>list</mat-icon> -->
+            <img src="../assets/images/T-list-icon-white.svg" width="25px" height="25px" *ngIf="newDesign.project.name"/>
+            <img src="../assets/images/T-list-icon-blue.svg" width="25px" height="25px" *ngIf="!newDesign.project.name"/>
+        </button>
+        <button mat-button class="quickAccessBtnHorizontalMargin" (click)="switchToWeaknessView()"
+            aria-label="Weakness List View" matTooltip="Weakness List View" [disabled]="!newDesign.project.name">
+            <!-- <mat-icon>list</mat-icon> -->
+            <img src="../assets/images/W-list-icon-white.svg" width="25px" height="25px" *ngIf="newDesign.project.name"/>
+            <img src="../assets/images/W-list-icon-blue.svg" width="25px" height="25px" *ngIf="!newDesign.project.name"/>
+        </button>
+        <button mat-button class="quickAccessBtnHorizontalMargin" (click)="switchToVulnerabilityView()"
+            aria-label="Vulnerability List View" matTooltip="Vulnerability List View" [disabled]="!newDesign.project.name">
+            <!-- <mat-icon>list</mat-icon> -->
+            <img src="../assets/images/V-list-icon-white.svg" width="25px" height="25px" *ngIf="newDesign.project.name"/>
+            <img src="../assets/images/V-list-icon-blue.svg" width="25px" height="25px" *ngIf="!newDesign.project.name"/>
+        </button>
+        <button mat-button class="quickAccessBtnHorizontalMargin" (click)="saveProject()"
+            [disabled]="currentUrl | activateSaveButton : newDesign.project.name : editDesignShared.projectStatus : 
+            relativeUrlSecurityGoalAdminView : relativeUrlModelingView : relativeUrlThreatsView : relativeUrlTableVulnerabilityView"
+            matTooltip="Save Project">
+            <mat-icon>save</mat-icon>
+        </button>
+        <button mat-button class="quickAccessBtnHorizontalMargin" (click)="executeProgram()"
+            [disabled]="(currentUrl != relativeUrlModelingView) || !newDesign.project.name || editDesignShared.projectStatus?.milestoneView"
+            matTooltip="Run The Model">
+            <mat-icon>play_arrow</mat-icon>
+        </button>
+    </div>
+    <mat-divider vertical style="height:40px"></mat-divider>
+    <span class="fill-space"></span>
+        <!-- Help icon main-623-->
+         <button mat-icon-button color="primary" (click)="switchToHelpPage()" >
+            <mat-icon matBadgeSize="small" class="helpBtnIcon">help</mat-icon>
+        </button>
+    <button mat-icon-button [matMenuTriggerFor]="notificationmenu" #triggernotificationmenu="matMenuTrigger"
+        [disabled]="!newDesign.project.name" *ngIf="currentUserProfile.isAuth">
+        <mat-icon matBadge="..." [matBadgeHidden]="riskUpdateNotifications?.length == 0 && vulnerabilityNotifications?.length == 0 && otherNotifications?.length == 0"
+            matBadgeOverlap="true" matBadgeSize="small" matBadgeColor="warn" class="notificaitonBtnIcon">
+            circle_notifications</mat-icon>
+    </button>
+    <mat-menu #notificationmenu="matMenu" xPosition="before">
+        <div class="notifications" (click)="$event.stopPropagation();">
+            <div class="notification-header">
+                <div style="display: flex;">
+                    <h2>Notifications</h2>
+                </div>
+                <div class="tabs-main">
+                    <div class="tab-left" (click)="selectTab('threat')" [ngClass]="{'tab-active': selectedTab == 'threat'}">Threat<span *ngIf="riskUpdateNotifications?.length > 0" matBadge="{{riskUpdateNotifications.length}}" matBadgeColor="warn" matBadgeOverlap="false"></span></div>
+                    <div class="tab-right" (click)="selectTab('vulnerability')" [ngClass]="{'tab-active': selectedTab == 'vulnerability'}">Vulnerability <span *ngIf="vulnerabilityNotifications?.length > 0" matBadge="{{vulnerabilityNotifications.length}}" matBadgeColor="warn" matBadgeOverlap="false"></span></div>
+                    <div class="tab-right" (click)="selectTab('others')" [ngClass]="{'tab-active': selectedTab == 'others'}">Others <span *ngIf="otherNotifications?.length > 0" matBadge="{{otherNotifications.length}}" matBadgeColor="warn" matBadgeOverlap="false"></span></div>
+                </div>
+            </div>
+            <div class="notification-container">
+                <ng-container *ngIf="selectedTab == 'threat'">
+                    <ng-container
+                        *ngIf="riskUpdateNotifications && riskUpdateNotifications.length > 0; else nonotification">
+
+                        <ng-container *ngFor="let notification of riskUpdateNotifications; let i = index">
+                            <div class="notification-item">
+                                <div class="notification-content" (click)="riskUpdateNotificationDetails(notification, i)">
+                                    <div class="content-header">
+                                        <p class="title">Risk Number Updated<span class="dot"
+                                                *ngIf="!notification.readStatus"></span></p>
+                                        <!-- <ng-container *ngIf="notification.updatedAt | checkToday; else otherday"> -->
+                                        <ng-container>
+                                            <span class="date">{{ notification.updatedAt | date : 'MM/dd/yyyy, h:mm a'}}</span>
+                                        </ng-container>
+                                        <!-- <span class="date">Today, {{ notification.updatedAt | date : 'h:mm a' }}</span> -->
+                                        <!-- <ng-template #otherday> -->
+                                        <!-- </ng-template> -->
+                                    </div>
+                                    <p class="message">{{ notification.asset }} risk number updated, threat lists
+                                        impacted</p>
+                                    <p class="click-details">Click to see more details</p>
+                                </div>
+                            </div>
+                            <mat-divider></mat-divider>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
+                <ng-container *ngIf="selectedTab == 'vulnerability'">
+                    <ng-container
+                        *ngIf="vulnerabilityNotifications && vulnerabilityNotifications.length > 0; else nonotification">
+
+                        <ng-container *ngFor="let notification of vulnerabilityNotifications; let i = index">
+                            <div class="notification-item">
+                                <div class="notification-content" (click)="readVulnerabilityNotification(notification._id)">
+                                    <div class="content-header">
+                                        <p class="title">New vulnerability found<span class="dot"></span></p>
+                                        <ng-container>
+                                            <span class="date">{{ notification?.createdAt | date : 'MM/dd/yyyy'}}</span>
+                                        </ng-container>
+                                        <!-- <ng-container *ngIf="notification.createdAt | checkToday; else otherday">
+                                            <span class="date">{{ notification?.createdAt | date : 'h:mm a' }}</span>
+                                        </ng-container> -->
+                                        <!-- <ng-template #otherday>
+                                        </ng-template> -->
+                                    </div>
+                                    <p class="message">{{notification?.sbom?.product}} {{notification?.hbom?.product}} ; {{notification?.description}}</p>
+                                </div>
+                            </div>
+                            <mat-divider></mat-divider>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>     
+                <ng-container *ngIf="selectedTab == 'others'">
+                    <ng-container
+                        *ngIf="otherNotifications && otherNotifications.length > 0; else nonotification">
+
+                        <ng-container *ngFor="let notification of otherNotifications; let i = index">
+                            <div class="notification-item">
+                                <div class="notification-content" (click)="readOtherNotification(notification._id)">
+                                    <div class="content-header">
+                                        <p class="title">{{ notification.title }}<span class="dot"></span></p>
+                                        <ng-container>
+                                            <span class="date">{{ notification?.createdAt | date : 'MM/dd/yyyy'}}</span>
+                                        </ng-container>
+                                    </div>
+                                    <p class="message">{{ notification.message }}</p>
+                                </div>
+                            </div>
+                            <mat-divider></mat-divider>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>     
+                <ng-template #nonotification>
+                    <p class="nothing-found">No notification found</p>
+                </ng-template>
+            </div>
+            <div class="notification-actions" *ngIf="selectedTab == 'threat'">
+                <button mat-raised-button (click)="showAllRiskUpdateNotifications()">See All</button>
+            </div>
+            <div class="notification-actions" *ngIf="selectedTab == 'vulnerability'">
+                <button mat-raised-button (click)="showAllVulnerabilityNotifications()">See All</button>
+            </div>
+            <div class="notification-actions" *ngIf="selectedTab == 'others'">
+                <button mat-raised-button (click)="showAllOtherNotifications()">See All</button>
+            </div>
+        </div>
+    </mat-menu>
+    <button mat-icon-button [matMenuTriggerFor]="accountMenu" *ngIf="currentUserProfile.isAuth">
+        <mat-icon class="accountBtnIcon">account_circle</mat-icon>
+    </button>
+    <mat-menu #accountMenu="matMenu">
+        <h3 mat-menu-item (click)="validatePassword()">User Profile</h3>
+        <h3 mat-menu-item>Username: {{currentUserProfile.username}}</h3>
+        <h3 mat-menu-item>Role: {{currentUserProfile.role}}</h3>
+       <button mat-menu-item (click)="loadProjectInfo()"> Project: {{newDesign.project.name}}</button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="changePasswordView()">Change Password</button>
+        <button mat-menu-item (click)="logout()">Logout</button>
+    </mat-menu>
+    <button mat-raised-button color="primary" (click)="switchToLoginView()"
+        *ngIf="!currentUserProfile.isAuth">Login</button>
+
+</mat-toolbar>
+<ngx-spinner></ngx-spinner>

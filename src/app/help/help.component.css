@@ -1,0 +1,170 @@
+#topbar-customer-service {
+  width: fit-content;
+  margin-bottom: 2rem;
+  margin-left: 86.5%;
+}
+
+#topbar-customer-service>span {
+  width: 10%;
+}
+
+.help-search-bar{
+  display: flex;
+  /* border: 1px solid black;
+  border-top: 2px solid black; */
+  height: 60px;
+}
+
+.help-tabs{
+  margin-top:2vh;
+}
+
+.help-form {
+  min-width: 150px;
+  max-width: 1215px;
+  width: 100%;
+}
+
+.help-form-full-width {
+  width: 100%;
+}
+
+.help-document{
+  padding: 0px 10px 10px 10px;
+}
+
+.help-document-paragraph{
+  margin-bottom: 1vh;
+}
+
+.help-document-readmore{
+  margin-top: 1vh;
+  border-radius: 15px;
+}
+
+.help-document-heading{
+  display: flex;
+  flex: row;
+  margin-top: 2vh;
+}
+
+.help-document-heading h3{
+  margin-top: 10px;
+  margin-left: 1vh;
+}
+
+.txt>cdk-overlay-pane {
+
+  max-width: 100%;
+}
+
+#help-main {
+  position: relative;
+  display: block;
+  top: 100px;
+  width: 80%;
+  margin: auto;
+}
+
+.rows-container {
+  height: 700px;
+  overflow: auto;
+  margin: 5vh 0vh;
+}
+
+#tab-content {
+  margin-bottom: 1rem;
+  padding: 13px;
+  color: rgba(0, 0, 0, 0.87);
+  ;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tab-content {
+  padding: 13px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.help-version-bottom-bar {
+  position: fixed;
+  bottom: 0px;
+  background-color: white;
+  width: 100%;
+}
+
+#row-panel-title {
+  align-items: center;
+}
+
+.mat-expansion-panel-header {
+  padding: 20px;
+  display: flex;
+}
+
+#matIcons {
+  font-size: 50px;
+  padding-right: 50px;
+  color: black;
+  align-items: center;
+  height: auto;
+}
+
+.mat-expansion-panel {
+  margin-bottom: 15px;
+}
+
+.row-description {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.video-textarea {
+  width: 50%;
+  padding-left: 20px;
+}
+
+.mat-expansion-panel-body {
+  background: #f1f1f1;
+}
+
+.expansion-body:first-child {
+  padding-top: 15px;
+  display: flex;
+  justify-content: space-between;
+
+}
+
+#mat-Expension {
+  padding: 20px;
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.row-short-des {
+  color: gray;
+}
+
+.video-row {
+  width: 80%;
+}
+
+.expansion-description {
+  width: 100%;
+  display: inline-flex;
+}
+
+.title {
+  margin-left: 50px;
+  display: inline-block;
+}
+
+.noHelpData{
+  font-family: "Roboto", "Helvetica Neue", sans-serif;
+  font-weight: 400;
+}

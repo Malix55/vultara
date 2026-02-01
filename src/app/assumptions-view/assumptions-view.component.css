@@ -1,0 +1,49 @@
+.assumption-page {
+    display: flex;
+    flex-direction: column;
+    width: 98%;
+    margin: auto;
+}
+
+#assumptionId .assumption-table {
+    width: 100%;
+}
+.assumption-table-view-container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  margin-top: 60px;
+}
+.ifempty{
+    padding: 24px;
+}
+/* table {
+  padding: 0;
+  width: 100%;
+  margin: auto;
+} */
+#assumptionId .mat-column-no {
+    width: 10% !important;
+    font-size:14px;
+}
+
+#assumptionId .mat-column-content {
+    width: 80% !important;
+    font-size:14px;
+
+}
+
+#assumptionId .mat-column-action {
+    text-align: center;
+    width: 10% !important;
+}
+
+::ng-deep #assumption-page .mat-form-field {
+    width: 100%;
+    height: 100%;
+}
+
+::ng-deep #assumption-page .mat-column-assumption .mat-form-field-wrapper {
+    padding: 0 !important;
+}
+

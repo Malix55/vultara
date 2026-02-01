@@ -1,0 +1,8 @@
+.formfields {
+    display: flex;
+    flex-direction: column;
+}
+.displayHeading {
+    display: flex;
+    flex-direction: row;
+}

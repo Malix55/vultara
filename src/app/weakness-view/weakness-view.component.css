@@ -1,0 +1,235 @@
+table {
+    padding: 0;
+    width: 100%;
+}
+
+.weakness-table-view-container {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+#weakness-table-view {
+    height: 100%;
+    margin-top: 20px;
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.vulnerability-list-filter {
+    margin: 8px 0 0;
+}
+
+#weakness-filter-section {
+    font-size: 14px;
+    width: 30%;
+    margin-left: 5px;
+}
+
+#refresh-weakness-list {
+    margin-left: 5px;
+}
+
+.weakness-list-table-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+}
+
+.weakness-list-table-container .mat-header-cell:first-of-type {
+    padding-left: 8px;
+}
+
+.weakness-list-table-container .mat-cell:first-of-type {
+    padding-left: 8px;
+}
+
+.weakness-list-table-container .mat-header-cell:last-of-type {
+    padding-right: 0;
+}
+
+.weakness-list-table-container .mat-cell:last-of-type {
+    padding-right: 0;
+}
+
+.weakness-list-table-container .mat-header-cell {
+    font-size: 14px;
+    min-height: 48px;
+    text-align: center;
+}
+
+.weakness-list-table-container .mat-column-weaknessNo {
+    width: 5px;
+}
+
+.weakness-list-table-container .mat-column-vulnerabilityAnalysis {
+    width: 8px;
+}
+
+.weakness-list-table-container .mat-column-vulnerabilitiesLinked {
+    width: 5px;
+}
+
+.weakness-list-table-container .mat-column-dateIdentified {
+    width: 8px;
+}
+
+.weakness-list-table-container .mat-column-identificationMethod {
+    width: 10%;
+}
+
+.weakness-list-table-container .mat-column-sourceNotes {
+    width: 7%;
+}
+
+.weakness-list-table-container .mat-column-weaknessDescription {
+    width: 15%;
+}
+
+.weakness-list-table-container .mat-column-asset {
+    width: 5%;
+}
+
+:host ::ng-deep .weakness-list-table-container .mat-cell {
+    text-align: center;
+}
+
+.weakness-list-table-container tr.mat-row {
+    height: 100px !important;
+    max-height: 150px !important;
+}
+
+.weakness-description {
+    line-height: 15px;
+    min-height: 73px !important;
+    resize: none;
+}
+
+.weakness-description::-webkit-input-placeholder {
+    text-align: center;
+    transform: translateY(27px);
+}
+
+:host ::ng-deep .weakness-list-table-container .mat-form-field {
+    text-align: center;
+}
+
+::placeholder {
+    font-style: italic;
+}
+
+.add-new-btn {
+    margin-top: 10px;
+}
+
+#refreshTableBtn {
+    margin: 5px;
+}
+
+.removeBGColor {
+    background-color: #fff !important;
+    opacity: 0.8;
+    transition: background-color 5s linear;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.cveTextArea {
+    width: 115px;
+}
+
+.small-icon-button {
+    width: 24px !important;
+    height: 24px !important;
+    line-height: 24px !important;
+    top: 7px;
+    right: 4px;
+    background-color: transparent !important;
+}
+
+.cve-mat-icon>mat-icon {
+    width: 16px !important;
+    height: 16px !important;
+    line-height: 16px !important;
+    font-size: 18px !important;
+}
+
+.oval {
+    padding: 10px;
+    border-radius: 50px;
+    width: 100px;
+}
+
+.red {
+    border: 2px solid #d50b0b;
+    color: #d50b0b;
+}
+
+.red:hover {
+    cursor: pointer;
+    border: 2px solid #d50b0b;
+    background-color: #d50b0b;
+    color: white;
+    font-weight: 500;
+}
+
+.green {
+    border: 2px solid #0f970f;
+    color: #0f970f;
+}
+
+.green:hover {
+    cursor: pointer;
+    border: 2px solid #0f970f;
+    background-color: #0f970f;
+    color: white;
+    font-weight: 500;
+}
+
+.orange {
+    border: 2px solid #e86c19;
+    color: #e86c19;
+}
+
+.orange:hover {
+    cursor: pointer;
+    border: 2px solid #e86c19;
+    background-color: #e86c19;
+    color: white;
+    font-weight: 500;
+}
+
+.yellow {
+    border: 2px solid #f0c22f;
+    color: #f0c22f;
+}
+
+.yellow:hover {
+    cursor: pointer;
+    border: 2px solid #f0c22f;
+    background-color: #f0c22f;
+    color: white;
+    font-weight: 500;
+}
+
+.mat-option {
+    overflow: visible;
+    line-height: 1em !important;
+    height: 48px !important;
+    white-space: pre-line;
+}
+
+.mat-option i {
+    display: block;
+    font-size: 1.5rem;
+    opacity: 0.6;
+    margin-left: 0.5rem;
+}

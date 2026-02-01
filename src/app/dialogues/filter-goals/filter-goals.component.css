@@ -1,0 +1,59 @@
+.cybersecurity-filter-container {
+    padding: 7px;
+    font-family: Bahnschrift;
+    display: flex;
+    flex-direction: column;
+    align-content: space-between;
+}
+
+.cybersecurity-filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.cybersecurity-filter-header mat-icon {
+    cursor: pointer;
+}
+
+.cybersecurity-filter-content {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.cybersecurity-filter-container table {
+    width: 100%;
+}
+
+.cybersecurity-filter-actions {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.cybersecurity-filter-row {
+    padding: 6px;
+}
+
+.mat-column-select {
+    width: 10% !important;
+}
+
+.mat-column-serial {
+    width: 10% !important;
+}
+
+.mat-column-goal {
+    width: 80% !important;
+}
+
+::ng-deep .cybersecurity-dialog-container .mat-dialog-container {
+    overflow: hidden !important;
+}
+
+::ng-deep .cybersecurity-dialog-container .mat-dialog-content {
+    max-height: 32vh !important;
+}

@@ -1,0 +1,17 @@
+<h3 mat-dialog-title>Load a project</h3>
+<div mat-dialog-content>
+    <mat-selection-list #loadProjectSelect [multiple]="false">
+            <mat-list-option *ngFor="let dataLoadProject of dataLoadProjects; let i=index" [value]="dataLoadProject"
+            (click)="selectProjectToLoad(i)">
+                <mat-icon matListIcon>folder</mat-icon>
+                {{dataLoadProject}}
+            </mat-list-option>
+      </mat-selection-list>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button (click)="cancelLoadProject()">Cancel</button>
+  <button mat-raised-button (click)="confirmLoadProject()" [disabled]="projectLoading" color="primary">Confirm</button>
+  &nbsp;
+  <mat-progress-spinner diameter="20" *ngIf="projectLoading" [color]="'primary'" [mode]="'indeterminate'">
+</mat-progress-spinner>
+</div>

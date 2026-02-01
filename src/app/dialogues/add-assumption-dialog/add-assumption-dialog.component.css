@@ -1,0 +1,8 @@
+.addAssumptionFormFields {
+    display: flex;
+    flex-direction: column;
+}
+.addAssumptionHeading {
+    display: flex;
+    flex-direction: row;
+}

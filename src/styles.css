@@ -1,0 +1,187 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+    /* without this, there's a -17px margin in the modeling view sidebar*/
+    /* overflow: hidden;  */
+}
+body {
+    margin: 0;
+    font-family: Bahnschrift;
+}
+
+.green-progress .mat-progress-bar-fill::after {
+    background-color: green !important;
+}
+
+.red-percentage .mat-progress-bar-fill::after {
+    background-color: #F32E26 !important;
+}
+
+.magenta-percentage .mat-progress-bar-fill::after {
+    background-color: #F6AA2B !important;
+}
+
+.yellow-percentage .mat-progress-bar-fill::after {
+    background-color: #F5F736 !important;
+}
+
+.green-percentage .mat-progress-bar-fill::after {
+    background-color: #206720 !important;
+}
+
+.red-percentage {
+    background-color: #F32E26 !important;
+}
+
+.magenta-percentage {
+    background-color: #F6AA2B !important;
+}
+
+.yellow-percentage {
+    background-color: #F5F736 !important;
+}
+
+.green-percentage {
+    background-color: #206720 !important;
+    color: #FFFFFF;
+}
+
+.mitreAttackBottomPanel .mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {
+    background-color: #ffffff;
+}
+
+.mitreAttackBottomPanel .mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
+    background-color: rgba(0, 0, 0, 0.38);
+}
+
+/* 
+HERE: 
+Override on all Material UI components Globaly
+*/
+
+::-webkit-scrollbar {
+width: 5px;
+height: 5px;
+}
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: #85BDDD; }
+::-webkit-scrollbar-thumb:hover { background: #3C98CF; }
+
+::-webkit-scrollbar:horizontal{
+    height: 12px;
+  }
+.mat-primary {
+    background-color: #3C98CF !important;
+}
+
+.mat-form-field.mat-primary {
+    color: none !important;
+    background-color: none !important;
+}
+
+.mat-tab-body-content,
+.mat-tab-labels {
+    background-color: #fff !important;
+}
+
+.mat-ink-bar {
+    background-color: #3C98CF !important;
+}
+
+.mat-primary.mat-form-field-label {
+    color: #3C98CF;
+}
+
+.mat-primary .mat-option.mat-selected:not(.mat-option-disabled) {
+    color: #3C98CF;
+}
+
+.mat-primary.mat-form-field-type-mat-input ,
+.mat-primary.mat-form-field.mat-form-field-type-mat-select,
+.mat-primary.mat-form-field.mat-form-field-type-mat-chip-list,
+.mat-primary.mat-form-field.sbom-field-full-width.mat-chip-remove,
+.mat-primary.mat-progress-spinner-indeterminate-animation {
+    color: #000 !important;
+    background-color: transparent !important;
+}
+
+.mat-primary.mat-select-panel {
+    color: #000 !important;
+    background-color: #FFFFFF !important;
+}
+
+.mat-focused .ng-star-inserted {
+    color: #000 !important;
+}
+
+.mat-form-field-ripple {
+    background-color: #3C98CF !important;
+}
+
+.mat-chip.mat-standard-chip,
+.mat-chip.mat-standard-chip .mat-chip-remove {
+    border-radius: 4px !important;
+    color: #fff !important;
+}
+
+.mat-dialog-container .dialog-close-button{
+    top: 0px !important;
+    right: -4px !important;
+    border-radius: 4px !important;
+}
+
+.mat-icon-button.dialog-close-button {
+    width: 35px;
+    height: 35px;
+    line-height: 34px;
+}
+
+.mat-form-field-invalid .mat-form-field-underline .mat-form-field-ripple {
+    background-color: #ff5722 !important;
+}
+
+.mat-progress-spinner circle, 
+.mat-spinner circle {
+    stroke: #3C98CF !important;
+}
+
+.mat-form-field.mat-focused.mat-primary .mat-select-arrow {
+    color: #3C98CF;
+}
+
+#navbar .mat-focus-indicator.mat-menu-trigger.mat-raised-button.mat-button-base {
+    box-shadow: none;
+}
+
+.mat-tab-body-content .mat-card.mat-focus-indicator.modelingResult {
+    box-shadow: none;
+    border: 1px solid #3C98CF;
+}
+
+.mat-chip-list-wrapper input.mat-input-element, .mat-chip-list-wrapper .mat-standard-chip {
+    border-radius: 25px !important;
+}
+
+/* .mat-chip.mat-focus-indicator.mat-primary.mat-standard-chip {    
+    background-color: rgb(88, 87, 87);
+} */
+
+.mat-chip{
+    background-color: rgb(88, 87, 87)!important;
+}
+
+.mat-tab-label {
+    padding-top: 8px;
+}
+
+mat-chip.mat-standard-chip.mat-chip-selected.mat-primary {
+    background-color: #3C98CF!important;
+    color: white!important;
+}
+/* mat-chip mat-focus-indicator mat-primary mat-standard-chip mat-chip-with-trailing-icon ng-star-inserted */
+/* mat-chip mat-focus-indicator mat-primary mat-standard-chip ng-star-inserted */

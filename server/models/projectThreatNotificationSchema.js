@@ -1,0 +1,38 @@
+const mongoose = require("mongoose");
+
+const ProjectThreatNotificationSchema = new mongoose.Schema({
+    projectId: String,
+    asset: String,
+    threatRuleEngineId: String,
+    threatFeaLibAdvId: String,
+    riskLevel: String,
+    riskLevelBefore: String,
+    attackFeasibilityElapsed: String,
+    attackFeasibilityElapsedRationale: String,
+    attackFeasibilityEquipment: Number,
+    attackFeasibilityEquipmentRationale: String,
+    attackFeasibilityExpertise: Number,
+    attackFeasibilityExpertiseRationale: String,
+    attackFeasibilityKnowledge: Number,
+    attackFeasibilityKnowledgeRationale: String,
+    attackFeasibilityWindow: Number,
+    attackFeasibilityWindowRationale: String,
+    riskLevelUpdated: String,
+    attackFeasibilityElapsedUpdated: Number,
+    attackFeasibilityElapsedUpdatedRationale: String,
+    attackFeasibilityEquipmentUpdated: Number,
+    attackFeasibilityEquipmentUpdatedRationale: String,
+    attackFeasibilityExpertiseUpdated: Number,
+    attackFeasibilityExpertiseUpdatedRationale: String,
+    attackFeasibilityKnowledgeUpdated: Number,
+    attackFeasibilityKnowledgeUpdatedRationale: String,
+    attackFeasibilityWindowUpdated: Number,
+    attackFeasibilityWindowUpdatedRationale: String,
+    notificationType: String,
+    readStatus: Boolean,
+    acceptStatus: Boolean,
+    rejectStatus: Boolean,
+    treatment: String,
+    removeStatus: Boolean
+}, { timestamps: true });
+module.exports.ProjectThreatNotificationSchema = ProjectThreatNotificationSchema;

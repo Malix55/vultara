@@ -1,0 +1,8 @@
+.addGoalFormFields {
+    display: flex;
+    flex-direction: column;
+}
+.addGoalHeading {
+    display: flex;
+    flex-direction: row;
+}

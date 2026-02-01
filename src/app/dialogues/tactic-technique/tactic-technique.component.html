@@ -1,0 +1,12 @@
+<div mat-dialog-title class="tacticTechniqueHeader">
+    <h5>Select Technique</h5>
+    <span class="techniqueHeaderGap"></span>
+    <mat-icon aria-hidden="false" mat-dialog-close>close</mat-icon>
+</div>
+<mat-dialog-content>
+    <div class="techniques">
+        <button mat-stroked-button *ngFor="let technique of techniques"
+            [color]="techniqueVId | selectedTechnique : technique.vId" (click)="selectTechnique(technique.vId)">
+            {{ technique.name }}</button>
+    </div>
+</mat-dialog-content>

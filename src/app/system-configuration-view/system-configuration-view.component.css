@@ -1,0 +1,88 @@
+#SystemConfigView {
+  position: relative;
+  top: 50px;
+}
+
+.general-radio-group,
+.feasibilityMethod-radio-group {
+  display: flex;
+  flex-direction: column;
+  margin: 1em 0 1em 2em;
+}
+
+.feasibility-type {
+  margin: 1em 0 0 2em;
+  min-width: 200px;
+}
+
+.general-radio-button,
+.feasibilityMethod-radio-button {
+  margin: 1em;
+}
+
+.table-div {
+  width: 80%;
+  margin-left: 2rem;
+  margin-top: -1.5rem;
+}
+
+.title {
+  margin-left: 2em;
+}
+
+.generalConfirmBtn,
+.feasibilityMethodConfirmBtn {
+  margin-left: 2em;
+}
+
+.table-div table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 50px auto;
+}
+
+.table-div-font-bold {
+  font-weight: bold;
+}
+
+.mat-header-cell:last-of-type {
+  padding-right: 0;
+}
+.mat-cell:last-of-type {
+  padding-right: 0;
+}
+
+td,
+th {
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+select {
+  padding: 1rem 6rem;
+  border: none;
+}
+
+select:focus {
+  outline: none;
+}
+
+.level5 {
+  background-color: #ff0000;
+}
+
+.level4 {
+  background-color: #ffa500;
+}
+
+.level3 {
+  background-color: #ffff00;
+}
+
+.level2 {
+  background-color: #00db00;
+}
+
+.level1 {
+  background-color: #005c00;
+}

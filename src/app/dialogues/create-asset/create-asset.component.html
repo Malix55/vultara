@@ -1,0 +1,51 @@
+<div class="displayHeading">
+  <h3 class="title">New Asset</h3>
+  <button style="margin-left: 200px" preventDoubleClick mat-raised-button (throttledClick)="createAsset()" [throttleTime]="700" color="primary" [disabled]="assetForm.invalid || isSpace">
+    confirm
+  </button>
+  <button mat-raised-button style="margin-left: 20px" (click)="onNoClick()">
+    close
+  </button>
+</div>
+<br />
+<form #assetForm="ngForm" class="formfields">
+  <mat-form-field style="width: 300px" appearance="fill">
+    <mat-label>Asset Name</mat-label>
+    <input matInput value="New asset" [(ngModel)]="newAsset.name" required name="assetName" (ngModelChange)="moduleNameChange($event)"/>
+    <mat-error *ngIf="assetForm.controls['assetName']?.errors?.required">Asset Name is required.</mat-error>
+  </mat-form-field>
+  <mat-form-field style="width: 300px" appearance="fill">
+    <mat-label>Asset Type</mat-label>
+    <mat-select [(ngModel)]="newAsset.assetType" name="assetType" (selectionChange)="modelChangeFn($event.value)">
+      <mat-option *ngFor="let selectedAsset of assetType" [value]="selectedAsset.value">
+        {{ selectedAsset.viewValue }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field style="width: 300px" appearance="fill">
+    <mat-label>Subtype</mat-label>
+    <mat-select [(ngModel)]="newAsset.subType" [required]="assetTypeCheck" name="assetSubType" [disabled]="disabled">
+      <mat-option *ngFor="let selectedAssetSubType of subType" [value]="selectedAssetSubType.value">
+        {{ selectedAssetSubType.viewValue }}
+      </mat-option>
+    </mat-select>
+    <mat-error *ngIf="assetForm.controls['assetSubType']?.errors?.required">Subtype is required for this asset type.</mat-error>
+  </mat-form-field>
+
+  <mat-form-field (click)="focusInput()"  appearance="fill" style="width:300px;">
+    <mat-label>Tags</mat-label>
+    <div class="assetTagsScrollable">
+      <mat-chip-list #chipList>
+        <mat-chip style="background-color:rgb(88, 87, 87)!important;" *ngFor="let tag of newAsset.tag" (removed)="removeTag(tag)">
+          {{tag}}
+          <mat-icon matChipRemove>cancel</mat-icon>
+        </mat-chip>
+        <input #chipInput placeholder="New Tag..."
+               [matChipInputFor]="chipList"
+               [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+               (matChipInputTokenEnd)="add($event)"
+                maxlength="28">
+      </mat-chip-list>
+      </div>
+  </mat-form-field>
+</form>

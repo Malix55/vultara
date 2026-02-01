@@ -1,0 +1,99 @@
+<div class="threat-history-header">
+    <span></span>
+    <h2>Threat History</h2>
+    <mat-icon mat-dialog-close>close</mat-icon>
+</div>
+
+<ng-container *ngIf="milestoneThreats.length === 0 && loadMilestones">
+    <div mat-dialog-title class="threat-history-loader">
+        <mat-spinner></mat-spinner>
+    </div>
+</ng-container>
+
+<ng-container *ngIf="milestoneThreats?.length > 0; else nothreatfound">
+    <div class="threat-history-container">
+        <table mat-table [dataSource]="dataSource">
+            <ng-container matColumnDef="asset">
+                <th mat-header-cell *matHeaderCellDef> Asset </th>
+                <td mat-cell *matCellDef="let row; let i = renderIndex;">
+                    {{ row.asset }}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="securityPropertyCia">
+                <th mat-header-cell *matHeaderCellDef> Property </th>
+                <td mat-cell *matCellDef="let row; let i = renderIndex;">
+                    {{ row.securityPropertyCia }}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="threatScenario">
+                <th mat-header-cell *matHeaderCellDef> Threat Scenario </th>
+                <td mat-cell *matCellDef="let row; let i = renderIndex;">
+                    {{ row.threatScenario }}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="attackPath">
+                <th mat-header-cell *matHeaderCellDef> Attack Path </th>
+                <td mat-cell *matCellDef="let row; let i = renderIndex;"
+                    [class.milestone-heading]="row.milestoneHeading">
+                    {{ row.attackPathName }}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="damageScenario">
+                <th mat-header-cell *matHeaderCellDef> Damage Scenario </th>
+                <td mat-cell *matCellDef="let row; let i = renderIndex;">
+                    {{ row.damageScenario }}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="impact">
+                <th mat-header-cell *matHeaderCellDef> Impact </th>
+                <td mat-cell *matCellDef="let row">{{ (row.treatment == "no treatment") ? ( data.impactLevelName
+                    |
+                    impactLevelName
+                    :
+                    data.impactAggMethod: row.impactSLevel : row.impactFLevel : row.impactOLevel :
+                    row.impactPLevel)
+                    :
+                    (row.impactSLevelAfter) ? (data.impactLevelName | impactLevelName : data.impactAggMethod :
+                    row.impactSLevelAfter :
+                    row.impactFLevelAfter : row.impactOLevelAfter : row.impactPLevelAfter) :
+                    (data.impactLevelName | impactLevelName : data.impactAggMethod : row.impactSLevel :
+                    row.impactFLevel
+                    :
+                    row.impactOLevel
+                    : row.impactPLevel) }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="attackFeasibility">
+                <th mat-header-cell *matHeaderCellDef> Feasibility </th>
+                <td mat-cell *matCellDef="let row">
+                    {{row.attackFeasibilityLevelAfter ? row.attackFeasibilityLevelAfter:
+                    row.attackFeasibilityLevel
+                    }}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="riskLevel">
+                <th mat-header-cell *matHeaderCellDef> Risk </th>
+                <td mat-cell *matCellDef="let row"> {{row.riskLevel}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let myRowData; columns: displayedColumns"></tr>
+        </table>
+        <div *ngIf="!loadingDone" class="threat-history-load-more">
+            <button mat-raised-button (click)="loadMore()" [disabled]="loadMilestones">{{ loadMilestones ? 'Loading...'
+                : 'Load More' }}</button>
+        </div>
+    </div>
+</ng-container>
+
+<ng-template #nothreatfound>
+    <div class="no-threat-history-found">
+        <h3>No threat history found</h3>
+    </div>
+</ng-template>

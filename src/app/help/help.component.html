@@ -1,0 +1,107 @@
+<div id="help-main">
+  <div id="topbar-customer-service">
+    <a href="mailto:customer.service@vultara.com">
+      <button mat-menu-item>
+        <mat-icon style="color:#3C98CF;"> mail_filled</mat-icon>Email Customer Service
+      </button>
+    </a>
+  </div> 
+
+  <!-- <div class="help-search-bar">
+
+<button mat-raised-button style="margin: 5px;background-color: #3C98CF;">
+  <mat-icon>filter_alt</mat-icon>
+</button>
+
+  <form class="help-search-form">
+    <mat-form-field class="help-form-full-width" appearance="fill">
+      <mat-label>Search</mat-label>
+      <input matInput placeholder="ex: Sbom guide" name="search" id="search" [(ngModel)]="search" (input)="searchFn()">
+    </mat-form-field>
+  </form>
+  
+  </div> -->
+
+  <div class="rows-container" *ngIf="helpData!==0;else nodatafound">
+    <div *ngFor="let value of documents">
+      <mat-accordion>
+        <div class="help-document">
+          <div>
+            <div id="row-panel-title">
+              <div class="help-document-heading">
+                <img src="../../assets/images/PaperIcon-HelpPage.svg" alt="">
+                <h3 style="float:right">{{value[0].text}}</h3>
+              </div>
+              <div class="row-description">
+                <div class="expansion-body" *ngFor="let record of value   let i=index">
+                  <div class="expansion-description" *ngIf="i>0 && record.helpDocumentType =='document'">
+                    <div>
+                      <p class="help-document-paragraph">{{record.text}}</p>
+                      <button mat-stroked-button *ngIf="i>=2" [routerLink]="[ '/helpdetail', record.helpDocumentId]"
+                        routerLinkActive="active" class="help-document-readmore">Read More</button>
+                    </div>
+                    <!-- <p>{{record.text}} <a *ngIf="i>=2" [routerLink]="[ '/helpdetail', record.helpDocumentId]"
+                            routerLinkActive="active">Read more</a></p> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-accordion>
+    </div>
+    <!-- video tab for future use  -->
+    <div *ngFor="let value of videos">
+      <mat-accordion style="margin-bottom:1rem">
+        <div class="help-document">
+          <div>
+            <div id="row-panel-title">
+              <div class="help-document-heading">
+                <img src="../../assets/images/PlayIcon-HelpPage.svg" alt="">
+                <h3>{{value[0].text}}</h3>
+              </div>
+              <div class="row-description">
+                <div class="expansion-body" style="padding-top: 20px;">
+                  <!--video preview-->
+                  <!-- <div class="video-row" *ngIf="videoUrl" style="width:100%">
+                    <video id="demoVideo" width="100%" controls preload="metadata" controlsList="nodownload"
+                      data-setup='{ "playbackRates": [1, 1.5, 2] }'>
+                      <source src={{videoUrl}} type='video/webm' />
+                    </video>
+                  </div> -->
+                  <div>
+                    <div *ngFor="let record of value">
+                      <div *ngIf="record.displayType=='text'">
+                        <p>{{record.text}}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-accordion>
+    </div>
+  </div>
+
+  <!--for future use tabs in help page -->
+<!-- <mat-tab-group class="help-tabs">
+  <mat-tab label="Database"></mat-tab>
+  <mat-tab label="Threat List">Threat List Content</mat-tab>
+  <mat-tab label="Mitre Attack">Mitre Attack Content</mat-tab>
+  <mat-tab label="Spom">Spom Content</mat-tab>
+  <mat-tab label="CyberSecurity Goal">CyberSecurity Goal Content</mat-tab>
+</mat-tab-group> -->
+<br />
+</div>
+
+<div class="help-version-bottom-bar"><button mat-menu-item [disabled]="helpMenuBtnDisabled" style="text-align: center;">
+    <span style="color: black;"> version: v{{versionNumber}}</span></button> </div>
+<ngx-spinner name="help spinner"></ngx-spinner>
+
+<ng-template #nodatafound>
+<h1 class="noHelpData">
+  Help data to be developed…
+</h1>
+</ng-template>

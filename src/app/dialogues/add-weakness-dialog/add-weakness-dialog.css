@@ -1,0 +1,56 @@
+  .addWeaknessDialogMatformField>mat-form-field {
+    margin-right: 5px;
+  }
+
+  .addNewWeaknessDialogMatDialogContent {
+    padding: 0px !important;
+  }
+
+  .addNewWeaknessDialogButtons {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 4px;
+  }
+
+  .dialogCheckBox {
+    display: inline-flex;
+  }
+
+  .dialogCheckBox>p {
+    margin-left: 4px;
+    margin-right: 4px;
+  }
+
+  .headingPosition {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 15px;
+  }
+  
+  .headingPosition >h1 {
+    margin-bottom: 0;
+    margin-inline:auto
+  }
+
+  input:disabled {
+    color: rgba(0, 0, 0, 0.70) !important;
+  }
+
+  .mat-option {
+    overflow: visible;
+    line-height: 1em !important;
+    height: 48px !important;
+    white-space: pre-line;
+  }
+
+  .mat-option i {
+    display: block;
+    font-size: 1.5rem;
+    opacity: 0.6;
+    margin-left: 0.5rem;
+  }
+
+  ::ng-deep .mat-datepicker-content{
+    background-color: white !important;
+  }

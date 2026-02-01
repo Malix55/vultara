@@ -1,0 +1,94 @@
+<div id=accountAdminViewMain>
+
+  <mat-tab-group [selectedIndex]="0" (selectedTabChange)="tabChanged($event)">
+    <mat-tab label="Account Admin">
+      <ngx-spinner name="account-spinner"></ngx-spinner>
+      <div class="userAccount-list-table-container">
+        <table class="accountTable" mat-table [dataSource]="dataSource" matSort multiTemplateDataRows>
+          <ng-container matColumnDef="userName">
+            <th mat-header-cell *matHeaderCellDef>User Name</th>
+            <td mat-cell *matCellDef="let row">
+              {{row.username}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="userRole">
+            <th mat-header-cell *matHeaderCellDef> User Role </th>
+            <td mat-cell *matCellDef="let row; let i = renderIndex;">
+              {{row.role}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef> Email </th>
+            <td mat-cell *matCellDef="let row; let i = renderIndex;">
+              {{row.userEmail}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="projectAccess">
+            <th mat-header-cell *matHeaderCellDef>Project Access </th>
+            <td style="padding-left:30px;" mat-cell *matCellDef="let row; let i = renderIndex;">
+              <div [ngClass]="row?.projectAccessId?.length>5&&'projectChipscrollable'">
+                <mat-chip-list [ngClass]="row?.projectAccessId?.length<=5&&'centerChip'">
+                  <mat-chip *ngFor="let projectId of row.projectAccessId">
+                    {{ getProjectName(projectId) }}
+                  </mat-chip>
+                </mat-chip-list>
+              </div>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="tableOp">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let row; let i = index" (click)="$event.stopPropagation()">
+              <button mat-raised-button [matMenuTriggerFor]="threatBtnMenu">
+                <mat-icon>more_horiz</mat-icon>
+              </button>
+              <mat-menu #threatBtnMenu="matMenu">
+                <button mat-menu-item (click)="deleteUserAccount(row._id)">
+                  <mat-icon>remove</mat-icon>
+                  Delete User
+                </button>
+                <button mat-menu-item (click)="openNewUserDialog()">
+                  <mat-icon>add</mat-icon>
+                  Add New User
+                </button>
+                <div style="display:inline-block;" [matTooltip]="row.userEmail?null:'User email required'">
+                  <button mat-menu-item [disabled]="!row.userEmail" (click)="resetPasswordUserAccount(row)">
+                    <mat-icon>password</mat-icon>
+                    Reset Password
+                  </button>
+                </div>
+              </mat-menu>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; let i=index; columns: displayedColumns;" class="threat-row"
+            [style.background-color]="row|rowColor" [id]="row._id" (click)="openNewUserDialog(row)">
+          </tr>
+        </table>
+        <mat-paginator [pageSize]="10" [pageSizeOptions]="[10, 20, 50]" showFirstLastButtons></mat-paginator>
+      </div>
+      <button color="primary" *ngIf="dataSource.data.length == 0" class="addUser" mat-raised-button
+        (click)="openNewUserDialog()">+ Add New User</button>
+    </mat-tab>
+
+    <mat-tab label="Org Admin">
+      <br>
+      <h3 class="title">Allowed domains</h3>
+      <div class="orgAdminChipContainer">
+        <mat-form-field class="orgAdminChipList" appearance="fill">
+          <mat-label>Domain Name</mat-label>
+          <mat-chip-list #chipList aria-label="Domain selection">
+            <mat-chip *ngFor="let domain of allowedDomains" (removed)="remove(domain)">
+              {{domain}}
+              <button matChipRemove class="orgAdminChipButton">
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip>
+            <input placeholder="New domain..." [matChipInputFor]="chipList"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
+              (matChipInputTokenEnd)="add($event)" maxlength="63">
+          </mat-chip-list>
+        </mat-form-field>
+        <button class="updateUserBtn" mat-raised-button (click)="updateDomain()">Update</button>
+      </div>
+    </mat-tab>
+  </mat-tab-group>

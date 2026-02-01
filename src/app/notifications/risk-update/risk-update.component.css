@@ -1,0 +1,79 @@
+.notificaitonBtnIcon {
+    transform: scale(1.5);
+  }
+
+  .notifications {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    max-width: 270px;
+    padding: 0 0 4px 5px;
+    max-height: 50vh;
+    font-family: Bahnschrift;
+  }
+  
+  .close-notification {
+    cursor: pointer;
+    user-select: none;
+  }
+  
+  .title {
+    font-size: 14px;
+    font-weight: bold;
+  }
+  
+  .date {
+    font-size: 11px;
+    font-weight: 200;
+    color: #a0a0a0;
+  }
+  
+  .dot {
+    height: 7px;
+    width: 7px;
+    background-color: #3f51b5;
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 5px;
+  }
+  
+  .notification-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 12px 7px;
+  }
+  
+  .notification-container {
+    display: flex;
+    flex-direction: column;
+    max-height: 50vh;
+    overflow-y: auto;
+  }
+  
+  .notification-content {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin: 12px 0;
+    padding: 0 7px;
+    cursor: pointer;
+  }
+  
+  .click-details,
+  .message {
+    font-size: 13px;
+  }
+  
+  .notification-actions {
+    display: flex;
+    margin: 12px 0;
+    justify-content: center;
+  }
+  
+  .content-header {
+    display: flex;
+    justify-content: space-between;
+    justify-items: baseline;
+    align-items: baseline;
+  }

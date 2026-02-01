@@ -1,0 +1,180 @@
+table {
+    padding: 0;
+    width: 100%;
+}
+
+.vulnerability-table-view-container {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+#vulnerability-table-view {
+    height: 100%;
+    margin-top: 60px;
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.vulnerability-list-filter {
+    margin: 8px 0 0;
+}
+
+#vulnerability-filter-section {
+    font-size: 14px;
+    width: 30%;
+    margin-left: 5px;
+}
+
+#refresh-vulnerability-list {
+    margin-left: 5px;
+}
+
+.vulnerability-list-table-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+}
+
+.vulnerability-list-table-container .mat-header-cell:first-of-type {
+    padding-left: 8px;
+}
+
+.vulnerability-list-table-container .mat-cell:first-of-type {
+    padding-left: 8px;
+}
+
+.vulnerability-list-table-container .mat-header-cell:last-of-type {
+    padding-right: 0;
+}
+
+.vulnerability-list-table-container .mat-cell:last-of-type {
+    padding-right: 0;
+}
+
+.vulnerability-list-table-container .mat-header-cell {
+    padding-left: 8px;
+    padding-right: 0;
+    font-size: 14px;
+    min-height: 48px;
+    text-align: center;
+}
+
+:host ::ng-deep .vulnerability-treatment .mat-form-field {
+    width: 80% !important;
+}
+
+:host ::ng-deep .vulnerability-treatment .mat-select-value {
+    min-width: 80%;
+}
+
+.vulnerability-list-table-container .mat-column-no {
+    width: 5px;
+}
+.vulnerability-list-table-container .mat-column-component {
+    width: 11%;
+}
+.vulnerability-list-table-container .mat-column-swhw {
+    width: 10%;
+}
+.vulnerability-list-table-container .mat-column-cveid {
+    width: 7%;
+}
+.vulnerability-list-table-container .mat-column-publishDate {
+    width: 10%;
+}
+.vulnerability-list-table-container .mat-column-description {
+    width: 34%;
+}
+.vulnerability-list-table-container .mat-column-baseScore {
+    width: 8%;
+}
+.vulnerability-list-table-container .mat-column-treatment {
+    width: 6%;
+}
+.vulnerability-list-table-container .mat-column-reviewed {
+    width: 7%;
+}
+.vulnerability-list-table-container .mat-column-validated {
+    width: 7%;
+}
+.vulnerability-list-table-container .mat-column-tableOp {
+    width: 4%;
+}
+:host ::ng-deep .vulnerability-list-table-container .mat-cell {
+    text-align: center;
+}
+.vulnerability-list-table-container tr.mat-row {
+    height: 100px !important;
+    max-height: 150px !important;
+}
+.vulnerability-description {
+    line-height: 15px;
+    text-align: left;
+    min-height: 73px !important;
+    resize: none;
+}
+.vulnerability-description::-webkit-input-placeholder {
+    text-align: center;
+    transform: translateY(27px);
+  }
+:host ::ng-deep .vulnerability-list-table-container .mat-form-field {
+    text-align: center;
+}
+::placeholder {
+    font-style: italic;
+}
+.add-new-btn {
+    margin-top: 10px;
+}
+:host ::ng-deep .swhw .mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
+    padding: 0 2px !important;
+    line-height: 25px !important;
+}
+:host ::ng-deep .swhw-form-field .mat-form-field-wrapper {
+    padding: 0px !important;
+    margin-top: 9px !important;
+}
+#refreshTableBtn {
+    margin: 5px;
+}
+
+.removeBGColor {
+    background-color: #fff !important;
+    opacity: 0.8;
+    transition: background-color 5s linear;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.vulnerabilityDatePicker{
+    width:125px;
+}
+
+
+.cveTextArea{
+    width: 115px;
+}
+
+.small-icon-button {
+    width: 24px !important;
+    height: 24px !important;
+    line-height: 24px !important;
+    top: 7px;
+    right: 4px;
+    background-color: transparent !important;
+}
+.cve-mat-icon > mat-icon {
+    width: 16px !important;
+    height: 16px !important;
+    line-height: 16px !important;
+    font-size: 18px !important;
+}

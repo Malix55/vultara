@@ -1,0 +1,91 @@
+<div class="headingPosition">
+  <h1 mat-dialog-title>{{data._id ?'Edit weakness#'+data.weaknessNumber:'Add a new weakness'}}</h1>
+  <button class="dialog-close" mat-button (click)="onNoClick()">X</button>
+</div>
+
+<div mat-dialog-content class="addNewWeaknessDialogMatDialogContent">
+  <div>
+    <form class="addWeaknessDialogMatformField" style="padding-left:14px;padding-top:6px;"
+      [formGroup]="weaknessForm">
+
+      <mat-form-field [appearance]="'standard'">
+        <mat-label>Date Identified</mat-label>
+        <input [readonly]="true" [max]="today" matInput [matDatepicker]="picker3" formControlName="dateIdentified">
+        <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+        <mat-datepicker #picker3></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field [appearance]="'standard'" style="margin-left: 10px; width:230px;">
+        <mat-label>Identification method (Source)</mat-label>
+        <input matInput formControlName="identificationMethod">
+      </mat-form-field>
+
+
+      <mat-form-field [appearance]="'standard'" style="margin-left: 10px; width:300px;">
+        <mat-label>Source Notes</mat-label>
+        <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1"
+          cdkAutosizeMaxRows="5" formControlName="sourceNotes"></textarea>
+      </mat-form-field>
+      
+      <mat-form-field [appearance]="'standard'" style="margin-left: 10px; width:300px;">
+        <mat-label>Source Notes Link</mat-label>
+        <input matInput formControlName="sourceLink">
+      </mat-form-field>
+
+      <mat-form-field [appearance]="'standard'" style="margin-left: 10px;">
+        <mat-label>Component</mat-label>
+        <input matInput formControlName="component">
+      </mat-form-field>
+
+
+      <mat-form-field [appearance]="'standard'" style="margin-left: 10px;">
+        <mat-label>Attack Surface(s)</mat-label>
+        <input matInput formControlName="attackSurface">
+      </mat-form-field>
+
+
+      <mat-form-field [appearance]="'standard'" style="margin-left: 10px;">
+        <mat-label>Asset(s)</mat-label>
+        <input matInput formControlName="asset">
+      </mat-form-field>
+
+
+      <mat-form-field [appearance]="'standard'" style="margin-left: 10px; width:450px;">
+        <mat-label>Weakness Description</mat-label>
+        <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1"
+          cdkAutosizeMaxRows="5" formControlName="weaknessDescription"></textarea>
+      </mat-form-field>
+
+
+      <mat-form-field [appearance]="'standard'" style="margin-left: 10px;">
+        <mat-label>CWE ID</mat-label>
+        <input placeholder="CWE-" min="0" matInput formControlName="cweId" type="number" oninput="this.value = 
+        !!this.value && Math.abs(this.value) >= 0 ? Math.abs(this.value) : null">
+      </mat-form-field>
+
+
+      <mat-form-field [appearance]="'standard'" style="margin-left: 10px;width:180px;">
+        <mat-label>CWE Weakness Type</mat-label>
+        <mat-select formControlName="cweWeaknessType" (selectionChange)="typeChanged($event)">
+          <mat-option *ngFor="let item of weaknessType" [value]="item">
+            {{item}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field [appearance]="'standard'" style="margin-left: 10px;width:200px;">
+        <mat-label>CWE Weakness Category</mat-label>
+        <mat-select formControlName="cweWeaknessCategory">
+          <mat-option *ngFor="let item of weaknessCategory[typeIndex]" [value]="item">
+            {{item}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </form>
+    <div class="addNewWeaknessDialogButtons">
+      <button mat-raised-button color="primary" style="margin-right:17px;"
+        [disabled]="!weaknessForm.valid||editDesignShared.projectStatus?.milestoneView" (click)="confirmChanges()">Confirm</button>
+      <button mat-raised-button style="margin-right:65px;" (click)="onNoClick()">Cancel</button>
+    </div>
+  </div>
+</div>

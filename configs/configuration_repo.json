@@ -1,0 +1,26 @@
+{
+    "categories": [
+        {
+            "title": "## 🚀 Angular/HTML",
+            "labels": ["Angular/HTML"]
+        },
+        {
+            "title": "## 🐛 Backend",
+            "labels": ["backend"]
+        },
+        {
+            "title": "## 🧪 Bugs",
+            "labels": ["bug"]
+        },
+        {
+            "title": "## 💬 Help wanted",
+            "labels": ["help wanted"]
+        },
+        {
+            "title": "## 📦 Good First Issue",
+            "labels": ["good first issue"]
+        }
+    ],
+    "max_pull_requests": 1000,
+    "max_back_track_time_days": 1000
+}

@@ -1,0 +1,183 @@
+#DatabaseViewMain {
+    position: relative;
+    top: 50px;
+  }
+
+ .title {
+    margin-left: 50px;
+    display: inline-block;
+}
+
+.existingFeatureList {
+    margin-top: -15px;
+    margin-left: 35px;
+}
+.existingAssetList {
+    margin-left: 35px;
+}
+.existingModuleList {
+    margin-left: 35px;
+}
+.existingFeatureList mat-spinner {
+    margin-left: 14px;
+}
+.existingAssetList mat-spinner {
+    margin-left: 14px;
+}
+.existingModuleList mat-spinner {
+    margin-left: 14px;
+}
+.featureItemClass {
+    margin-bottom: 10px;
+}
+
+.featureInputForm {
+    width:400px;
+    margin-top: 10px;
+    margin-left: 50px;
+}
+
+.featureInputFormFirstCol {
+    width:400px;
+}
+.assetChipsForm {
+    margin-left: 50px;
+    margin-top: 10px;
+    width:60%;
+    height: auto;
+    /* white-space: nowrap;
+    overflow: overlay; */
+}
+.chipsScrollable{
+    overflow-y: overlay;
+    height: 38px;
+    overflow-x: hidden;
+}
+
+.chipsScrollable::-webkit-scrollbar-track {
+    background: transparent;
+}
+    
+.chipsScrollable::-webkit-scrollbar-thumb {
+    background-color: #3C98CF;
+}
+
+/* .scrollable::-webkit-scrollbar-track-piece:end {
+    background: transparent;
+    margin-bottom: 10px; 
+}
+
+.assetChscrollableipsForm::-webkit-scrollbar-track-piece:start {
+    background: transparent;
+    margin-top: 10px;
+} */
+.buttonClass {
+    margin-left: 50px;
+    /* margin-top: 50px; */
+}
+.updateAssetBtn {
+    margin-left:1em;
+}
+.existingAssetInputForm {
+    width:400px;
+    line-height:2.2;
+    margin-left: 1em;
+}
+.assetTypeInputForm {
+    width:300px;
+    line-height:2.2;
+    margin-left: 1em;
+}
+.assetSubTypeInputForm {
+    width:200px;
+    line-height:2.2;
+    margin-left: 1em;
+}
+.assetTagInputForm {
+    width:400px;
+    line-height:2;
+    margin-left: 1em;
+}
+.existingAssetInputFormFirstCol {
+    width:400px;
+    line-height:2.2;
+}
+.assetItemClass {
+    margin-bottom: 20px;
+}
+.featureModuleInputForm {
+    width:12%;
+    margin-top: 10px;
+}
+.featureImpactInputForm {
+    width:7%;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+.spinPosition {
+    bottom: 10px;
+}
+.featSpin {
+    bottom: 4px;
+    left: 14px;
+}
+.assetSpin {
+    bottom: 21px;
+    left: 15px;
+}
+
+.libraryChip ::ng-deep .mat-form-field-infix {
+    padding: 0 !important;
+    height:32px;
+    padding-top:0.5em !important;
+    padding-bottom:0.75em !important;
+}
+
+
+
+
+#cybersecurity-goal-page {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+#cybersecurity-goal-page .cybersecurity-page-table {
+    margin-top: 36px;
+    width: 100%;
+}
+
+#cybersecurity-goal-page .mat-column-serial {
+    width: 10% !important;
+}
+
+#cybersecurity-goal-page .mat-column-goal {
+    width: 80% !important;
+}
+
+#cybersecurity-goal-page .mat-column-action {
+    text-align: center;
+    width: 10% !important;
+}
+
+::ng-deep #cybersecurity-goal-page .mat-form-field {
+    width: 100%;
+    height: 100%;
+}
+
+::ng-deep #cybersecurity-goal-page .mat-column-goal .mat-form-field-wrapper {
+    padding: 0 !important;
+}
+
+::ng-deep .cybersecurity-dialog-container .mat-dialog-container {
+    overflow: hidden !important;
+}
+
+::ng-deep .cybersecurity-dialog-container .mat-dialog-content {
+    max-height: 32vh !important;
+}
+
+::ng-deep.goalLibDropdown {
+    width:200px;
+}

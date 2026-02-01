@@ -1,0 +1,8 @@
+#homeViewMain {
+  position: relative;
+  top: 50px;
+}
+
+mat-grid-tile {
+    background: lightblue;
+  }

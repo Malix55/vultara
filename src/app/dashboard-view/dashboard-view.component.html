@@ -1,0 +1,319 @@
+<div class="dashboard-container">
+  <!--menu button-->
+  <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()"
+    *ngIf="isHandset$ | async">
+    <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+  </button>
+
+  <!--sidenav-->
+  <mat-sidenav-container autosize>
+    <mat-sidenav #drawer class="dashboard-sidenav" [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+      [mode]="(isHandset$ | async) ? 'side' : 'side'" [opened]="(isHandset$ | async) === false">
+      <mat-nav-list class="dashboard-navlist-content">
+        <div *ngIf="this.currentUserProfile.role == 'Admin' || this.currentUserProfile.role == 'Super Admin' || this.currentUserProfile.role == 'Security Manager'">
+          <a mat-list-item class="dashboard-list-item" (click)="onChange('0');" [ngClass]="pageIndex === '0' ? 'selected' : ''">
+            <mat-icon>supervisor_account</mat-icon> Organization
+          </a>
+        </div>
+        <a mat-list-item class="dashboard-list-item" (click)="onChange('1');" [ngClass]="pageIndex === '1' ? 'selected' : ''">
+          <mat-icon>folder_open</mat-icon> Projects
+        </a>
+      </mat-nav-list>
+    </mat-sidenav>
+
+
+    <!--dashboard content-->
+    <mat-sidenav-content>
+      <div class="dashboard-title">
+        <h1>Metrics Dashboard</h1>
+      </div>
+      <!--organization content-->
+      <ng-container *ngIf="pageIndex == '0'">
+        <div class="main-content">
+          <mat-grid-list cols="3" rowHeight="350px">
+            <mat-grid-tile *ngFor="let card of organization_cards | async" [colspan]="card.cols" [rowspan]="card.rows">
+              <div *ngIf="card.title !='Organization Aggregated Risk'">
+                <mat-card class="dashboard-card">
+                  <mat-card-header>
+                    <mat-card-title>
+                      {{card.title}}
+                    </mat-card-title>
+                  </mat-card-header>
+                  <!--barhorizontal-->
+                  <mat-card-content #containerRef class="dashboard-card-content" *ngIf="card.title == 'Residual Risk'">
+                    <ngx-charts-bar-horizontal
+                      [view]="[containerRef.offsetWidth, 300]"
+                      [scheme]="chartColorScheme"
+                      [customColors]="customResidualRiskChartColors"
+                      [results]="residualRiskDataForAllProjects"
+                      [gradient]="gradientbar"
+                      [xAxis]="showXAxis"
+                      [yAxis]="showYAxis"
+                      [tooltipDisabled]="tooltipDisabled"
+                      [showXAxisLabel]="showXAxisLabel"
+                      [showYAxisLabel]="showYAxisLabel"
+                      [tooltipDisabled]="false">
+                    </ngx-charts-bar-horizontal>
+                  </mat-card-content>
+                  <mat-card-content #containerRef class="dashboard-card-content" *ngIf="card.title == 'Top 5 Threats'">
+                    <ngx-charts-bar-horizontal
+                      [view]="[containerRef.offsetWidth, 300]"
+                      [scheme]="chartColorScheme"
+                      [results]="topFiveThreats"
+                      [gradient]="gradientbar"
+                      [xAxis]="showXAxis"
+                      [yAxis]="showYAxis"
+                      [showXAxisLabel]="showXAxisLabel"
+                      [showYAxisLabel]="showYAxisLabel">
+                    </ngx-charts-bar-horizontal>
+                  </mat-card-content>
+                  <mat-card-content #containerRef class="dashboard-card-content" *ngIf="card.title == 'Vulnerability Distribution'">
+                    <ngx-charts-pie-chart
+                      [view]="[containerRef.offsetWidth, 300]"
+                      [customColors]="customVulnerabilityPieColors"
+                      [doughnut]="true"
+                      [results]="topFiveVulnerabilities"
+                      [gradient]="gradientbar"
+                      [xAxis]="showXAxis"
+                      [yAxis]="showYAxis">
+                    </ngx-charts-pie-chart>
+                  </mat-card-content>
+                  <mat-card-content #containerRef class="dashboard-card-content" *ngIf="card.title == 'Top 5 Weaknesses'">
+                    <ngx-charts-bar-horizontal
+                      [view]="[containerRef.offsetWidth, 300]"
+                      [scheme]="chartColorScheme"
+                      [results]="topFiveWeaknesses"
+                      [gradient]="gradientbar"
+                      [xAxis]="showXAxis"
+                      [yAxis]="showYAxis"
+                      [showXAxisLabel]="showXAxisLabel"
+                      [showYAxisLabel]="showYAxisLabel">
+                    </ngx-charts-bar-horizontal>
+                  </mat-card-content>
+                  <!--numbercard-->
+                  <mat-card-content class="dashboard-card-content" *ngIf="card.title == 'Cybersecurity Events and Incidents'">
+                    <ngx-charts-number-card
+                      [view]="numbercard_view"
+                      [results]="single_org_cybersecurityeventsandincidents"
+                      [scheme]="numberCardColorScheme"
+                      [textColor]="textColor">
+                    </ngx-charts-number-card>
+                  </mat-card-content>
+                  <mat-card-content class="dashboard-card-content" *ngIf="card.title == 'Projects Managed'">
+                    <ngx-charts-number-card
+                      [view]="numbercard_view"
+                      [results]= "[{ name: 'Projects Managed in VULTARA', value: projects.length}]"
+                      [scheme]="managedbyColorScheme"
+                      [textColor]="textColor">
+                    </ngx-charts-number-card>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+              <!--This ngIf statement is used to keep the right and left arrows on the line chart alone-->
+              <div *ngIf="card.title =='Organization Aggregated Risk'">
+                <mat-card class="dashboard-card">
+                  <mat-card-header>
+                    <mat-card-title>
+                      {{card.title}}
+                    </mat-card-title>
+                  </mat-card-header>
+                  <!--line-->
+                  <div class="dashboard-grid-container">
+                    <div class="chart-arrow-left">
+                        <button  (click)="loadPreviousOrgRiskScoreData()">
+                            <span class="material-icons">arrow_back_ios</span>
+                        </button>
+                    </div>
+                    <div class="chart-arrow-right">
+                      <button  (click)="loadMoreOrgRiskScoreData()">
+                        <span class="material-icons">arrow_forward_ios</span>
+                      </button>
+                    </div>
+                    <div class="chart-span">
+                      <mat-card-content #containerRef class="dashboard-card-content">
+                        <ngx-charts-line-chart
+                          [view]="[containerRef.offsetWidth, 320]"
+                          [scheme]="colorSchemeline"
+                          [showXAxisLabel]="showXAxisLabelline"
+                          [showYAxisLabel]="showYAxisLabelline"
+                          [xAxis]="xAxis"
+                          [yAxis]="yAxis"
+                          [yScaleMax]='100'
+                          [yScaleMin]='0'
+                          [xAxisLabel]="xAxisLabeline"
+                          [yAxisLabel]="yAxisLabelline"
+                          [timeline]="timeline"
+                          [results]="riskLevelChart">
+                        </ngx-charts-line-chart>
+                      </mat-card-content>
+                    </div>
+                  </div>
+                </mat-card>
+              </div>
+            </mat-grid-tile>
+          </mat-grid-list>
+        </div>
+      </ng-container>
+
+      <!--form for selector-->
+      <ng-container *ngIf="pageIndex == '1'">
+        <div class="main-content" >
+          <div class="row">
+            <div class="dashboard-form-content">
+              <mat-form-field appearance="outline">
+                <mat-label>Project Selection</mat-label>
+                <input type="dashboard-text" matInput [formControl]="projectCtrl" [matAutocomplete]="auto">
+                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onEnter($event.option.value)">
+                  <mat-option *ngFor="let project of filteredProjects | async" [value]="project">
+                    {{project}}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!--project content-->
+          <div class="dashboard-cards-layout">
+            <mat-grid-list cols="3" rowHeight="350px">
+              <mat-grid-tile *ngFor="let card of project_cards | async" [colspan]="card.cols" [rowspan]="card.rows">
+                <div *ngIf="card.title !='Project Aggregated Risk'">
+                  <mat-card class="dashboard-card">
+                    <mat-card-header>
+                      <mat-card-title>
+                        {{card.title}}
+                      </mat-card-title>
+                    </mat-card-header>
+                    <!--Gauge charts-->
+                    <mat-card-content class="dashboard-card-content" *ngIf="card.title == 'Threat Review Completion Rate'">
+                      <ngx-charts-gauge
+                      [view]="view"
+                      [min]='0'
+                      [max]='100'
+                      [scheme]="chartColorScheme"
+                      [results]="threatReviewCompletionRate"
+                      [units]="units"></ngx-charts-gauge>
+                    </mat-card-content>
+                    <mat-card-content class="dashboard-card-content" *ngIf="card.title == 'Risk Treatment Completion Rate'">
+                      <ngx-charts-gauge
+                      [view]="view"
+                      [min]='0'
+                      [max]='100'
+                      [scheme]="chartColorScheme"
+                      [results]="riskTreatmentCompletionRate"
+                      [units]="units"></ngx-charts-gauge>
+                    </mat-card-content>
+                    <mat-card-content class="dashboard-card-content" *ngIf="card.title == 'Threat Validation Completion Rate'">
+                      <ngx-charts-gauge
+                      [view]="view"
+                      [min]='0'
+                      [max]='100'
+                      [scheme]="chartColorScheme"
+                      [results]="threatValidationCompletionRate"
+                      [units]="units"></ngx-charts-gauge>
+                    </mat-card-content>
+                    <!--numbercard-->
+                    <mat-card-content #containerRef class="dashboard-card-content" *ngIf="card.title == 'Vulnerability Distribution'">
+                      <ngx-charts-pie-chart *ngIf="single_vulnerabilities[0]?.name!=='Vulnerabilities';else noVulnerability"
+                      [view]="[containerRef.offsetWidth, 300]"
+                      [customColors]="customVulnerabilityPieColors"
+                      [doughnut]="true"
+                      [results]="single_vulnerabilities"
+                      [xAxis]="showXAxis"
+                      [yAxis]="showYAxis">
+                    </ngx-charts-pie-chart>
+
+                    <ng-template #noVulnerability>
+                      <ngx-charts-number-card [view]="numbercard_view" [results]="single_vulnerabilities" [scheme]="numberCardColorScheme"
+                        [textColor]="textColor">
+                      </ngx-charts-number-card>
+                    </ng-template>
+
+                    </mat-card-content>
+                    <mat-card-content class="dashboard-card-content" *ngIf="card.title == 'Cybersecurity Events and Incidents' && (single_cybersecurityeventsandincidents.length != 0)">
+                      <ngx-charts-number-card
+                      [view]="numbercard_view"
+                      [results]="single_cybersecurityeventsandincidents"
+                      [scheme]="numberCardColorScheme"
+                      [textColor]="textColor">
+                      </ngx-charts-number-card>
+                    </mat-card-content>
+                    <!--barhorizontal-->
+                    <mat-card-content #containerRef class="dashboard-card-content" *ngIf="card.title == 'Residual Risk' && (residualRiskData.length != 0)">
+                      <ngx-charts-bar-horizontal
+                      [view]="[containerRef.offsetWidth, 300]"
+                      [scheme]="chartColorScheme"
+                      [customColors]="customResidualRiskChartColors"
+                      [results]="residualRiskData"
+                      [gradient]="gradientbar"
+                      [xAxis]="showXAxis"
+                      [yAxis]="showYAxis"
+                      [tooltipDisabled]="tooltipDisabled"
+                      [showXAxisLabel]="showXAxisLabel"
+                      [showYAxisLabel]="showYAxisLabel"
+                      [tooltipDisabled]="false">
+                      </ngx-charts-bar-horizontal>
+                    </mat-card-content>
+                    <mat-card-content #containerRef class="dashboard-card-content" *ngIf="card.title == 'Top 5 Weaknesses' && (topFiveWeaknessesForProject.length != 0)">
+                      <ngx-charts-bar-horizontal
+                      [view]="[containerRef.offsetWidth, 300]"
+                      [scheme]="chartColorScheme"
+                      [results]="topFiveWeaknessesForProject"
+                      [gradient]="gradientbar"
+                      [xAxis]="showXAxis"
+                      [yAxis]="showYAxis"
+                      [showXAxisLabel]="showXAxisLabel"
+                      [showYAxisLabel]="showYAxisLabel">
+                      </ngx-charts-bar-horizontal>
+                    </mat-card-content>
+                  </mat-card>
+                </div>
+                <!--This ngIf statement is used to keep the right and left arrows on the line chart alone-->
+                <div *ngIf="card.title =='Project Aggregated Risk'">
+                  <mat-card class="dashboard-card">
+                    <mat-card-header>
+                      <mat-card-title>
+                        {{card.title}}
+                      </mat-card-title>
+                    </mat-card-header>
+                    <!--line-->
+                    <div class="dashboard-grid-container">
+                      <div class="chart-arrow-left">
+                        <button  (click)="loadPreviousProjRiskScoreData()">
+                            <span class="material-icons">arrow_back_ios</span>
+                        </button>
+                      </div>
+                      <div class="chart-arrow-right">
+                        <button  (click)="loadMoreProjRiskScoreData()">
+                          <span class="material-icons">arrow_forward_ios</span>
+                        </button>
+                      </div>
+                      <div class="chart-span">
+                        <mat-card-content #containerRef class="dashboard-card-content">
+                          <ngx-charts-line-chart
+                          [view]="[containerRef.offsetWidth, 320]"
+                          [scheme]="colorSchemeline"
+                          [showXAxisLabel]="showXAxisLabelline"
+                          [showYAxisLabel]="showYAxisLabelline"
+                          [xAxis]="xAxis"
+                          [yAxis]="yAxis"
+                          [yScaleMax]='100'
+                          [yScaleMin]='0'
+                          [xAxisLabel]="xAxisLabeline"
+                          [yAxisLabel]="yAxisLabelline"
+                          [timeline]="timeline"
+                          [results]="projectRiskLevelChart">
+                          </ngx-charts-line-chart>
+                        </mat-card-content>
+                      </div>
+                    </div>
+                  </mat-card>
+                </div>
+              </mat-grid-tile>
+            </mat-grid-list>
+          </div>
+        </div>
+      </ng-container>
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

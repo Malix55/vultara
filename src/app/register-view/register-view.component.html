@@ -1,0 +1,47 @@
+<mat-toolbar color="primary">
+    <span id="logo" width="130px">VULTARA</span>
+</mat-toolbar>
+<div id="registerViewMain">
+    <div class="mat-card-div">
+        <mat-card class="registerCardClass">
+          <form id="registerForm" (ngSubmit)="registerConfirm()">
+            <mat-card-header>
+                <mat-card-title>
+                    Register a new user
+                </mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <mat-form-field class="registerInputForm">
+                    <mat-label>User Name</mat-label>
+                    <input matInput [(ngModel)]="registerFields.username" name="username">
+                </mat-form-field>
+                <br>
+                <mat-form-field class="registerInputForm">
+                    <mat-label>Password</mat-label>
+                    <input matInput type="password" [(ngModel)]="registerFields.password" name="password">
+                </mat-form-field>
+                <br>
+                <mat-form-field class="registerInputForm">
+                    <mat-label>Confirm Password</mat-label>
+                    <input matInput type="password" [(ngModel)]="confirmPassword" name="confirmPassword">
+                </mat-form-field>
+                <br>
+                <mat-form-field class="registerInputForm">
+                    <mat-label>User Role</mat-label>
+                    <mat-select [(ngModel)]="registerFields.role" name="role">
+                        <mat-option *ngFor="let selectedRole of userRoles" [value]="selectedRole">
+                            {{selectedRole}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </mat-card-content>
+            <mat-card-actions>
+                <button id="registerBtn" name="registerBtn" mat-raised-button
+                (click)="registerConfirm()"
+                color="primary">Register</button>
+            </mat-card-actions>
+          </form>
+        </mat-card>
+    </div>
+</div>
+

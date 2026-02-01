@@ -1,0 +1,45 @@
+<div mat-dialog-title class="cybersecurity-goal-form-header">
+  {{data.mode}} {{data.mode=='Add'?'New':'Existing'}} {{data.type|titlecase}}
+    <span (click)="closeCybersecurityGoalDialog($event)" class="cybersecurity-goal-close">
+        <mat-icon aria-hidden="false" aria-label="Close icon">close</mat-icon>
+    </span>
+</div>
+<mat-dialog-content>
+    <div class="cybersecurity-goal-form">
+      <mat-form-field>
+        <mat-select [(value)]="loadedGoal" [compareWith]="compareObjects" (selectionChange)="onGoalChange($event)">
+          <mat-option *ngFor="let goal of goals" [value]="goal">
+            {{ goal.content | textLength : 50 }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <textarea *ngIf="!libSearch;else search" class="cybersecurity-goal-information" name="" id="" cols="30" rows="10" [(ngModel)]="data.content">
+      </textarea>
+      <div class="cybersecurity-goal-form-actions">
+        <button [disabled]="_editDesignShared.projectStatus?.milestoneView" mat-stroked-button color="warn" *ngIf="data.goalId === '0' || libSearch || loadedGoal | removeDisable:data.goals:data.threatId" (click)="removeGoal()">Remove</button>
+        <button [ngStyle]="!(data.content | whiteSpaceValidation) && {'color':'white'}" mat-stroked-button color="primary" [disabled]="(data.content | trimText) === ''||_editDesignShared.projectStatus?.milestoneView" (click)="confirmGoal()">
+            Confirm
+        </button>
+      </div>
+    </div>
+
+
+
+
+    <ng-template #search>
+      <mat-form-field>
+        <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1"
+          cdkAutosizeMaxRows="8" [formControl]="searchValue" [matAutocomplete]="auto">
+        </textarea>
+        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayGoal">
+          <mat-option *ngIf="isLoadng">Loading...</mat-option>
+          <ng-container *ngFor="let goal of filteredGoals | async">
+            <mat-option *ngIf="!isLoadng" [value]="goal" (onSelectionChange)="onGoalChange($event)">
+              {{ goal.content | textLength : 50 }}
+            </mat-option>
+          </ng-container>
+        </mat-autocomplete>
+      </mat-form-field>
+    </ng-template>
+
+</mat-dialog-content>

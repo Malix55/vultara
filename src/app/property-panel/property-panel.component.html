@@ -1,0 +1,718 @@
+<ng-container [ngSwitch]="activeComponentType | activeComponentType : activeComponentId">
+    <ng-container *ngSwitchCase="ActiveComponentTypeShortName.Micro">
+        <div id="microPropertyPanel" class="propertyPanel">
+            <mat-tab-group #propertyPanelTab (selectedTabChange)="microPropertyPanelTabClick($event)">
+                <mat-tab label="Component Spec">
+                    <ng-template matTabContent>
+                        <mat-card class="sidePanelCard">
+                            <mat-card-header>
+                                <mat-card-title>Microcontroller Spec</mat-card-title>
+                            </mat-card-header>
+                            <mat-form-field class="inputForm">
+                                <mat-label>Give this microcontroller a unique name...</mat-label>
+                                <input matInput [ngModel]="componentNickName"
+                                    (ngModelChange)="microNickNameChange($event)">
+                            </mat-form-field>
+                            <br>
+                            <mat-form-field class="inputForm" *ngIf="sidePanelOpened">
+                                <mat-label>Microcontroller model...</mat-label>
+                                <input type="text" matInput id="matSelectSelectedMicro" [(ngModel)]="selectedMicro"
+                                    [formControl]="debounceSearch" [matAutocomplete]="auto">
+                                <mat-autocomplete #auto="matAutocomplete">
+                                    <ng-container *ngFor="let  group of microGroups ">
+                                        <mat-option *ngFor="let model of group.model"
+                                            (onSelectionChange)="microSelectionChange(group, model)" [value]="model">
+                                            {{group.manufacturer}} {{model}}
+                                        </mat-option>
+                                    </ng-container>
+                                </mat-autocomplete>
+                            </mat-form-field>
+                            <br>
+                            <mat-form-field class="sidePanelChips" style="margin-top: 20px">
+                                <mat-chip-list #microHsmFeatureChipList aria-label="HSM Features">
+                                    <mat-chip *ngFor="let hsmFeature of selectedHsmFeatures" [selectable]="selectable"
+                                        [removable]="removable" (removed)="removeHsmFeature(hsmFeature)"
+                                        id="microHsmFeaturesChipComponent">
+                                        {{hsmFeature}}
+                                        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                                    </mat-chip>
+                                    <input id="microHsmFeatureInput"
+                                        placeholder="The selected micro has these hardware security features..."
+                                        [matChipInputFor]="microHsmFeatureChipList"
+                                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                        [matChipInputAddOnBlur]="addOnBlur" readonly="readOnlyFlag">
+                                    <!-- (matChipInputTokenEnd)="addHsmFeature($event)"> -->
+                                </mat-chip-list>
+                            </mat-form-field>
+                        </mat-card>
+
+                        <mat-card class="sidePanelCard">
+                            <mat-card-header>
+                                <mat-card-title>Features Settings</mat-card-title>
+                            </mat-card-header>
+                            <mat-form-field class="inputForm">
+                                <mat-label>Part of module...</mat-label>
+                                <mat-select [ngModel]="selectedModule"
+                                    (ngModelChange)="selectedModuleUpdateForMicro($event)">
+                                    <mat-optgroup *ngFor="let group of controlUnitGroups" [label]="group.category"
+                                        [disabled]="group.disabled">
+                                        <mat-option *ngFor="let selectedModule of group.model" [value]="selectedModule">
+                                            {{selectedModule}}
+                                        </mat-option>
+                                    </mat-optgroup>
+                                </mat-select>
+                            </mat-form-field>
+                            <br>
+                            <mat-form-field class="sidePanelChips">
+                                <mat-chip-list #microFeatureChipList aria-label="Features">
+                                    <mat-chip *ngFor="let feature of microFeatures; let i=index"
+                                        [selected]="microFeatureSelected[i]" (click)="microFeatureChipListClick(i)"
+                                        [removable]="removable" (removed)="removeFeature(i)"
+                                        id="microFeaturesChipComponent">
+                                        {{feature}}
+                                        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                                    </mat-chip>
+                                    <input id="microFeatureInput" placeholder="Features..."
+                                        [matChipInputFor]="microFeatureChipList"
+                                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                        [matChipInputAddOnBlur]="addOnBlur" readonly="readOnlyFlag">
+                                    <!-- (matChipInputTokenEnd)="addFeature($event)"> -->
+                                </mat-chip-list>
+                            </mat-form-field>
+                            <br>
+                            <button id="featureSubmitBtn" mat-raised-button (click)="featuresUpdate()"
+                                [disabled]="confirmFeatureBtnDisable" color="primary">{{confirmFeatureBtnTxt}}</button>
+                            <button id="featureEditBtn" mat-raised-button style="margin-left: 5px;"
+                                (click)="microFeatureChainEdit()" [disabled]="microFeatureEditDisable"
+                                color="primary">Feature
+                                Chain - beta</button>
+                            <button id="featureSubmitBtn" mat-raised-button style="margin-left: 5px;"
+                                (click)="microFeatureDefault()" [disabled]="!confirmFeatureBtnDisable"
+                                color="primary">Default</button>
+                            <!-- <p class="sidePanelMatFormTitle">{{microFeatureUpdateStatus}}</p> -->
+                        </mat-card>
+
+                        <mat-card class="sidePanelCard">
+                            <mat-card-header>
+                                <mat-card-title>Software BOM</mat-card-title>
+                            </mat-card-header>
+                            <mat-chip-list>
+                                <mat-chip *ngFor="let sbom of sbom; let i = index" (click)="updateSbom(sbom,i)">
+                                    {{sbom?.part}}:{{sbom?.vendor}}:{{sbom?.product}}</mat-chip>
+                            </mat-chip-list>
+                            <button mat-raised-button style="margin-right: 5px;margin-top: 10px;" (click)="addNewBOM()"
+                                color="primary">Add New</button>
+                        </mat-card>
+
+                        <!-- <mat-card class="sidePanelCard">
+                            <mat-card-header>
+                                <mat-card-title >Software BOM in this micro</mat-card-title>
+                            </mat-card-header>
+                            <mat-form-field class="sidePanelChips">
+                                <mat-chip-list #microBomChipList aria-label="BOM">
+                                    <mat-chip *ngFor="let bom of boms;let i=index" [selectable]="selectable"
+                                            [removable]="removableSBOM" (removed)="removeBom(i)"
+                                            id="softwareBomChipComponent">
+                                    {{bom}}
+                                    <mat-icon matChipRemove *ngIf="removableSBOM">cancel</mat-icon>
+                                    </mat-chip>
+                                    <input id="microBomInput" placeholder="New component..."
+                                        [matChipInputFor]="microBomChipList"
+                                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                        [matChipInputAddOnBlur]="addOnBlur"
+                                        (matChipInputTokenEnd)="addBom($event)">
+                                </mat-chip-list>
+                            </mat-form-field>
+                            <br>
+                            <button id="bomSubmitBtn" mat-raised-button
+                            (click)="bomUpdate()"
+                            color="primary">Confirm BOM</button>
+                            <p class="sidePanelMatFormTitle">{{bomUpdateStatus}}</p>
+                        </mat-card> -->
+                        <button id="microRemoveBtn" class="sidePanelCard" mat-raised-button
+                            (click)="deleteComponent(activeComponentType)" color="warn">Remove Micro</button>
+                    </ng-template>
+                </mat-tab>
+
+                <mat-tab label="Security Settings">
+                    <ng-template matTabContent>
+                        <mat-card class="sidePanelCard">
+                            <mat-card-header>
+                                <mat-card-title>Assumptions</mat-card-title>
+                            </mat-card-header>
+                            <mat-checkbox id="microPhysicalAccessCheckbox" [checked]="microPhysicalAccess"
+                                matTooltip="To consider JTAG or other physical access, please add a line to the micro. This setting assumes this micro was compromised out-of-the-box."
+                                (change)="microPhysicalAccessChange()">This micro can be a point-of-entry for attacks.
+                            </mat-checkbox><br>
+                            <mat-checkbox [disabled]="!microPhysicalAccess">Side channel attack considered
+                            </mat-checkbox>
+                        </mat-card>
+                        <mat-card class="sidePanelCard">
+                            <mat-card-header>
+                                <mat-card-title>Assets in the micro</mat-card-title>
+                            </mat-card-header>
+                            <mat-form-field id="microAssetInput">
+                                <input type="text" placeholder="New asset..." matInput [(ngModel)]="microAssetInput"
+                                    (ngModelChange)="microAssetText($event)" [matAutocomplete]="microAssetAutoComplete">
+                                <mat-spinner *ngIf="searchedAssetsLoading" matSuffix diameter="20"></mat-spinner>
+                                <mat-autocomplete autoActiveFirstOption #microAssetAutoComplete="matAutocomplete">
+                                    <mat-option *ngFor="let asset of searchedAssets"
+                                        (click)="microAssetChipSelection(asset.name, asset._id, true)">
+                                        {{asset.name}}
+                                    </mat-option>
+                                </mat-autocomplete>
+                            </mat-form-field>
+                            <mat-form-field class="sidePanelChips">
+                                <mat-chip-list #microAssetChipList aria-label="MicroAsset">
+                                    <mat-chip *ngFor="let microAsset of microAssets; let assetIndex=index"
+                                        [selectable]="selectable" [removable]="removableAsset"
+                                        (click)="microAssetChipSelection(microAsset, microAssetsId[assetIndex], false)"
+                                        (removed)="removeMicroAsset(assetIndex)" id="microAssetsChipComponent">
+                                        {{microAsset}}
+                                        <mat-icon matChipRemove *ngIf="removableAsset">cancel</mat-icon>
+                                    </mat-chip>
+                                </mat-chip-list>
+                            </mat-form-field>
+                        </mat-card>
+                    </ng-template>
+                </mat-tab>
+
+                <mat-tab label="Modeling Results">
+                    <ng-template matTabContent>
+                        <app-modeling-results [threats]="threatList | modelingThreats : activeComponentId"
+                            [activeComponentId]="activeComponentId" [systemConfig]="systemConfig"
+                            (highlightedThreat)="showAttackPath($event)">
+                        </app-modeling-results>
+                    </ng-template>
+                </mat-tab>
+            </mat-tab-group>
+        </div>
+
+    </ng-container>
+    <ng-container *ngSwitchCase="ActiveComponentTypeShortName.ControlUnit">
+        <div id="controlUnitPropertyPanel" class="propertyPanel">
+            <mat-tab-group #propertyPanelTab (selectedTabChange)="controlUnitPropertyPanelTabClick($event)">
+                <mat-tab label="Component Spec">
+                    <ng-template matTabContent>
+                        <mat-card class="sidePanelCard">
+                            <mat-card-header>
+                                <mat-card-title>Module Spec</mat-card-title>
+                            </mat-card-header>
+                            <mat-form-field class="inputForm">
+                                <mat-label>Give this module a unique name...</mat-label>
+                                <input matInput [ngModel]="componentNickName" [value]="componentNickName"
+                                    (ngModelChange)="controlUnitNickNameChange($event)">
+                            </mat-form-field>
+                            <br>
+                            <mat-form-field class="inputForm" *ngIf="selectedControlUnit != 'Actor'">
+                                <mat-label>Module</mat-label>
+                                <mat-select [ngModel]="selectedControlUnit"
+                                    (ngModelChange)="selectedModuleUpdateForControlUnit($event)">
+                                    <mat-optgroup *ngFor="let group of controlUnitGroups" [label]="group.category"
+                                        [disabled]="group.disabled">
+                                        <mat-option *ngFor="let selectedControlUnit of group.model"
+                                            [value]="selectedControlUnit">
+                                            {{selectedControlUnit}}
+                                        </mat-option>
+                                    </mat-optgroup>
+                                </mat-select>
+                            </mat-form-field>
+                            <br>
+                            <mat-form-field class="sidePanelChips" style="margin-top: 20px"
+                                *ngIf="selectedControlUnit != 'Actor'">
+                                <mat-chip-list #controlUnitFeatureChipList aria-label="Module Features">
+                                    <mat-chip
+                                        *ngFor="let controlUnitFeature of selectedControlUnitFeatures; let featureIndex=index"
+                                        [selected]="controlUnitFeatureSelected[featureIndex]"
+                                        (click)="controlUnitFeatureChipListClick(featureIndex)" [removable]="removable"
+                                        (removed)="removeControlUnitFeature(featureIndex)"
+                                        id="controlUnitFeaturesChipComponent">
+                                        {{controlUnitFeature}}
+                                        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                                    </mat-chip>
+                                    <input placeholder="The selected module has these features..."
+                                        [matChipInputFor]="controlUnitFeatureChipList"
+                                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                        [matChipInputAddOnBlur]="addOnBlur" readonly="readOnlyFlag">
+                                    <!-- (matChipInputTokenEnd)="addControlUnitFeature($event)"> -->
+                                </mat-chip-list>
+                            </mat-form-field>
+                            <br>
+                            <button id="controlUnitSubmitBtn" mat-raised-button (click)="controlUnitSubmit()"
+                                *ngIf="selectedControlUnit != 'Actor'" [disabled]="confirmFeatureBtnDisable"
+                                color="primary">{{confirmFeatureBtnTxt}}</button>
+                            <button id="featureEditBtn" mat-raised-button (click)="controlUnitFeatureChainEdit()"
+                                [disabled]="controlUnitFeatureEditDisable" *ngIf="selectedControlUnit != 'Actor'"
+                                color="primary" style="margin-left: 5px;">Feature Chain - beta</button>
+                            <button id="controlUnitSubmitBtn" mat-raised-button style="margin-left: 5px;"
+                                *ngIf="selectedControlUnit != 'Actor'" (click)="controlUnitFeatureDefault()"
+                                [disabled]="!confirmFeatureBtnDisable" color="primary">Default</button>
+                            <br>
+                            <!-- <p class="sidePanelMatFormTitle">{{moduleFeatureUpdateStatus}}</p> -->
+                        </mat-card>
+                        <mat-card class="sidePanelCard" *ngIf="selectedControlUnit != 'Actor'">
+                            <mat-card-header>
+                                <mat-card-title>Software BOM</mat-card-title>
+                            </mat-card-header>
+                            <mat-chip-list>
+                                <mat-chip *ngFor="let sbom of sbom; let i = index" (click)="updateSbom(sbom,i)">
+                                    {{sbom?.part}}:{{sbom?.vendor}}:{{sbom?.product}}</mat-chip>
+                            </mat-chip-list>
+                            <button mat-raised-button style="margin-right: 5px;margin-top: 10px;" (click)="addNewBOM()"
+                                color="primary">Add New</button>
+                        </mat-card>
+                        <button id="controlUnitRemoveBtn" class="sidePanelCard" mat-raised-button
+                            (click)="deleteComponent(activeComponentType)" color="warn">Remove Module</button>
+                    </ng-template>
+                </mat-tab>
+
+                <mat-tab label="Security Settings" *ngIf="selectedControlUnit != 'Actor'">
+                    <ng-template matTabContent>
+                        <mat-card class="sidePanelCard">
+                            <mat-card-header>
+                                <mat-card-title>Assumptions</mat-card-title>
+                            </mat-card-header>
+                            <mat-checkbox [checked]="controlUnitAttackSurface"
+                                (change)="controlUnitAttackSurfaceChange()"
+                                matTooltip="To consider JTAG or other physical access, please add a line. This setting assumes this component was compromised out-of-the-box.">
+                                This module can be a point-of-entry for attacks</mat-checkbox><br>
+                            <mat-checkbox [disabled]="!controlUnitAttackSurface">Side channel attack considered
+                            </mat-checkbox>
+                        </mat-card>
+                        <mat-card class="sidePanelCard">
+                            <mat-card-header>
+                                <mat-card-title>Assets in the module</mat-card-title>
+                            </mat-card-header>
+                            <mat-card-content>
+                                <mat-form-field id="controlUnitAssetInput">
+                                    <input type="text" placeholder="New asset..." matInput
+                                        [(ngModel)]="controlUnitAssetInput"
+                                        (ngModelChange)="controlUnitAssetText($event)"
+                                        [matAutocomplete]="controlUnitAssetAutoComplete">
+                                    <mat-spinner *ngIf="searchedAssetsLoading" matSuffix diameter="20"></mat-spinner>
+                                    <mat-autocomplete autoActiveFirstOption
+                                        #controlUnitAssetAutoComplete="matAutocomplete">
+                                        <mat-option *ngFor="let asset of searchedAssets"
+                                            (click)="controlUnitAssetChipSelection(asset.name, asset._id, true)">
+                                            {{asset.name}}
+                                        </mat-option>
+                                    </mat-autocomplete>
+                                </mat-form-field>
+                                <mat-form-field class="sidePanelChips">
+                                    <mat-chip-list #controlUnitAssetChipList aria-label="ControlUnitAsset">
+                                        <mat-chip
+                                            *ngFor="let controlUnitAsset of controlUnitAssets; let assetIndex=index"
+                                            [selectable]="selectable" [removable]="removableAsset"
+                                            (click)="controlUnitAssetChipSelection(controlUnitAsset, controlUnitAssetsId[assetIndex], false)"
+                                            (removed)="removeControlUnitAsset(assetIndex)">
+                                            {{controlUnitAsset}}
+                                            <mat-icon matChipRemove *ngIf="removableAsset">cancel</mat-icon>
+                                        </mat-chip>
+                                        <!-- (matChipInputTokenEnd)="addControlUnitAsset($event)"> -->
+                                    </mat-chip-list>
+                                </mat-form-field>
+                            </mat-card-content>
+                        </mat-card>
+                    </ng-template>
+                </mat-tab>
+
+                <mat-tab label="Modeling Results" *ngIf="selectedControlUnit != 'Actor'">
+                    <ng-template matTabContent>
+                        <app-modeling-results [threats]="threatList | modelingThreats : activeComponentId"
+                            [activeComponentId]="activeComponentId" [systemConfig]="systemConfig"
+                            (highlightedThreat)="showAttackPath($event)">
+                        </app-modeling-results>
+                    </ng-template>
+                </mat-tab>
+            </mat-tab-group>
+        </div>
+    </ng-container>
+    <ng-container *ngSwitchCase="ActiveComponentTypeShortName.CommLine">
+        <div id="commLinePropertyPanel">
+            <mat-tab-group #propertyPanelTab (selectedTabChange)="commLinePropertyPanelTabClick($event)">
+                <mat-tab label="Component Spec">
+                    <ng-template matTabContent>
+                        <mat-card class="sidePanelCard">
+                            <mat-card-header>
+                                <mat-card-title>Communication Line Spec</mat-card-title>
+                            </mat-card-header>
+                            <mat-form-field class="inputForm">
+                                <mat-label>Give this line a unique name...</mat-label>
+                                <input matInput [ngModel]="componentNickName" [value]="componentNickName"
+                                    (ngModelChange)="commLineNickNameChange($event)">
+                            </mat-form-field>
+                            <br>
+                            <mat-form-field class="inputForm">
+                                <mat-label>Transmission Media (Required)</mat-label>
+                                <mat-select [ngModel]="transmissionMedia"
+                                    (ngModelChange)="transmissionMediaChange($event)">
+                                    <mat-option *ngFor="let selectedTransmissionMedia of transmissionMediaName"
+                                        [value]="selectedTransmissionMedia.value">
+                                        {{selectedTransmissionMedia.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <br>
+                            <mat-form-field class="inputForm">
+                                <mat-label>Base protocol (Required)</mat-label>
+                                <mat-select [ngModel]="selectedCommLine"
+                                    (ngModelChange)="commLineBaseProtocolChange($event)"
+                                    [disabled]="this.transmissionMedia == ''">
+                                    <mat-option *ngFor="let selectedCommLine of commLineModels"
+                                        [value]="selectedCommLine">
+                                        {{selectedCommLine}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <br>
+                            <mat-form-field class="sidePanelChips" style="margin-top: 20px">
+                                <mat-chip-list #commLineAppProtocolChipList
+                                    aria-label="Communication Application Protocols">
+                                    <mat-chip *ngFor="let commLineAppProtocol of commLineAppProtocols"
+                                        [selectable]="selectable" [removable]="removable"
+                                        (removed)="removeCommLineAppProtocol(commLineAppProtocol)">
+                                        {{commLineAppProtocol}}
+                                        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                                    </mat-chip>
+                                    <input placeholder="The selected line has these application protocols..."
+                                        [matChipInputFor]="commLineAppProtocolChipList"
+                                        [matAutocomplete]="applicationprotocols" [matAutocompletePosition]="'below'"
+                                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes" #applicationProtocolsInput
+                                        (input)="changeApplicationProtocolName($event)"
+                                        [matChipInputAddOnBlur]="addOnBlur">
+                                    <mat-autocomplete #applicationprotocols="matAutocomplete"
+                                        (optionSelected)="onEnterApplicationProtocol($event.option.value)">
+                                        <mat-option
+                                            *ngFor="let protocol of (applicationProtocols | protocols : commLineAppProtocols : applicationProtocolsInput.value)"
+                                            [value]="protocol.name">
+                                            {{protocol.name}}
+                                        </mat-option>
+                                    </mat-autocomplete>
+                                </mat-chip-list>
+                            </mat-form-field>
+                            <mat-form-field class="sidePanelChips" style="margin-top: 20px">
+                                <mat-chip-list #commLineSecureProtocolChipList
+                                    aria-label="Communication Security Protocols">
+                                    <mat-chip *ngFor="let commLineSecureProtocol of commLineSecureProtocols"
+                                        [selectable]="selectable" [removable]="removable"
+                                        (removed)="removeCommLineSecureProtocol(commLineSecureProtocol)">
+                                        {{commLineSecureProtocol}}
+                                        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                                    </mat-chip>
+                                    <input placeholder="The selected line has these security protocols..."
+                                        [matChipInputFor]="commLineSecureProtocolChipList"
+                                        [matAutocomplete]="securityprotocols" [matAutocompletePosition]="'below'"
+                                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes" #securityProtocolsInput
+                                        (input)="changeSecurityProtocolName($event)"
+                                        [matChipInputAddOnBlur]="addOnBlur">
+                                    <mat-autocomplete #securityprotocols="matAutocomplete"
+                                        (optionSelected)="onEnterSecurityProtocol($event.option.value)">
+                                        <mat-option
+                                            *ngFor="let protocol of (securityProtocols | protocols : commLineSecureProtocols : securityProtocolsInput.value)"
+                                            [value]="protocol.name">
+                                            {{protocol.name}}
+                                        </mat-option>
+                                    </mat-autocomplete>
+                                    <!-- (matChipInputTokenEnd)="addCommLineSecureProtocol($event)"> -->
+                                </mat-chip-list>
+                            </mat-form-field>
+                            <br>
+                            <mat-checkbox [(ngModel)]="textProtocolDisplay"
+                                (ngModelChange)="textProtocolDisplayChange($event)">
+                                Display protocol text
+                            </mat-checkbox>
+                        </mat-card>
+
+                        <mat-card class="sidePanelCard">
+                            <mat-card-header>
+                                <mat-card-title>Accessible Features</mat-card-title>
+                            </mat-card-header>
+                            <mat-card-content>
+                                <div
+                                    *ngFor="let lineConnectedComponentFeature of lineConnectedComponentFeatures; let componentIndex = index">
+                                    <h3>{{ lineConnectedComponentFeature.nickName }}</h3>
+                                    <section
+                                        *ngFor="let lineConnectedFeature of lineConnectedComponentFeature.featureData; let featureIndex = index">
+                                        <div class="accessibleFeatureContent">
+                                            <mat-checkbox [(ngModel)]="lineConnectedFeature.note"
+                                                [checked]="lineConnectedFeature.note"
+                                                [indeterminate]="featureAssets | assetsIndeterminate : lineConnectedComponentFeature.id : lineConnectedFeature.id"
+                                                (ngModelChange)="featureCheckboxEvent(lineConnectedComponentFeature.id, lineConnectedFeature.name, lineConnectedFeature.id, $event, featureIndex, componentIndex)"
+                                                [disabled]="!lineConnectedFeature.featureConfirmed">{{
+                                                lineConnectedFeature.name
+                                                }}</mat-checkbox>
+                                            <span class="featureDirection">
+                                                <ng-container
+                                                    *ngIf="!featureDirection[componentIndex + '' + featureIndex]">
+                                                    <mat-icon aria-hidden="false" aria-label="Expand More"
+                                                        (click)="featureDirection = {}; featureDirection[componentIndex + '' + featureIndex] = !featureDirection[componentIndex + '' + featureIndex]">
+                                                        arrow_drop_down</mat-icon>
+                                                </ng-container>
+                                                <ng-container
+                                                    *ngIf="featureDirection[componentIndex + '' + featureIndex]">
+                                                    <mat-icon aria-hidden="false" aria-label="Expand Less"
+                                                        (click)="featureDirection[componentIndex + '' + featureIndex] = !featureDirection[componentIndex + '' + featureIndex]">
+                                                        arrow_drop_up</mat-icon>
+                                                </ng-container>
+                                            </span>
+                                        </div>
+                                        <ng-container *ngIf="featureDirection[componentIndex + '' + featureIndex]">
+                                            <div class="featureAssets"
+                                                *ngFor="let asset of featureAssets | featureAssets : lineConnectedComponentFeature.id : lineConnectedFeature.id as assets; let assetIndex = index">
+                                                <mat-checkbox [(ngModel)]="asset.checked"
+                                                    (ngModelChange)="changeFeatureAssetSelection($event, lineConnectedComponentFeature.id, lineConnectedFeature.id, componentIndex, featureIndex, assetIndex)">
+                                                    {{ asset.asset }}
+                                                </mat-checkbox>
+                                                <mat-button-toggle-group name="dataInTransit" [value]="asset.accessType"
+                                                    (change)="assetAccessTypeChangeEvent($event.value, lineConnectedComponentFeature.id, asset.position, componentIndex, featureIndex, assetIndex)"
+                                                    aria-label="Asset Access Type"
+                                                    *ngIf="asset.assetType == 'dataInTransit'" multiple>
+                                                    <mat-button-toggle value="S">Send</mat-button-toggle>
+                                                    <mat-button-toggle value="Rec">Receive</mat-button-toggle>
+                                                </mat-button-toggle-group>
+                                                <mat-button-toggle-group name="dataAtRest" [value]="asset.accessType"
+                                                    (change)="assetAccessTypeChangeEvent($event.value, lineConnectedComponentFeature.id, asset.position, componentIndex, featureIndex, assetIndex)"
+                                                    aria-label="Asset Access Type"
+                                                    *ngIf="asset.assetType == 'dataAtRest'" multiple>
+                                                    <mat-button-toggle value="C">C</mat-button-toggle>
+                                                    <mat-button-toggle value="R">R</mat-button-toggle>
+                                                    <mat-button-toggle value="U">U</mat-button-toggle>
+                                                    <mat-button-toggle value="D">D</mat-button-toggle>
+                                                </mat-button-toggle-group>
+                                            </div>
+                                        </ng-container>
+                                    </section>
+                                </div>
+                            </mat-card-content>
+                        </mat-card>
+
+                        <button id="commLineRemoveBtn" class="sidePanelCard" mat-raised-button
+                            (click)="deleteComponent(activeComponentType)" color="warn">Remove Communication
+                            Line</button>
+                    </ng-template>
+                </mat-tab>
+
+                <mat-tab label="Security Settings">
+                    <ng-template matTabContent>
+                        <mat-card class="sidePanelCard">
+                            <mat-card-header>
+                                <mat-card-title>Assumptions</mat-card-title>
+                            </mat-card-header>
+                            <mat-checkbox [checked]="commLineAttackSurface" (change)="commLineAttackSurfaceChange()">
+                                This line
+                                can be a point-of-entry for attacks</mat-checkbox>
+                        </mat-card>
+                        <!-- <mat-card class="sidePanelCard">
+                        <mat-card-header>
+                            <mat-card-title >Assets in transit</mat-card-title>
+                        </mat-card-header>
+                        <mat-form-field  class="sidePanelChips">
+                            <mat-chip-list #commLineAssetChipList aria-label="CommLineAsset">
+                                <mat-chip *ngFor="let commLineAsset of commLineAssets" [selectable]="selectable"
+                                        [removable]="removableAsset" (removed)="removeCommLineAsset(commLineAsset)">
+                                {{commLineAsset}}
+                                <mat-icon matChipRemove *ngIf="removableAsset">cancel</mat-icon>
+                                </mat-chip>
+                                <input id="commLineAssetInput" placeholder="New asset..."
+                                    [matChipInputFor]="commLineAssetChipList"
+                                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                    [matChipInputAddOnBlur]="addOnBlur"
+                                    readonly="readOnlyFlag">
+                            </mat-chip-list>
+                        </mat-form-field>
+                    </mat-card> -->
+                    </ng-template>
+                </mat-tab>
+
+                <mat-tab label="Modeling Results">
+                    <ng-template matTabContent>
+                        <app-modeling-results [threats]="threatList | modelingThreats : activeComponentId"
+                            [activeComponentId]="activeComponentId" [systemConfig]="systemConfig"
+                            (highlightedThreat)="showAttackPath($event)">
+                        </app-modeling-results>
+                    </ng-template>
+                </mat-tab>
+            </mat-tab-group>
+        </div>
+    </ng-container>
+    <ng-container *ngSwitchCase="ActiveComponentTypeShortName.SensorInput">
+        <div id="sensorInputPropertyPanel">
+            <mat-tab-group #propertyPanelTab (selectedTabChange)="sensorInputPropertyPanelTabClick($event)">
+                <mat-tab label="Component Spec">
+                    <ng-template matTabContent>
+                        <mat-card class="sidePanelCard">
+                            <mat-card-header>
+                                <mat-card-title>Sensor Input Spec</mat-card-title>
+                            </mat-card-header>
+                            <mat-form-field class="inputForm">
+                                <mat-label>Give this line a unique name...</mat-label>
+                                <input matInput [ngModel]="componentNickName" [value]="componentNickName"
+                                    (ngModelChange)="commLineNickNameChange($event)">
+                            </mat-form-field>
+                            <br>
+                            <mat-form-field class="inputForm">
+                                <mat-label>Sensor Input Media (Required)</mat-label>
+                                <mat-select [ngModel]="transmissionMedia"
+                                    (ngModelChange)="sensorInputTransmissionMediaChange($event)">
+                                    <mat-option
+                                        *ngFor="let selectedTransmissionMedia of sensorInputTransmissionMediaName"
+                                        [value]="selectedTransmissionMedia.value">
+                                        {{selectedTransmissionMedia.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <br>
+                            <mat-form-field class="inputForm">
+                                <mat-label>Sensor Input Type (Required)</mat-label>
+                                <mat-select [ngModel]="selectedCommLine"
+                                    (ngModelChange)="sensorInputBaseProtocolChange($event)"
+                                    [disabled]="this.transmissionMedia == ''">
+                                    <mat-option *ngFor="let selectedCommLine of sensorInputModels"
+                                        [value]="selectedCommLine">
+                                        {{selectedCommLine}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <br>
+                            <mat-checkbox [(ngModel)]="textProtocolDisplay"
+                                (ngModelChange)="textProtocolDisplayChange($event)">
+                                Display protocol text
+                            </mat-checkbox>
+                        </mat-card>
+
+                        <mat-card class="sidePanelCard">
+                            <mat-card-header>
+                                <mat-card-title>Sensor-Feeded Features</mat-card-title>
+                            </mat-card-header>
+                            <mat-card-content>
+                                <div
+                                    *ngFor="let lineConnectedComponentFeature of lineConnectedComponentFeatures; let componentIndex = index">
+                                    <h3>{{ lineConnectedComponentFeature.nickName }}</h3>
+                                    <section
+                                        *ngFor="let lineConnectedFeature of lineConnectedComponentFeature.featureData; let featureIndex = index">
+                                        <div class="accessibleFeatureContent">
+                                            <mat-checkbox [(ngModel)]="lineConnectedFeature.note"
+                                                [checked]="lineConnectedFeature.note"
+                                                [indeterminate]="featureAssets | assetsIndeterminate : lineConnectedComponentFeature.id : lineConnectedFeature.id"
+                                                (ngModelChange)="featureCheckboxEvent(lineConnectedComponentFeature.id, lineConnectedFeature.name, lineConnectedFeature.id, $event, featureIndex, componentIndex)"
+                                                [disabled]="!lineConnectedFeature.featureConfirmed">{{
+                                                lineConnectedFeature.name
+                                                }}</mat-checkbox>
+                                            <span class="featureDirection">
+                                                <ng-container
+                                                    *ngIf="!featureDirection[componentIndex + '' + featureIndex]">
+                                                    <mat-icon aria-hidden="false" aria-label="Expand More"
+                                                        (click)="featureDirection = {}; featureDirection[componentIndex + '' + featureIndex] = !featureDirection[componentIndex + '' + featureIndex]">
+                                                        arrow_drop_down</mat-icon>
+                                                </ng-container>
+                                                <ng-container
+                                                    *ngIf="featureDirection[componentIndex + '' + featureIndex]">
+                                                    <mat-icon aria-hidden="false" aria-label="Expand Less"
+                                                        (click)="featureDirection[componentIndex + '' + featureIndex] = !featureDirection[componentIndex + '' + featureIndex]">
+                                                        arrow_drop_up</mat-icon>
+                                                </ng-container>
+                                            </span>
+                                        </div>
+                                        <ng-container *ngIf="featureDirection[componentIndex + '' + featureIndex]">
+                                            <div class="featureAssets"
+                                                *ngFor="let asset of featureAssets | featureAssets : lineConnectedComponentFeature.id : lineConnectedFeature.id as assets; let assetIndex = index">
+                                                <mat-checkbox [(ngModel)]="asset.checked"
+                                                    (ngModelChange)="changeFeatureAssetSelection($event, lineConnectedComponentFeature.id, lineConnectedFeature.id, componentIndex, featureIndex, assetIndex)">
+                                                    {{ asset.asset }}
+                                                </mat-checkbox>
+                                                <mat-button-toggle-group name="dataInTransit" [value]="asset.accessType"
+                                                    (change)="assetAccessTypeChangeEvent($event.value, lineConnectedComponentFeature.id, asset.position, componentIndex, featureIndex, assetIndex)"
+                                                    aria-label="Ingredients" *ngIf="asset.assetType == 'dataInTransit'"
+                                                    multiple>
+                                                    <mat-button-toggle value="S">Send</mat-button-toggle>
+                                                    <mat-button-toggle value="Rec">Receive</mat-button-toggle>
+                                                </mat-button-toggle-group>
+                                                <mat-button-toggle-group name="dataAtRest" [value]="asset.accessType"
+                                                    (change)="assetAccessTypeChangeEvent($event.value, lineConnectedComponentFeature.id, asset.position, componentIndex, featureIndex, assetIndex)"
+                                                    aria-label="Ingredients" *ngIf="asset.assetType == 'dataAtRest'"
+                                                    multiple>
+                                                    <mat-button-toggle value="C">C</mat-button-toggle>
+                                                    <mat-button-toggle value="R">R</mat-button-toggle>
+                                                    <mat-button-toggle value="U">U</mat-button-toggle>
+                                                    <mat-button-toggle value="D">D</mat-button-toggle>
+                                                </mat-button-toggle-group>
+                                            </div>
+                                        </ng-container>
+                                    </section>
+                                </div>
+                            </mat-card-content>
+                        </mat-card>
+
+                        <button id="commLineRemoveBtn" class="sidePanelCard" mat-raised-button
+                            (click)="deleteComponent(activeComponentType)" color="warn">Remove Sensor Input</button>
+                    </ng-template>
+                </mat-tab>
+
+                <mat-tab label="Security Settings">
+                    <ng-template matTabContent>
+                        <mat-card class="sidePanelCard">
+                            <mat-card-header>
+                                <mat-card-title>Assumptions</mat-card-title>
+                            </mat-card-header>
+                            <mat-checkbox [checked]="commLineAttackSurface" (change)="commLineAttackSurfaceChange()">
+                                This sensor
+                                input
+                                can be a point-of-entry for attacks</mat-checkbox>
+                        </mat-card>
+                    </ng-template>
+                </mat-tab>
+
+                <mat-tab label="Modeling Results">
+                    <ng-template matTabContent>
+                        <app-modeling-results [threats]="threatList | modelingThreats : activeComponentId"
+                            [activeComponentId]="activeComponentId" [systemConfig]="systemConfig"
+                            (highlightedThreat)="showAttackPath($event)">
+                        </app-modeling-results>
+                    </ng-template>
+                </mat-tab>
+            </mat-tab-group>
+        </div>
+    </ng-container>
+    <ng-container *ngSwitchCase="ActiveComponentTypeShortName.Boundary">
+        <div id="boundaryPropertyPanel">
+            <mat-tab-group #propertyPanelTab (selectedTabChange)="boundaryPropertyPanelTabClick($event)">
+                <mat-tab label="Component Spec">
+                    <ng-template matTabContent>
+                        <mat-card class="sidePanelCard">
+                            <mat-card-header>
+                                <mat-card-title>Boundary Settings</mat-card-title>
+                            </mat-card-header>
+                            <mat-card-content>
+                                <mat-form-field class="inputForm">
+                                    <mat-label>Give this boundary a unique name...</mat-label>
+                                    <input matInput [(ngModel)]="componentNickName"
+                                        (ngModelChange)="boundaryNickNameChange($event)">
+                                </mat-form-field>
+                                <mat-checkbox [checked]="boundaryEnable" (change)="boundaryEnableStatusChange($event)">
+                                    Activate
+                                    this boundary</mat-checkbox>
+                            </mat-card-content>
+                        </mat-card>
+                        <br>
+                        <button id="boundaryRemoveBtn" class="sidePanelCard" mat-raised-button
+                            (click)="deleteComponent(activeComponentType)" color="warn">Remove Boundary</button>
+                    </ng-template>
+                </mat-tab>
+
+                <mat-tab label="Security Settings">
+                    <ng-template matTabContent>
+                    </ng-template>
+                </mat-tab>
+
+                <mat-tab label="Modeling Results">
+                    <ng-template matTabContent>
+                        <app-modeling-results [threats]="threatList | modelingThreats : activeComponentId"
+                            [systemConfig]="systemConfig" [activeComponentId]="activeComponentId"
+                            (highlightedThreat)="showAttackPath($event)">
+                        </app-modeling-results>
+                    </ng-template>
+                </mat-tab>
+            </mat-tab-group>
+        </div>
+    </ng-container>
+</ng-container>

@@ -1,0 +1,43 @@
+<ng-container [ngSwitch]="threat.treatment">
+    <ng-container *ngSwitchCase="TreatmentType.NoTreatment">
+        <table class="expanded-feasibility-level-table">
+            <colgroup>
+                <col span="1" style="width: 45%;">
+            </colgroup>
+            <tr>
+                <td>
+                    <div class="feasibility-title">
+                        <p>
+                            Feasibility:
+                        </p>
+                        <mat-icon matTooltip="Click for details"
+                            (click)="threat.feasibilityDetailsExpanded = !threat.feasibilityDetailsExpanded ? true : !threat.feasibilityDetailsExpanded"
+                            aria-hidden="false" aria-label="Feasibility icon" inline="true">{{ threat | feasibilityIcon
+                            }}
+                        </mat-icon>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </ng-container>
+    <ng-container *ngSwitchDefault>
+        <table class="expanded-feasibility-level-table treatment-table">
+            <colgroup>
+                <col span="1" style="width: 45%;">
+            </colgroup>
+            <tr>
+                <td>
+                    <div class="feasibility-title">
+                        <p>
+                            Feasibility:
+                        </p>
+                        <mat-icon matTooltip="Click for details"
+                            (click)="threat.feasibilityDetailsExpanded = !threat.feasibilityDetailsExpanded ? true : !threat.feasibilityDetailsExpanded"
+                            aria-hidden="false" aria-label="Feasibility icon" inline="true">{{ threat | feasibilityIcon }}
+                        </mat-icon>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </ng-container>
+</ng-container>

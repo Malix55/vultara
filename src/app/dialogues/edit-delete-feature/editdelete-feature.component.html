@@ -1,0 +1,99 @@
+<div class="hedingPosition">
+<h1 mat-dialog-title style="margin-bottom: 0;">{{module.model}} Module Features</h1>
+<button class="dialog-close" mat-button (click)="onNoClick()">X</button>
+</div>
+
+<mat-progress-spinner
+diameter="20"
+[color]="'primary'"
+[mode]="'indeterminate'"
+*ngIf="modulesloading"
+class="spinPosition"
+>
+</mat-progress-spinner>
+<div mat-dialog-content>
+  <div>
+    <!-- existingFeatureList -->
+    <mat-list *ngIf="features && features.length > 0" class="feature-popup" style="margin-top: 5px;">
+      <mat-list-item *ngFor="let feature of features; let i=index" style="margin-top: 20px;">
+        <!-- <p class="featureModuleInputForm">{{feature.feature}}</p> -->
+
+        <mat-form-field class="featureModuleInputForm" appearance="outline">
+          <mat-label>Feature Name</mat-label>
+          <input matInput readonly [(ngModel)]="feature.feature">
+        </mat-form-field>
+
+
+        <mat-form-field class="featureRole" appearance="fill">
+          <mat-label>Feature Role</mat-label>
+          <mat-select [(ngModel)]="feature.featureRole">
+            <mat-option *ngFor="let selectedFeatureRole of dynamicallyAssignFeatureRole(feature.featureType)" [value]="selectedFeatureRole.value">
+              {{selectedFeatureRole.viewValue}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+
+
+        <mat-form-field class="featureImpactInputForm" appearance="fill">
+          <mat-label>S-Impact</mat-label>
+          <mat-select [(ngModel)]="feature.SLevel">
+            <mat-option *ngFor="let selectedLevel of ImpactLevels" [value]="selectedLevel">
+              {{selectedLevel}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="featureImpactInputForm" appearance="fill">
+          <mat-label>F-Impact</mat-label>
+          <mat-select [(ngModel)]="feature.FLevel">
+            <mat-option *ngFor="let selectedLevel of ImpactLevels" [value]="selectedLevel">
+              {{selectedLevel}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="featureImpactInputForm" appearance="fill">
+          <mat-label>O-Impact</mat-label>
+          <mat-select [(ngModel)]="feature.OLevel">
+            <mat-option *ngFor="let selectedLevel of ImpactLevels" [value]="selectedLevel">
+              {{selectedLevel}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="featureImpactInputForm" appearance="fill">
+          <mat-label>P-Impact</mat-label>
+          <mat-select [(ngModel)]="feature.PLevel">
+            <mat-option *ngFor="let selectedLevel of ImpactLevels" [value]="selectedLevel">
+              {{selectedLevel}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" style="width: 30%; margin-left: 10px;" matTooltip="Optional. It can be filled out manually in final report.">
+          <mat-label>Damage Scenario</mat-label>
+          <input matInput [(ngModel)]="feature.damageScenario">
+        </mat-form-field>
+
+        <button mat-button [matMenuTriggerFor]="moduleLibBtnMenu" style="margin-left: 10px;">
+          <mat-icon>expand_more</mat-icon>
+        </button>
+        <mat-menu #moduleLibBtnMenu="matMenu">
+          <button mat-menu-item (click)="updateFeature(feature, i)">
+            <mat-icon>cloud_upload</mat-icon>
+            Update Feature
+          </button>
+          <button mat-menu-item (click)="removeFeature(feature.featureId, feature.moduleId, feature._id,feature.featureRole, i)">
+            <mat-icon>clear</mat-icon>
+            Remove Feature
+          </button>
+        </mat-menu>
+      </mat-list-item>
+    </mat-list>
+
+    <mat-list *ngIf="!features || features.length == 0">
+      <mat-list-item>
+        No Features selected for current Module
+      </mat-list-item>
+    </mat-list>
+  </div>
+</div>

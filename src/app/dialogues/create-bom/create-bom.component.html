@@ -1,0 +1,59 @@
+<button mat-icon-button class="dialog-close-button" [mat-dialog-close]="true">
+    <mat-icon class="close-icon">close</mat-icon>
+</button>
+
+<form class="sbom-property-form" [formGroup]="sbomForm">
+    <h1 mat-dialog-title style="display: inline-block; margin-right: 40px;">Software BOM Entry</h1>
+    <button mat-raised-button style="display: inline-block; margin-right: 10px;" (click)="createBom()"
+        [disabled]="!sbomForm.value.product.trim() || !sbomForm.value.vendor.trim() || !sbomForm.value.part.trim() || sbomForm.invalid">Save</button>
+    <button  mat-raised-button *ngIf="data.i>=0" (click)="confirmDeleteBomDialog()">Delete</button>
+    <mat-form-field class="sbom-field-full-width" appearance="fill">
+        <mat-label>Product Name (Required)</mat-label>
+        <input matInput placeholder="" formControlName="product" required>
+    </mat-form-field>
+
+    <mat-form-field class="sbom-field-full-width" appearance="fill">
+        <mat-label>Vendor Name (Required)</mat-label>
+        <input matInput placeholder="" formControlName="vendor" required>
+    </mat-form-field>
+
+    <mat-form-field class="sbom-field-full-width" appearance="fill">
+        <mat-label>Part (Required)</mat-label>
+        <mat-select formControlName="part" required>
+            <mat-option value="a">Application</mat-option>
+            <mat-option value="o">Operating System</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field class="sbom-field-full-width" appearance="fill">
+        <mat-label>Version</mat-label>
+        <input matInput placeholder="" formControlName="version">
+    </mat-form-field>
+    <mat-form-field class="sbom-field-full-width" appearance="fill">
+        <mat-label>Update</mat-label>
+        <input matInput placeholder="" formControlName="update">
+    </mat-form-field>
+    <mat-form-field class="sbom-field-full-width" appearance="fill">
+        <mat-label>Edition</mat-label>
+        <input matInput placeholder="" formControlName="edition">
+    </mat-form-field>
+    <mat-form-field class="sbom-field-full-width" appearance="fill">
+        <mat-label>Language</mat-label>
+        <input matInput placeholder="" formControlName="language">
+    </mat-form-field>
+    <mat-form-field class="sbom-field-full-width" appearance="fill">
+        <mat-label>sw edition</mat-label>
+        <input matInput placeholder="" formControlName="sw_edition">
+    </mat-form-field>
+    <mat-form-field class="sbom-field-full-width" appearance="fill">
+        <mat-label>Target sw</mat-label>
+        <input matInput placeholder="" formControlName="target_sw">
+    </mat-form-field>
+    <mat-form-field class="sbom-field-full-width" appearance="fill">
+        <mat-label>Target hw</mat-label>
+        <input matInput placeholder="" formControlName="target_hw">
+    </mat-form-field>
+    <mat-form-field class="sbom-field-full-width" appearance="fill">
+        <mat-label>Other</mat-label>
+        <input matInput placeholder="" formControlName="other">
+    </mat-form-field>
+</form>

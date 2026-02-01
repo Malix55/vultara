@@ -1,0 +1,27 @@
+<div class="login-web-page">
+    <div class='left'>
+        <img draggable="false" class='login-image' [src]='loginImage'>
+    </div>
+    <div class="right">
+        <h2>Login Your Account</h2>
+        <form id="loginForm" (ngSubmit)="userLoginConfirm()">
+            <!-- <div class="loginAttemptCounter" *ngIf="authService.checkLoginAttemptExceeded()">* Your account has been frozen due to too many times failed attempts. <br> Please contact your administrator to reset your password. </div> -->
+            <small>Username</small>
+            <input type="text" name="username" [(ngModel)]="loginCredential.username"
+                [disabled]="authService.checkLoginAttemptExceeded()">
+            <!-- (keydown.space)="$event.preventDefault();   disable the spacebar -->
+            <small>Password</small>
+            <input type="password" name="password" [(ngModel)]="loginCredential.password"
+                [disabled]="authService.checkLoginAttemptExceeded()">
+            <!-- <mat-checkbox id="rememberMeCheckbox" [checked]="rememberMe" (change)="rememberMeChange($event.checked)">Remember me</mat-checkbox> -->
+            <input type="submit" value="Login" name="userLoginBtn" class="userLoginBtn"
+                [disabled]="authService.checkLoginAttemptExceeded() || (!loginCredential.username || !loginCredential.password)"
+                (click)="userLoginConfirm()">
+            <div class='displayMsg' id="displayMsg">{{displayMsg}}</div>
+            <span class="loginAttemptCounter" *ngIf="authService.checkLoginAttemptExceeded()">
+                Your account has been frozen due to too many times failed attempts. Please contact your administrator to
+                reset your password.
+            </span>
+        </form>
+    </div>
+</div>

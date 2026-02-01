@@ -1,0 +1,137 @@
+
+/* #logo {
+    font-family: Bahnschrift;
+    text-align: center;
+} */
+
+/* .loginHeaderImage {
+    background-image: url('../../assets/images/Logo_blueBackground_tight.jpg');
+    background-size: cover;
+} */
+
+.login-web-page {
+    display: flex;
+    justify-content: stretch;
+    width: 100%;
+    height: calc(100vh);
+}
+
+.login-web-page .left,
+.login-web-page .right {
+    width: 50%;
+}
+
+.login-web-page .left {
+    background-position: center; 
+    background-repeat: no-repeat; 
+    background-size:cover; 
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.login-image {
+    height: 100%;
+}
+
+.login-web-page .left h4,
+.login-web-page .left p {
+    margin-left: 32px;
+}
+
+
+.login-web-page .left h4{
+    font-size: 28px;
+}
+
+.login-web-page .left p {
+    font-size: 20px;
+    margin-top: 8px;
+}
+
+.login-web-page .right {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    padding: 10% 5% ;
+}
+
+.login-web-page .right h2 {
+    font-size: 28px;
+    color: #3C98CF;
+    margin-bottom: 28px;
+}
+
+.login-web-page .right input:not([type='submit']) {
+    display: block;
+    height: 40px;
+    font-size: 18px;
+    padding-left: 12px;
+    padding-right: 12px;
+    outline: none;
+    border: 1px solid #707070;
+    border-radius: 4px;
+    margin-bottom: 16px;
+    width: 90%;
+}
+
+.login-web-page .right input:not([type='submit']):focus {
+    outline: auto;
+    outline-color: #3C98CF;
+    border: 1px solid #3C98CF;
+}
+
+.login-web-page .right small {
+    font-weight: 500;
+    color: #707070;
+}
+
+.login-web-page .right input[type='submit'] {
+    height: 40px;
+    text-align: center;
+    padding: 0 16px;
+    background-color: #3C98CF;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 4px;
+    outline: none;
+    border: none;
+    opacity: .9;
+    cursor: pointer;
+}
+
+
+/*task : remove the hover effect */
+
+/* .login-web-page .right input[type='submit']:hover, */
+.login-web-page .right input[type='submit']:focus {
+    opacity: 1;
+}
+
+
+.login-web-page .right .loginAttemptCounter {
+    display: block;
+    border: 1px solid#F36F56;
+    width: 90%;
+    background-color: #f3705631;
+    color: #F36F56;
+    margin-bottom: 8px;
+    font-weight: 500;
+    padding: 12px;
+    border-radius: 4px;
+}
+
+.login-web-page .right .displayMsg {
+    color: #3C98CF;
+    font-weight: 500;
+    margin-top: 16px;
+    font-size: 16;
+    width: 90%;
+}
+
+.userLoginBtn:disabled {
+    background-color: rgba(0, 0, 0, 0.12) !important;
+    color: rgba(0, 0, 0, 0.48) !important;
+    cursor: default !important;
+}

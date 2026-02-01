@@ -1,0 +1,17 @@
+
+
+    <div class="header">
+        <h1 mat-dialog-title>{{data.mode==='ATTACK'?data.title:(data.mode==="Control"?'Threat Before Control':'Confirmation')}} </h1>
+    </div>
+    <div mat-dialog-content>
+            {{data.mode==='ATTACK'?data.body:'A threat will not show up again in future runs if it is permanently deleted, but will show up again in the next run if deleted temporarily.'}}
+            <br>
+            <p>How would you like to proceed?</p>
+    </div>
+    <div mat-dialog-actions>
+        <div class="actions">
+            <button mat-raised-button color="warn" (click)="deletePermanently()" [disabled]="this.data === 'merged' || this.data === 'userManual' || this.data === 'userAddedThreatLib'">Delete Permanently</button>
+            <button mat-raised-button color="primary" (click)="deleteTemporarily()">Delete Temporarily</button>
+            <button mat-raised-button (click)="cancel()">Cancel</button>
+        </div>
+    </div>

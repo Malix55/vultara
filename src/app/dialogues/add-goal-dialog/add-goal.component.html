@@ -1,0 +1,18 @@
+<form [formGroup]="goalForm">
+<div class="addGoalHeading">
+  <h3 class="title">{{data?.goalData?.content ? 'Update':'Create'}} {{data.type|titlecase}}</h3>
+</div>
+<br />
+<div class="addGoalFormFields">
+  <mat-form-field appearance="standard" style="margin-left: 10px;">
+    <mat-label>{{data.type|titlecase}} Content</mat-label>
+    <textarea formControlName="content" matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1"
+    cdkAutosizeMaxRows="4"></textarea>
+  </mat-form-field>
+</div>
+</form>
+
+<div mat-dialog-actions style="justify-content:end;">
+  <button mat-raised-button [color]="'primary'" [disabled]="!goalForm.valid" (click)="createGoal()"> {{data?.goalData?.content ? 'Update':'Create'}} </button>
+  <button mat-raised-button mat-dialog-close>Close</button>
+</div>

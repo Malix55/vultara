@@ -1,0 +1,50 @@
+.header {
+  display: flex;
+}
+
+.header span {
+  flex: 1;
+}
+
+.header mat-icon {
+  cursor: pointer;
+}
+
+.wp29-threats-table {
+  border-collapse: collapse;
+  border: 1px solid #000000;
+  margin: 0px 10px 0px 0px;
+  font-family: Bahnschrift;
+}
+
+.wp29-threats-table th {
+  border: 1px solid #000000;
+  padding: 10px;
+}
+
+.wp29-threats-table td {
+  vertical-align: top;
+  text-align: left;
+  border: 1px solid #000000;
+  padding: 5px;
+}
+
+.wp29-threats-table .threat-column {
+  min-width: 100px;
+}
+
+.wp29-threats-table mat-select{
+  min-width: 150px;
+}
+
+.red .mat-select-value-text {
+  color: red;
+}
+
+.green .mat-select-value-text {
+  color: green;
+}
+
+.orange .mat-select-value-text {
+  color: orange;
+}

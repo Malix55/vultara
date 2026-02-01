@@ -1,0 +1,31 @@
+.cybersecurity-goal-form-header {
+    display: flex;
+    justify-content: space-between;
+    margin: 0;
+}
+
+.cybersecurity-goal-close {
+    cursor: pointer;
+}
+
+.cybersecurity-goal-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-family: Bahnschrift;
+}
+
+.cybersecurity-goal-information {
+    padding: 5px;
+}
+
+.cybersecurity-goal-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+::ng-deep.cdk-overlay-pane {
+    max-width: 100%;
+  }

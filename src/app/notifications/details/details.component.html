@@ -1,0 +1,100 @@
+<div class="notifications" *ngIf="riskUpdateNotifications">
+    <mat-tab-group animationDuration="1000ms" [selectedIndex]="selectedIndex">>
+        <mat-tab label="Threat">
+            <ng-container *ngIf="riskUpdateNotifications.length > 0; else nodatafound">
+                <mat-list role="list">
+                    <mat-list-item role="listitem" class="list-item" (click)="notificationDetails(notification, i)"
+                        *ngFor="let notification of riskUpdateNotifications; let i = index"
+                        [ngClass]="{'read': notification.readStatus, 'rejected': notification.rejectStatus, 'accepted': notification.acceptStatus}">
+                        <div class="notification">
+                            <div class="notification-info">
+                                <p class="title">Risk number updated.</p>
+                                <p class="info"><span class="dot" *ngIf="!notification.readStatus"></span> {{
+                                    notification.asset }} risk number updated, threat list impacted. Click to see more
+                                    details.</p>
+                            </div>
+                            <ng-container *ngIf="notification.createdAt | checkToday; else otherday">
+                                <span class="date">Today, {{ notification.createdAt | date : 'h:mm a' }}</span>
+                            </ng-container>
+                            <ng-template #otherday>
+                                <span class="date">{{ notification.createdAt | date : 'MM/dd/yyyy, h:mm a' }}</span>
+                            </ng-template>
+                        </div>
+                    </mat-list-item>
+                </mat-list>
+                <div class="notifications-details-actions" *ngIf="!loadingDone">
+                    <button *ngIf="!this.editDesignShared.projectStatus?.milestoneView||this.editDesignShared.projectStatus?.milestoneView==undefined" mat-raised-button (click)="loadMore()">Load More</button>
+                </div>
+            </ng-container>
+            <ng-template #nodatafound>
+                No notification found
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Vulnerability">
+            <ng-container *ngIf="vulnerabilityNotifications.length > 0; else nodatafound">
+                <mat-list role="list">
+                    <mat-list-item role="listitem" class="list-item"
+                        (click)="vulnerabilityNotificationDetails(notification, i)"
+                        *ngFor="let notification of vulnerabilityNotifications; let i = index"
+                        [ngClass]="{'read': notification?.isNotified}">
+                        <div class="notification">
+                            <div class="notification-info">
+                                <p class="title">New vulnerability found</p>
+                                <p class="info singleLine"><span class="dot" *ngIf="!notification.isNotified"></span> {{
+                                    notification?.sbom?.product }} {{notification?.hbom?.product}};
+                                    {{notification?.description|slice:0:120}}
+                                    {{notification?.description?.length>120?'...':''}} </p>
+                            </div>
+                            <ng-container *ngIf="notification.createdAt | checkToday; else otherday">
+                                <span class="date">Today, {{ notification.createdAt | date : 'h:mm a' }}</span>
+                            </ng-container>
+                            <ng-template #otherday>
+                                <span class="date">{{ notification.createdAt | date : 'MM/dd/yyyy, h:mm a' }}</span>
+                            </ng-template>
+                        </div>
+                    </mat-list-item>
+                </mat-list>
+                <div class="notifications-details-actions" *ngIf="!loadingDoneVulnerability">
+                    <button *ngIf="!this.editDesignShared.projectStatus?.milestoneView||this.editDesignShared.projectStatus?.milestoneView==undefined" mat-raised-button (click)="loadMoreVulnerabilities()">Load More</button>
+                </div>
+            </ng-container>
+            <ng-template #nodatafound class="no-item">
+                <div class="no-item">
+                    No notification found
+                </div>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Others">
+            <ng-container *ngIf="otherNotifications.length > 0; else nodatafound">
+                <mat-list role="list">
+                    <mat-list-item role="listitem" class="list-item" (click)="otherNotificationDetails(notification, i)"
+                        *ngFor="let notification of otherNotifications; let i = index"
+                        [ngClass]="{'read': notification?.readStatus}">
+                        <div class="notification">
+                            <div class="notification-info">
+                                <p class="title">{{ notification.title }}</p>
+                                <p class="info singleLine"><span class="dot" *ngIf="!notification.readStatus"></span> {{
+                                    notification.message }} </p>
+                            </div>
+                            <ng-container *ngIf="notification.createdAt | checkToday; else otherday">
+                                <span class="date">Today, {{ notification.createdAt | date : 'h:mm a' }}</span>
+                            </ng-container>
+                            <ng-template #otherday>
+                                <span class="date">{{ notification.createdAt | date : 'MM/dd/yyyy, h:mm a' }}</span>
+                            </ng-template>
+                        </div>
+                    </mat-list-item>
+                </mat-list>
+                <div class="notifications-details-actions" *ngIf="!loadingDoneOtherNotifications">
+                    <button *ngIf="!this.editDesignShared.projectStatus?.milestoneView||this.editDesignShared.projectStatus?.milestoneView==undefined" mat-raised-button (click)="loadMoreOtherNotifications()">Load More</button>
+                </div>
+            </ng-container>
+            <ng-template #nodatafound class="no-item">
+                <div class="no-item">
+                    No notification found
+                </div>
+            </ng-template>
+        </mat-tab>
+    </mat-tab-group>
+
+</div>

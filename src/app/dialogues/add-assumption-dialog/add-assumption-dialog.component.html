@@ -1,0 +1,17 @@
+
+<form [formGroup]="assumptionForm">
+    <div class="addAssumptionHeading">
+      <h1 mat-dialog-title style="margin-bottom: 0;">{{data.type=='updated'? edit : 'Add a new assumption'}}   </h1>
+    </div>
+    <div class="addAssumptionFormFields">
+      <mat-form-field appearance="standard">
+        <textarea formControlName="content" matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1"
+        cdkAutosizeMaxRows="5"></textarea>
+      </mat-form-field>
+    </div>
+    </form>
+    
+    <div mat-dialog-actions style="justify-content:end;">
+      <button mat-raised-button [color]="'primary'"  [disabled]="!assumptionForm.valid || editDesignShared.projectStatus?.milestoneView"  (click)="createAssumption()" > {{data?.assumptionData?.content ? 'Update':'Confirm'}} </button>
+      <button mat-raised-button mat-dialog-close>Cancel</button>
+    </div>

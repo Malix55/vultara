@@ -1,0 +1,42 @@
+<mat-card class="modelingResult">
+    <mat-card-header>
+        <mat-card-title>Threats</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <table mat-table [dataSource]="dataSource" class="modelingResultTable">
+            <!-- Position Column -->
+            <ng-container matColumnDef="no">
+                <th mat-header-cell *matHeaderCellDef> No. </th>
+                <td mat-cell *matCellDef="let element"> {{element.threatRowNumber}} </td>
+            </ng-container>
+
+            <!-- Name Column -->
+            <ng-container matColumnDef="property">
+                <th mat-header-cell *matHeaderCellDef> Property </th>
+                <td mat-cell *matCellDef="let element"> {{element.securityPropertyCia}} </td>
+            </ng-container>
+
+            <!-- Weight Column -->
+            <ng-container matColumnDef="risk">
+                <th mat-header-cell *matHeaderCellDef> Risk </th>
+                <td mat-cell *matCellDef="let element"> {{element.riskLevel}} </td>
+            </ng-container>
+
+            <!-- Symbol Column -->
+            <ng-container matColumnDef="asset">
+                <th mat-header-cell *matHeaderCellDef> Asset </th>
+                <td mat-cell *matCellDef="let element"> {{element.asset | textLength : 25}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" (mouseenter)="mouseHoverToThreat($event, row)" (mouseleave)="mouseLeaveToThreat($event, row)"
+                [matTooltip]="row | modelingThreatsTooltip : systemConfig" matTooltipClass="modelingResultInfoTooltip"
+                [style.background-color]="(row.highlight == '_riskUpdate') ? 'rgba(198, 151, 155, 0.7)' : (row.highlight == '_highlight') ? 'rgba(255, 99, 71, 0.2)' : (row.reviewed ? 'rgba(252, 243, 207, 0.2)' : null)">
+            </tr>
+        </table>
+
+        <mat-paginator [pageSizeOptions]="[10, 20, 50]" showFirstLastButtons
+            aria-label="Select page of periodic elements">
+        </mat-paginator>
+    </mat-card-content>
+</mat-card>

@@ -1,0 +1,745 @@
+.tableViewContainer {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+
+.tableViewFullScreen {
+  position: fixed;
+  overflow-y: hidden;
+}
+
+#tableViewMain {
+  height: 100%;
+  margin-top: 50px;
+  overflow-y: hidden;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.threatListFilter {
+  margin: 8px 0 0;
+}
+
+.dragEnabled {
+  cursor: move;
+}
+
+.mitreAttackPopup {
+  overflow-y: auto;
+  height: 60vh;
+}
+
+table {
+  padding: 0;
+  width: 100%;
+}
+
+#filterSection {
+  font-size: 14px;
+  width: 30%;
+}
+
+.mat-form-field {
+  width: 100%;
+  height: 100%;
+}
+
+.mat-header-cell:first-of-type {
+  padding-left: 8px;
+}
+
+.mat-cell:first-of-type {
+  padding-left: 8px;
+}
+
+.mat-header-cell:last-of-type {
+  padding-right: 0;
+}
+
+.mat-cell:last-of-type {
+  padding-right: 0;
+}
+
+.mat-header-cell {
+  padding-left: 8px;
+  padding-right: 0;
+  font-size: 14px;
+  min-height: 48px;
+  text-align: center;
+  /* text-align: center;
+    border-right: 1px solid gray; */
+}
+
+.mat-cell {
+  padding-left: 8px;
+  padding-right: 5px;
+  font-size: 14px;
+  min-height: 48px;
+  /* text-align: center;
+    border-right: 1px solid gray; */
+}
+
+#filterSection {
+  margin-left: 5px;
+}
+
+.mat-column-no {
+  width: 5%;
+}
+.cursorRow {
+  cursor: move;
+}
+
+/* .mat-column-threatScenario {
+    width: 30%;
+} */
+/* .threat-row {
+    height: 80px;
+} */
+/* :host ::ng-deep .mat-form-field-wrapper {
+    padding-bottom: 0;
+} */
+/* :host ::ng-deep .mat-form-field-infix {
+    border-top: 0;
+} */
+.threat-row td {
+  border-bottom-width: 0;
+}
+
+tr.expanded-row {
+  height: 0;
+}
+
+tr.threat-details {
+  background-color: gray;
+  overflow: hidden;
+  display: flex;
+}
+
+::ng-deep .expanded-row-feasibility-div .mat-form-field-infix {
+  padding: 0 !important;
+  border-top: 0 !important;
+}
+
+::ng-deep .risk-expanded-row-feasibility-div .mat-form-field-infix {
+  padding: 0 !important;
+  border-top: 0 !important;
+}
+
+::ng-deep .expanded-impact-feasibility-div .mat-form-field-infix {
+  padding: 0 !important;
+  border-top: 0 !important;
+}
+
+::ng-deep .threatListTableContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+}
+
+::ng-deep .threatListTable tbody {
+  overflow-y: auto !important;
+  width: 100%;
+  max-height: 75%;
+}
+
+.expanded-row-feasibility-div {
+  /* width: 25em; */
+  display: inline-block;
+  margin-right: 1em;
+}
+
+.risk-expanded-row-feasibility-div {
+  /* width: 25em; */
+  width: 100%;
+  display: inline-block;
+  margin-right: 1em;
+}
+
+.expanded-row-impact-div {
+  /* width: 25em; */
+  display: inline-block;
+  margin-right: 1em;
+}
+
+.mat-column-rowNumber {
+  width: 2%;
+  margin-left: 10px;
+}
+
+.mat-column-asset {
+  width: 7%;
+  /* padding-right: 5px; */
+}
+
+.mat-column-securityPropertyCia {
+  width: 1%;
+}
+
+.mat-column-securityPropertyCia mat-form-field {
+  text-align: center;
+}
+
+/* .mat-column-nickName {
+  width: 7%;
+  margin-left: 5px;
+}
+
+.mat-column-nickName mat-form-field {
+  text-align: center;
+} */
+
+/* .mat-column-nickName .mat-checkbox{
+    text-align: center;
+} */
+/* .mat-column-feature {
+  width: 8%;
+} */
+
+.mat-column-feature mat-form-field {
+  text-align: center;
+}
+
+.mat-column-threatScenario {
+  width: 16%;
+}
+
+.mat-column-attackPath {
+  width: 17%;
+}
+
+.mat-column-damageScenario {
+  width: 14%;
+}
+
+.mat-column-impact {
+  width: 4%;
+  text-align: center;
+}
+
+.mat-column-impactS {
+  width: 4%;
+}
+
+.mat-column-impactS mat-form-field {
+  text-align: center;
+}
+
+::ng-deep .mat-form-field-infix {
+  width: auto !important;
+}
+
+.mat-column-impactF {
+  width: 4%;
+}
+
+.mat-column-impactF mat-form-field {
+  text-align: center;
+}
+
+.mat-column-impactO {
+  width: 4%;
+}
+
+.mat-column-impactO mat-form-field {
+  text-align: center;
+}
+
+.mat-column-impactP {
+  width: 4%;
+}
+
+.mat-column-impactP mat-form-field {
+  text-align: center;
+}
+
+.mat-column-attackFeasibility {
+  width: 3%;
+  text-align: center;
+}
+
+.mat-column-attackFeasibility mat-form-field {
+  text-align: center;
+}
+
+.mat-column-attackFeasibility {
+  text-align: center;
+}
+
+.mat-column-riskLevel {
+  width: 3%;
+}
+
+.threat-row .mat-column-riskLevel {
+  padding-left: 0px;
+  text-align: center;
+}
+
+.mat-column-reviewed {
+  width: 3%;
+}
+
+.threat-row .mat-column-reviewed {
+  padding-left: 0px;
+  text-align: center;
+}
+
+.mat-column-riskTreatment {
+  width: 6%;
+}
+
+.mat-column-riskTreatment mat-form-field {
+  padding-left: 0px;
+  text-align: center;
+}
+
+.mat-column-treatmentVal {
+  width: 3%;
+}
+
+.threat-row .mat-column-treatmentVal {
+  padding-left: 0px;
+  text-align: center;
+}
+
+.mat-column-tableOp {
+  width: 2%;
+}
+
+.threat-row .mat-column-tableOp {
+  padding-left: 0px;
+}
+
+.expanded-grid-container {
+  /* background-color:orange; */
+  display: grid;
+  grid-gap: 1em;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.expandedRiskContainer {
+  /* background-color:blue; */
+  padding: 4px;
+}
+
+.expanded-cybersecurity-container {
+  min-width: 20em;
+  max-width:  auto !important;
+  display: inline-block;
+  padding: 4px;
+}
+
+.expanded-note-container {
+  /* max-width:30em; */
+  min-width: 20em;
+  max-width: auto !important;
+  display: inline-block;
+  padding: 4px;
+}
+
+.expandedRiskContainer2 {
+  /* background-color:blue; */
+  padding: 8px;
+  grid-column: 1/3;
+  width: 70%;
+}
+
+.risk-childflex-container {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  border: 1px solid gray;
+  border-radius: 10px;
+  padding: 3px;
+}
+
+.other-child-container {
+  padding: 10px;
+}
+
+.other-flex-container {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  border: 1px solid gray;
+  border-radius: 10px;
+  padding: 14px 10px 10px 10px;
+  min-height: 198px;
+  min-width: 25em;
+}
+.other-select {
+padding-top: 3px;
+}
+.flex-container-child {
+  flex: 1;
+}
+
+.attack-feasibility-numeric {
+  min-width: 140px;
+}
+
+.risk-c-1 {
+  /* flex:1; */
+  min-width: 210px;
+}
+
+.risk-c-2 {
+  flex: 1;
+  min-width: 400px;
+}
+
+.risk-flex-container-child {
+  flex: 1;
+}
+
+.expanded-row-feasibility-div {
+  width: 100%;
+}
+
+.expanded-impact-feasibility-div {
+  width: 100%;
+  margin-left: 0px;
+}
+
+.expanded-row-impact-div {
+  width: 100%;
+}
+
+table.risk-expanded-row-feasibility-table {
+  width: 100%;
+  line-height: 20px;
+  padding: 4px;
+  border-spacing: 5px 0px;
+  border-collapse: separate;
+}
+
+table.expanded-row-feasibility-table {
+  width: 100%;
+  line-height: 20px;
+  padding: 4px;
+  border-spacing: 5px 0px;
+  border-collapse: separate;
+}
+
+table.risk2-expanded-row-feasibility-table {
+  width: 100%;
+  line-height: 20px;
+  padding: 4px;
+  border-spacing: 5px 0px;
+  border-collapse: separate;
+}
+
+table.expanded-row-impact-table {
+  width: 100%;
+  line-height: 20px;
+  padding: 4px;
+  border-spacing: 0px 0px;
+  border-collapse: separate;
+}
+
+table.risk2-expanded-row-impact-table {
+  width: 100%;
+  line-height: 20px;
+  padding: 4px;
+  border-spacing: 0px 0px;
+  border-collapse: separate;
+}
+
+table.risk2-expanded-row-impact-table tr.traverse td.matformcontainer {
+  width: 100%;
+  text-align: center;
+}
+
+table.risk2-expanded-row-feasibility-table tr.traverse td.risk2-feasibility-td-dynamic {
+  width: 100%;
+  text-align: center;
+}
+
+.matformcontainer mat-form-field {
+  margin-left: 0 !important;
+}
+
+.matformcontainer mat-select {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.matformcontainer mat-select-value {
+  width: 78% !important;
+}
+
+.arrow {
+  text-align: center;
+  padding: 0 5px;
+}
+
+.grid-other-cell {
+  min-width: 26em;
+  padding: 4px 10px 4px 4px;
+  display: flex;
+  flex-direction: column;
+}
+
+.other-row{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.other_c_1 mat-form-field {
+  min-height: 35px;
+  max-height: 48px;
+} 
+
+.other-c-table-td .mat-form-field-infix {
+  padding: 0 !important;
+}
+.other-c-table-td{
+  width: 60%;
+}
+
+.other_c_2 {
+  flex: 2;
+}
+
+table.other-flex-container-table {
+  height: 10px;
+  /* padding:10px; */
+  margin-top: 5px;
+}
+
+.risk2-c-flex-1 {
+  flex: 1;
+}
+
+.risk2-c-flex-2 {
+  flex: 1;
+}
+
+.risk2-c-flex-3 {
+  flex: 2;
+  margin-right: 10px;
+}
+
+.feasibility-rating-space {
+  flex: 1;
+}
+.feasibility-expanded {
+  display: flex;
+  width: 100%;
+  margin: 0px 0px 10px;
+  /* padding: 4px; */
+}
+::ng-deep .notes-column .mat-form-field-wrapper {
+  padding-bottom: 0px;
+}
+.feasibility-content {
+  margin: 0px 20px 0px 0px;
+}
+
+.feasibility-content table td {
+  vertical-align: top;
+}
+
+.feasibility-content p {
+  margin: 0px 0px 2px;
+}
+
+.feasibility-details {
+  min-height: 50px;
+  min-width: 700px;
+  border: 1px solid gray;
+  border-radius: 10px;
+}
+
+.feasibility-details textarea {
+  padding: 0;
+  margin: 0px 0px 10px 0px;
+}
+
+.feasibility-rubrics {
+  min-height: 50px;
+  min-width: 900px;
+  border: 1px solid gray;
+  border-radius: 10px;
+  font-size: 10px;
+}
+
+.rubrics-percentage {
+  width: 35px;
+}
+
+.feasibility-ratings {
+  max-width: 150px;
+  border-collapse: collapse;
+  border: 1px solid #000000;
+}
+
+.feasibility-ratings th {
+  border: 1px solid #000000;
+  padding: 5px 0px;
+}
+
+.feasibility-ratings td {
+  border: 1px solid #000000;
+  padding: 5px 0px;
+  text-align: center;
+}
+
+.rubrics-table {
+  border-collapse: collapse;
+  border: 1px solid #000000;
+  margin: 0px 10px 0px 0px;
+}
+
+.rubrics-table th {
+  border: 1px solid #000000;
+  padding: 5px 2px;
+}
+
+.rubrics-table td {
+  border: 1px solid #000000;
+  padding: 5px 0px;
+  text-align: center;
+}
+
+.rubrics-content {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.risk-feasibility-container {
+  min-width: 300px;
+  margin-left: 10px;
+  margin-bottom: 2px;
+  height: 1em;
+  padding: 0 !important;
+}
+
+.risk-feasibility-treatment-container {
+  min-width: 140px;
+  margin-bottom: 4px;
+  padding: 0 !important;
+}
+
+.risk-impact-treatment-container,
+.risk-impact-notreatment-container {
+  min-width: 140px;
+  margin-bottom: 4px;
+  padding: 0 !important;
+}
+
+.risk-feasibility-notreatment-container {
+  margin-bottom: 4px;
+}
+
+.risk-feasibility-treatment-container select {
+  width: 100%;
+}
+
+.attack-feasibility-after,
+.attack-feasibility-before {
+  width: 45%;
+}
+
+.attack-feasibility {
+  width: 150px;
+}
+
+::ng-deep textarea#cybersecurityTextArea {
+  min-height: 95px !important;
+}
+
+::ng-deep textarea#notesTextArea {
+  max-height: 156px !important;
+  min-height: 156px !important;
+}
+
+::ng-deep mat-form-field#threatSourceOutput {
+  padding: 0;
+}
+
+::ng-deep mat-form-field#threatSourceOutput .mat-form-field-infix {
+  padding: 0;
+}
+
+/* MitreAttAck */
+.mitreAttack {
+  width: auto;
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+}
+
+.toggleBar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #113662;
+  margin: 0 auto;
+  color: #ffffff;
+  width: 50px;
+  height: 35px;
+  border-radius: 10px 10px 0 0;
+  cursor: pointer;
+  user-select: none;
+}
+
+::ng-deep .mat-bottom-sheet-container {
+  min-width: 100vw !important;
+  padding: 0 !important;
+}
+/* Drag and drop preview */
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+.preview-style {
+  background-color: lightgray;
+  padding: 5px 5px;
+  font-size: 0.7rem;
+}
+.displayimpacttable {
+  display: table-cell;
+}
+.tcellspace {
+  display: flex;
+  width: 5.3rem;
+}
+
+.feasibility-percent-bar {
+  margin: 2px 0 0;
+}
+
+.impact-percent-bar{
+  width: 140px;
+}
+
+.middle-arrow-forward {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+}
+.others-row td {
+  vertical-align: middle;
+}
+.others-type {
+  padding-bottom: 8px;
+   width: max-content;
+}
+::ng-deep .other-c-table-td .mat-form-field-infix {
+  padding: 0px;
+}

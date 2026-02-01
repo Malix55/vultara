@@ -1,0 +1,18 @@
+
+ .registerInputForm {
+    width:400px;
+    margin: auto; 
+}
+.mat-dialog-content{
+    display: flex;
+    justify-content: center;
+}
+.mat-dialog-actions{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.mat-dialog-actions>button{
+    height: 2.5em;
+    width: 11em
+}

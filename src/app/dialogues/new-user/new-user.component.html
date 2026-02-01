@@ -1,0 +1,65 @@
+<h3 mat-dialog-title>{{data?.user?'Update Account':'Create a new user account'}}</h3>
+<div mat-dialog-content>
+    <form [formGroup]="newUserRegForm" >
+    
+        <mat-form-field class="registerInputForm" fxFlex>
+            <mat-label>User Name</mat-label>
+            <input matInput formControlName="username">
+            <mat-error *ngIf="newUserRegForm.get('username').touched && newUserRegForm.get('username').hasError('required')">
+              Username is <strong>required</strong>
+            </mat-error>
+        </mat-form-field>
+        <br>
+        <mat-form-field *ngIf="!data?.user" class="registerInputForm">
+            <mat-label>Password</mat-label>
+            <input matInput type="password" formControlName="password">
+            <mat-error *ngIf="newUserRegForm.get('password').touched && newUserRegForm.get('password').hasError('required')">
+              Password is <strong>required</strong>
+            </mat-error>
+        </mat-form-field>
+        <br *ngIf="!data?.user">
+        <mat-form-field *ngIf="!data?.user" class="registerInputForm">
+            <mat-label>Confirm Password</mat-label>
+            <input matInput type="password" formControlName="cpassword">
+            <div *ngIf="newUserRegForm.get('cpassword').touched">
+              <mat-error *ngIf="newUserRegForm.get('cpassword').value != newUserRegForm.get('password').value">
+                Passwords must <strong>match</strong>
+              </mat-error>
+            </div>
+        </mat-form-field>
+        <br *ngIf="!data?.user">
+    
+        <mat-form-field class="registerInputForm" appearance="fill">
+            <mat-label>User Role</mat-label>
+            <mat-select formControlName="role">
+                <mat-option *ngFor="let selectedRole of userRoles" [value]=selectedRole>
+                    {{selectedRole}} 
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <br>
+    
+        <mat-form-field class="registerInputForm" appearance="fill">
+            <mat-label>Project Access</mat-label>
+            <mat-select multiple formControlName="projectAccessId">
+                <mat-option *ngFor="let selectedProject of data?.projectList" [value]="selectedProject.id">
+                  {{selectedProject.name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <br>
+        <mat-form-field class="registerInputForm">
+          <mat-label>User Email</mat-label>
+          <input matInput formControlName="userEmail">
+          <mat-hint *ngIf="domainError" style="color:red">
+            Use Existing allowed domains for your email address
+          </mat-hint>
+      </mat-form-field>
+     </form>
+
+</div>
+<div mat-dialog-actions>
+    <button class="buttonClass" mat-raised-button color="primary" [disabled]="!newUserRegForm.valid || (newUserRegForm.get('cpassword').value != newUserRegForm.get('password').value)" (click)="registerConfirm()" >Confirm</button>
+    <button class="buttonClass" mat-raised-button (click)="closeDialog()">Cancel</button>
+
+</div>

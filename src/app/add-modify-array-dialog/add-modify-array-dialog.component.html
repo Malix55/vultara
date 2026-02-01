@@ -1,0 +1,24 @@
+<div class="header">
+    <h1 mat-dialog-title>{{ data.title }}</h1>
+</div>
+<div mat-dialog-content>
+    <p class="dialog-message">{{ data.message }}</p>
+        <mat-list>
+            <mat-list-item *ngFor="let arrayEntry of arrayData; let i=index; trackBy:trackByFn" class="arrayItemClass">
+                <mat-form-field appearance="fill">
+                    <input matInput [(ngModel)]="arrayEntry.category" (input)="onInputChange($event.target.value)">
+                </mat-form-field>
+                <button class="btnClass" mat-raised-button (click)="addAnEntry(i)">
+                    <mat-icon>add</mat-icon>
+                </button>
+                <button class="btnClass" mat-raised-button (click)="cancelAnEntry(i)">
+                    <mat-icon>clear</mat-icon>
+                </button>
+            </mat-list-item>
+        </mat-list>
+</div>
+<div mat-dialog-actions>
+    <button mat-raised-button style="margin-right:10px;" (click)="cancel()">{{ data.cancelText }}</button>
+    <button mat-raised-button color="primary" [disabled]="isDisable || isSpace" (click)="confirm()">{{ data.confirmText }}</button>
+</div>
+

@@ -1,0 +1,43 @@
+service: vultara-server
+custom:
+  SECRETS: ${file(./secret.js):getSecrets}
+  originUrl:
+    trial: 'https://awsportal.vultara.com'
+    prod: 'https://magnaelectronics.vultara.com'
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: ${opt:stage, 'prod'}
+  region: us-east-1
+  memorySize: 256
+functions:
+  app:
+    handler: server.handler
+    vpc:
+      securityGroupIds:
+        ${file(env_${opt:stage}.yml):lambdaExecSecurityGroups}
+      subnetIds:
+        - ${file(env_${opt:stage}.yml):subnet1}
+        - ${file(env_${opt:stage}.yml):subnet2}
+    environment:
+      ATLASDB: ${self:custom.SECRETS.ATLASDB}
+      ATLASDB_COMPONENTREAD: ${self:custom.SECRETS.ATLASDB_COMPONENTREAD}
+      ATLASDB_DATAANALYTICS: ${self:custom.SECRETS.ATLASDB_DATAANALYTICS}
+      ATLASDB_ALGOREAD: ${self:custom.SECRETS.ATLASDB_ALGOREAD}
+      ATLASDB_USERACCESS: ${self:custom.SECRETS.ATLASDB_USERACCESS}
+    events:
+      - http:
+          path: /
+          method: ANY
+          cors:
+            origin: ${self:custom.originUrl.${self:provider.stage},'https://magnaelectronics.vultara.com'}
+            allowCredentials: true
+      - http:
+          path: /{proxy+}
+          method: ANY
+          cors:
+            origin: ${self:custom.originUrl.${self:provider.stage},'https://magnaelectronics.vultara.com'}
+            allowCredentials: true
+    timeout: 30 # in seconds, default is 6
+plugins:
+  - serverless-offline

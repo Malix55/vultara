@@ -1,0 +1,18 @@
+<div mat-dialog-title class="header">
+    <h5>Load Milestone</h5>
+    <span></span>
+    <mat-icon aria-hidden="false" mat-dialog-close>close</mat-icon>
+</div>
+<mat-dialog-content>
+    <mat-selection-list #loadProjectSelect [multiple]="false">
+        <mat-list-option *ngFor="let milestone of data.milestones; let i=index" [value]="milestone.project.milestoneId" (click)="selectMilestone(milestone)">
+            <mat-icon matListIcon>folder</mat-icon>
+            {{milestone.project.milestoneName}} , milestone created on: {{generateMilestoneTime(milestone.createdAt)}}     
+        </mat-list-option>
+    </mat-selection-list>
+</mat-dialog-content>
+
+<div mat-dialog-actions>
+    <button mat-raised-button (click)="cancelLoadMilestone()">Cancel</button>
+    <button mat-raised-button (click)="confirmLoadMilestone()" color="primary">Confirm</button>
+  </div>

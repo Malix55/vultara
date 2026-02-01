@@ -1,0 +1,13 @@
+<h3 mat-dialog-title>Milestones</h3>
+<div mat-dialog-content>
+    <mat-selection-list #milestoneSelect [multiple]="false">
+        <mat-list-option *ngFor="let milestone of availableMilestones; let i=index" [value]="milestone"
+            (click)="selectMilestone(i)">
+            <mat-icon matListIcon>text_snippet</mat-icon>
+            {{milestone}}
+        </mat-list-option>
+    </mat-selection-list>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button (click)="closeMilestoneDialog()">Close</button>
+</div>

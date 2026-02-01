@@ -1,0 +1,26 @@
+<form #moduleForm="ngForm" appIdentityRevealed>
+<div class="displayHeading">
+  <h3 class="title">Module Name</h3>
+  <button style="margin-left: 200px" preventDoubleClick mat-raised-button (throttledClick)="createModule()" [throttleTime]="700" color="primary" [disabled]="moduleForm.invalid || isSpace">
+    confirm
+  </button>
+  <button mat-raised-button style="margin-left: 20px" (click)="onNoClick()">
+    close
+  </button>
+</div>
+<br />
+<div class="formfields">
+  <mat-form-field style="width: 300px" appearance="fill">
+    <mat-label>Category</mat-label>
+    <mat-select [(ngModel)]="newModuleData.category" name="category" required>
+      <mat-option *ngFor="let selectedCategory of moduleCategoryArray" [value]="selectedCategory">{{ selectedCategory }}</mat-option>
+    </mat-select>
+    <mat-error *ngIf="moduleForm.controls['category']?.errors?.required">Select the category</mat-error>
+  </mat-form-field>
+  <mat-form-field style="width: 300px" appearance="fill">
+    <mat-label>Module Name</mat-label>
+    <input class="form-control" name="model" matInput required [(ngModel)]="newModuleData.model" (ngModelChange)="moduleNameChange($event)"/>
+    <mat-error *ngIf="moduleForm.controls['model']?.errors?.required">Enter at-least one character</mat-error>
+  </mat-form-field>
+</div>
+</form>

@@ -1,0 +1,34 @@
+.detailPage {
+  background-color: #F5F5F5;
+
+}
+
+.detailViewMain {
+  position: relative;
+  top: 100px;
+  width: 80%;
+  margin: auto;
+
+}
+
+.detail_heading h1, h2, h3 {
+  color: black;
+}
+
+.detail_heading img {
+  margin: auto;
+  display: block;
+  padding-bottom: 30px;
+}
+
+.back-arrow {
+  display: flex;
+  font-size: 50;
+  margin-bottom: 2.5rem;
+}
+
+.back-text {
+  float: right;
+  padding-left: 10px;
+  color: #A6A6A6;
+}

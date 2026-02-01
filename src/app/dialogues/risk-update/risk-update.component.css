@@ -1,0 +1,108 @@
+.risk-update-loader {
+    width: 100%;
+    min-height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.action-progress {
+    min-height: 500px;
+    position: absolute;
+    left: 45%;
+    top: 45%;
+    z-index: 100;
+}
+
+.risk-update-container {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.hasTreatment{
+    color: #C55A11;
+}
+
+.risk-update-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.risk-update-header-title {
+    font-weight: 400;
+}
+
+.risk-update-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.risk-updated-value {
+    margin: 18px 0;
+}
+
+.risk-update-title {
+    margin: 12px 0;
+    font-weight: 500;
+}
+
+.risk-update-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.risk-update-table tr {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    padding: 12px 0;
+}
+
+.riskUpdated {
+    color: #F31227;
+}
+
+.risk-update-table tr td {
+    text-align: left;
+}
+
+.risk-update-table tr .name {
+    width: 15%;
+}
+
+.risk-update-table tr .type {
+    width: 15%;
+}
+
+.risk-update-table tr .arrow {
+    width: 2%;
+}
+
+.risk-update-table tr .value {
+    width: 15%;
+    color: #F31227;
+}
+
+.risk-update-table tr .before {
+    width: 25%;
+}
+
+.risk-update-table tr .after {
+    width: 25%;
+    color: #F31227;
+}
+
+.material-arrow-forward {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    margin: auto;
+}
+
+.arrow-middle {
+    vertical-align: middle;
+    padding: 0 5px;
+}

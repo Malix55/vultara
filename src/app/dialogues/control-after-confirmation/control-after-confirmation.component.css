@@ -1,0 +1,17 @@
+.controlAfterConfirmation {
+    display: flex;
+    justify-content: baseline;
+    align-items: center;
+}
+
+.controlAfterSpace {
+    flex: 1;
+}
+
+.controlAfterText {
+    margin: 12px 0 0;
+}
+
+.controlAfterConfirmation span {
+    cursor: pointer;
+}

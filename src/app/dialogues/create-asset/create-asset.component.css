@@ -1,0 +1,22 @@
+.formfields {
+    display: flex;
+    flex-direction: column;
+}
+.displayHeading {
+    display: flex;
+    flex-direction: row;
+}
+
+.assetTagsScrollable{
+    overflow-y: overlay;
+    height: 38px;
+    overflow-x: hidden;
+}
+
+.assetTagsScrollable::-webkit-scrollbar-track {
+    background: transparent;
+}
+    
+.assetTagsScrollable::-webkit-scrollbar-thumb {
+    background-color: #3C98CF;
+}

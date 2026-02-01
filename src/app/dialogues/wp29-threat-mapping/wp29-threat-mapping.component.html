@@ -1,0 +1,239 @@
+<div mat-dialog-title class="wp29-threats-header" *ngIf="!closeConfirmationMode">
+    <mat-icon aria-hidden="false" (click)="closeConfirmationMode = true">close</mat-icon>
+</div>
+<mat-dialog-content>
+    <ng-container *ngIf="closeConfirmationMode">
+        <div class="wp29-abort-operation">
+            <p>Are you sure to abort the operation?</p>
+            <div class="wp29-threats-actions">
+                <button mat-raised-button (click)="abort()">Yes</button>
+                <button mat-raised-button (click)="closeConfirmationMode = false">No</button>
+            </div>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="!closeConfirmationMode">
+        <ng-container [ngSwitch]="currrentStep">
+            <ng-container *ngSwitchCase="15.1">
+                <div>
+                    <p>WP29 requires you to consider the potential threat where an innocent victim
+                        (e.g. owner, operator or maintenance engineer)
+                        is tricked into taking an action to unintentionally load malware or enable an attack. Is this
+                        threat
+                        relevant to this project?</p>
+                    <div class="wp29-threats-actions">
+                        <button mat-raised-button (click)="selectedIndex('15.1', '15.2')">Yes</button>
+                        <button mat-raised-button (click)="skippedAndNextOption('15.2', '15.1')">No</button>
+                    </div>
+                </div>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="15.2">
+                <div>
+                    <p>WP29 requires you to consider the potential effect of your security procedures not being
+                        followed. Is
+                        this threat relevant to this project?</p>
+                    <div class="wp29-threats-actions">
+                        <button mat-raised-button (click)="selectedIndex('15.2', '17.1')">Yes</button>
+                        <button mat-raised-button (click)="skippedAndNextOption('17.1', '15.2')">No</button>
+                    </div>
+                </div>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="17.1">
+                <div>
+                    <p>WP29 requires you to consider corrupted 3rd party applications. Does this product host 3rd party
+                        application software?</p>
+                    <div class="wp29-threats-actions">
+                        <button mat-raised-button (click)="selectedIndex('17.1', '18.2')">Yes</button>
+                        <button mat-raised-button (click)="skippedAndNextOption('18.2', '17.1')">No</button>
+                    </div>
+                </div>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="18.2">
+                <div>
+                    <ng-container [ngSwitch]="indexEighteenPointTwo">
+                        <ng-container *ngSwitchCase="'18.2.1'">
+                            <p>WP29 requires you to consider media infected with a virus from external connections. Does
+                                this
+                                project have any component that's subject to virus and has external connections?</p>
+                            <div class="wp29-threats-actions">
+                                <button mat-raised-button (click)="selectSubIndex('18.2', '18.2.2')">Yes</button>
+                                <button mat-raised-button (click)="skippedAndNextOption('19.2', '18.2')">No</button>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'18.2.2'">
+                            <label for="">Which of these components are vulnerable to virus?</label>
+                            <mat-selection-list #eighteenpointtwomodules>
+                                <mat-list-option checkboxPosition="before" [value]="threat.id"
+                                    *ngFor="let threat of data.newDesign | modelModules">
+                                    {{ threat.nickName }}
+                                </mat-list-option>
+                            </mat-selection-list>
+                            <div class="wp29-threats-actions">
+                                <button mat-raised-button
+                                    (click)="selectEighteenPointTwoModules(eighteenpointtwomodules, '18.2.3', '19.2')">Next</button>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'18.2.3'">
+                            <p>{{ (data.newDesign | wp29EighteenpointtwoModule :
+                                eighteenPointTwoSelectedModule).nickName
+                                }}</p>
+                            <p class="wp29-threats-title-gap">Which communication line(s) are external to the
+                                vehicle (e.g. USB ports, OBD ports)?</p>
+                            <mat-selection-list #eighteenpointtwomodulecommlines>
+                                <mat-list-option checkboxPosition="before" [value]="commLine.id"
+                                    *ngFor="let commLine of (data.newDesign | moduleConnectedCommlines : eighteenPointTwoSelectedModule)">
+                                    {{ commLine.nickName }}
+                                </mat-list-option>
+                            </mat-selection-list>
+                            <div class="wp29-threats-actions">
+                                <button mat-raised-button
+                                    (click)="selectEighteenPointTwoCommLines(eighteenpointtwomodulecommlines, eighteenPointTwoSelectedModule, '18.2', '19.2')">Next</button>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                </div>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="19.2">
+                <div>
+                    <p>WP 29 requires you to consider owner's privacy information. Is it relevant to this project?</p>
+                    <div class="wp29-threats-actions">
+                        <button mat-raised-button (click)="selectedIndex('19.2', '20.1')">Yes</button>
+                        <button mat-raised-button (click)="skippedAndNextOption('20.1', '19.2')">No</button>
+                    </div>
+                </div>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="20.1">
+                <div>
+                    <p>WP 29 requires you to consider Illegal/unauthorized changes to vehicle’s electronic ID. Is
+                        vehicle’s
+                        electronic ID relevant to this project?</p>
+                    <div class="wp29-threats-actions">
+                        <button mat-raised-button (click)="selectedIndex('20.1', '20.2')">Yes</button>
+                        <button mat-raised-button (click)="skippedAndNextOption('20.2', '20.1')">No</button>
+                    </div>
+                </div>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="20.2">
+                <div>
+                    <p>WP 29 requires you to consider Identity fraud. Is user's identity information relevant to this
+                        project?</p>
+                    <div class="wp29-threats-actions">
+                        <button mat-raised-button (click)="selectedIndex('20.2', '20.3')">Yes</button>
+                        <button mat-raised-button (click)="skippedAndNextOption('20.3', '20.2')">No</button>
+                    </div>
+                </div>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="20.3">
+                <div>
+                    <p>WP 29 requires you to consider monitoring systems being circumvented. Are monitoring systems
+                        relevant
+                        to this project?</p>
+                    <div class="wp29-threats-actions">
+                        <button mat-raised-button (click)="selectedIndex('20.3', '29.1')">Yes</button>
+                        <button mat-raised-button (click)="skippedAndNextOption('29.1', '20.3')">No</button>
+                    </div>
+                </div>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="29.1">
+                <div>
+                    <ng-container [ngSwitch]="indexTwentyNinePointOne">
+                        <ng-container *ngSwitchCase="'29.1.1'">
+                            <p>WP 29 requires you to consider superfluous internet ports left open. Are internet ports
+                                relevant to
+                                this project?</p>
+                            <div class="wp29-threats-actions">
+                                <button mat-raised-button (click)="selectSubIndex('29.1', '29.1.2')">Yes</button>
+                                <button mat-raised-button (click)="skippedAndNextOption('29.2', '29.1')">No</button>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'29.1.2'">
+                            <label for="">Which communication lines have access to internet ports?</label>
+                            <mat-selection-list #twentyninepointonecommlines>
+                                <mat-list-option checkboxPosition="before" [value]="threat.componentId"
+                                    *ngFor="let threat of data.threats | modelCommlines">
+                                    {{ threat.nickName }}
+                                </mat-list-option>
+                            </mat-selection-list>
+                            <div class="wp29-threats-actions">
+                                <button mat-raised-button
+                                    (click)="selectTwentyNinePointOneCommLines(twentyninepointonecommlines, '29.1', '29.2')">Done</button>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                </div>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="29.2">
+                <div>
+                    <p>WP 29 requires you to consider that network separation could be circumvented. Is network
+                        separation
+                        relevant to this project?</p>
+                    <div class="wp29-threats-actions">
+                        <button mat-raised-button (click)="selectedIndex('29.2', '31.1')">Yes</button>
+                        <button mat-raised-button (click)="skippedAndNextOption('31.1', '29.2')">No</button>
+                    </div>
+                </div>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="31.1">
+                <div>
+                    <ng-container [ngSwitch]="indexThirtyOnePointOne">
+                        <ng-container *ngSwitchCase="'31.1.1'">
+                            <p>WP 29 requires you to consider personal data breach. Is personal data relevant to this
+                                project?</p>
+                            <div class="wp29-threats-actions">
+                                <button mat-raised-button (click)="selectSubIndex('31.1', '31.1.2')">Yes</button>
+                                <button mat-raised-button (click)="skippedAndNextOption('0')">No</button>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'31.1.2'">
+                            <label for="">Which of these data assets are personal data related?</label>
+                            <mat-selection-list #thrityonepointoneassets>
+                                <mat-list-option checkboxPosition="before" [value]="asset._id"
+                                    *ngFor="let asset of (wp29ThreatService.assetLib | componentFeatureAssets : data.newDesign)">
+                                    {{ asset.name }}
+                                </mat-list-option>
+                            </mat-selection-list>
+                            <div class="wp29-threats-actions">
+                                <button mat-raised-button
+                                    (click)="selectThirtyOnePointOneAssets(thrityonepointoneassets, '31.1', '0')">Done</button>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                </div>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="0">
+                <div>
+                    <p>You have walked through all questions. New threats may be generated according to your answers.
+                        These
+                        threats do not have all necessary information filled, because they require manual analysis.
+                        Please
+                        make sure they are either completed and reviewed if you think they are relevant, or deleted if
+                        not.
+                    </p>
+                    <div class="wp29-threats-actions">
+                        <button mat-raised-button (click)="acknowledge()">Acknowledge</button>
+                    </div>
+                </div>
+            </ng-container>
+
+            <ng-container *ngSwitchDefault></ng-container>
+        </ng-container>
+        <div class="wp29-threats-steps" *ngIf="currrentStep !== '0'">
+            <p>{{ currrentStepCount }} of {{ totalSteps }} steps completed</p>
+        </div>
+    </ng-container>
+</mat-dialog-content>
+<ng-container *ngIf="stepsCompleted">
+    <mat-dialog-actions>
+        <button mat-raised-button>Acknowledge</button>
+    </mat-dialog-actions>
+</ng-container>

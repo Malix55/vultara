@@ -1,0 +1,161 @@
+#accountAdminViewMain {
+    position: relative;
+    top: 50px;
+  }
+
+ .registerInputForm {
+    width:400px;
+    margin-left: 50px; 
+}
+
+.existingUserInputFormFirstCol {
+    width:20em;
+}
+
+.userEmail{
+    width:20em;
+    margin-left:3em;
+}
+
+.existingUserInputForm {
+    width:400px;
+    margin-left: 3em; 
+}
+
+.title {
+    margin-left: 50px; 
+    display: inline-block;
+}
+
+.existingUserList {
+    margin-top: 20px;
+    margin-left: 35px; 
+}
+
+.buttonClass {
+    margin-left: 50px; 
+}
+
+.userProfileClass {
+    margin-bottom: 20px;
+}
+.updateUserBtn {
+    margin-left:1em;
+}
+
+
+.orgAdminChipList{
+    width:45%;
+}
+
+.orgAdminChipButton{
+    all: unset;
+    margin-bottom: 6px;
+    margin-right: 5px !important;
+}
+
+.orgAdminChipContainer{
+    margin-top:2em;
+    margin-left: 50px;
+}
+
+.userAccount-list-table-container {
+    margin-top:40px;
+    width: 100%;
+}
+
+.userAccount-list-table-container .mat-header-cell:first-of-type {
+    padding-left: 0px;
+}
+
+.userAccount-list-table-container .mat-cell {
+    font-size: 14px;
+    max-height: 99px;
+}
+
+.userAccount-list-table-container .mat-header-cell:last-of-type {
+    padding-right: 0;
+}
+
+.userAccount-list-table-container .mat-cell:last-of-type {
+    padding-right: 0;
+}
+
+.userAccount-list-table-container .mat-header-cell {
+    padding-left: 8px;
+    padding-right: 0;
+    font-size: 14px;
+    min-height: 48px;
+    text-align: center;
+}
+
+.userAccount-list-table-container .mat-column-userName {
+    width: 15%;
+}
+.userAccount-list-table-container .mat-column-userRole {
+    width: 10%;
+}
+.userAccount-list-table-container .mat-column-projectAccess {
+    width: 50%;
+}
+.userAccount-list-table-container .mat-column-email {
+    width: 15%;
+}
+:host ::ng-deep .userAccount-list-table-container .mat-cell {
+    text-align: center;
+}
+.userAccount-list-table-container tr.mat-row {
+    height: 100px !important;
+    max-height: 150px !important;
+}
+
+:host ::ng-deep .userAccount-list-table-container .mat-form-field {
+    text-align: center;
+}
+::placeholder {
+    font-style: italic;
+}
+#refreshTableBtn {
+    margin: 5px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+
+.addUser{
+    margin-top:10px;
+    margin-left:10px;
+    width:max-content;
+}
+
+
+.accountTable{
+    /* width:70%; */
+    margin-block: 30px;
+}
+
+.projectChipscrollable{
+    overflow-y: overlay;
+    height: 78px;
+    overflow-x: hidden;
+}
+
+.projectChipscrollable::-webkit-scrollbar-track {
+    background: transparent;
+}
+    
+.projectChipscrollable::-webkit-scrollbar-thumb {
+    background-color: #3C98CF;
+}
+
+.centerChip::ng-deep .mat-chip-list-wrapper{
+    justify-content:center;
+}
+
+table{
+    width: 100%;
+}

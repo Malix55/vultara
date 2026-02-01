@@ -1,0 +1,111 @@
+<div id=SystemConfigView>
+  <mat-tab-group [(selectedIndex)]="selectedTabIndex" (selectedTabChange)="settingsTabClick($event)">
+   <!--  Threat merge Feature is disabled -->
+    <!-- <mat-tab label="General">
+      <ng-template matTabContent>
+        <br>
+        <h3 class="title">MITRE ATT@CK Method</h3>
+        <br>
+        <mat-radio-group aria-labelledby="general selection" class="general-radio-group" [(ngModel)]="selectedMitreAttackMethod">
+          <mat-radio-button class="general-radio-button" *ngFor="let mitreAttackMethod of mitreAttackMethods" [value]="mitreAttackMethod" [disabled]="mitreAttackMethod !== 'ATM'">
+            {{ mitreAttackMethod }}
+          </mat-radio-button>
+        </mat-radio-group>
+        <br>
+        <button mat-raised-button class="generalConfirmBtn" (click)="confirmFeasibilityMethod()"
+          color="primary">Confirm</button>
+      </ng-template>
+    </mat-tab> -->
+    <mat-tab label="Attack Feasibility">
+      <ng-template matTabContent style="margin-left:2em">
+        <br>
+        <h3 class="title">Feasibility Rating Method</h3>
+        <!-- <br> -->
+        <!-- <mat-form-field appearance="fill" class="feasibility-type">
+          <mat-label>Feasibility Value</mat-label>
+          <mat-select [(ngModel)]="feasibilityValueType">
+            <mat-option value="Numeric">Numeric</mat-option>
+            <mat-option value="Enumerate">Enumerate</mat-option>
+          </mat-select>
+        </mat-form-field> -->
+        <mat-radio-group aria-labelledby="feasibility rating selection" class="feasibilityMethod-radio-group"
+          [(ngModel)]="selectedFeasibilityMethod">
+          <mat-radio-button class="feasibilityMethod-radio-button" *ngFor="let feasibilityMethod of feasibilityMethods"
+            [disabled]="feasibilityMethod === 'CVSS' || feasibilityMethod === 'Attack Vector'"
+            [value]="feasibilityMethod">
+            {{feasibilityMethod}}
+          </mat-radio-button>
+        </mat-radio-group>
+        <br>
+        <button mat-raised-button class="feasibilityMethodConfirmBtn" (click)="confirmFeasibilityMethod()"
+          color="primary">Confirm</button>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Risk Determination">
+      <ng-template matTabContent style="margin-left:2em;">
+        <div style="padding: 1rem;">
+          <button mat-raised-button class="feasibilityMethodConfirmBtn" (click)="confirmFeasibilityMethod()"
+            color="primary">Confirm</button>
+          <br>
+          <div *ngFor="let riskMethodMapping of riskMethodMappings;let mainIndex = index;">
+            <mat-radio-group aria-labelledby="feasibility rating selection" class="feasibilityMethod-radio-group"
+              style="text-transform: capitalize;margin-left: 0.6rem;margin-bottom: 0em;"
+              [(ngModel)]="selectedRiskMethodMapping">
+              <mat-radio-button class="feasibilityMethod-radio-button" [value]="riskMethodMapping">
+                {{riskMethodMapping}}
+              </mat-radio-button>
+            </mat-radio-group>
+
+            <div class="mat-elevation-z8 table-div">
+              <table class="mat-table">
+                <tbody>
+                  <tr>
+                    <td rowspan="7" style="transform: rotate(270deg)">
+                      Feasibility
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="5" style="padding: 1rem 0;">
+                      Impact
+                    </td>
+                  </tr>
+                  <tr *ngFor="let item of feasibilityLevelNameColumn;let mx = index;">
+                    <td class="mat-cell table-div-font-bold" style="padding: 1rem 0;">
+                      <div>
+                        {{item}}
+                      </div>
+                    </td>
+                    <td class="mat-cell table-div-font-bold" *ngFor="let i of impactLevelColumn;let ix = index;">
+                      <div *ngIf="!isNumber(getTableValue(mx, ix, mainIndex))">
+                        {{getTableValue(mx, ix, mainIndex)}}
+                      </div>
+
+                      <div *ngIf="isNumber(getTableValue(mx, ix, mainIndex))"
+                        [ngClass]="getBackgroundColor(getTableValue(mx, ix, mainIndex))">
+                        <select *ngIf="riskMethodMapping == 'custom'" name="level-of-risk"
+                          [value]="getTableValue(mx, ix, mainIndex)" id="test{{ix}}_{{mx}}"
+                          [ngClass]="getBackgroundColor(getTableValue(mx, ix, mainIndex))"
+                          (change)="changeBackgroundColor($event,$event.target.value, mx, ix, mainIndex)">
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                          <option value="4">4</option>
+                          <option value="5">5</option>
+                        </select>
+
+                        <p style="padding: 1rem 6rem;" *ngIf="riskMethodMapping != 'custom'">{{getTableValue(mx, ix,
+                          mainIndex)}}</p>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <mat-divider *ngIf="mainIndex != (riskMethodMappings.length - 1)"></mat-divider>
+          </div>
+        </div>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+</div>

@@ -1,0 +1,18 @@
+.controlBeforeConfirmation {
+    display: flex;
+    justify-content: baseline;
+    align-items: center;
+    margin: 0;
+}
+
+.controlBeforeSpace {
+    flex: 1;
+}
+
+.controlBeforeText {
+    margin: 12px 0 0;
+}
+
+.controlBeforeConfirmation span {
+    cursor: pointer;
+}

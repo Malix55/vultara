@@ -1,0 +1,45 @@
+.asset-properties-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.asset-properties-header-close {
+    cursor: pointer;
+}
+
+.asset-property {
+    width: 100%;
+}
+
+.asset-properties-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.asset-property-loading {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.assetDisabledText {
+    color: grey;
+}
+
+.assetTagsScrollable{
+    overflow-y: overlay;
+    height: 38px;
+    overflow-x: hidden;
+}
+
+.assetTagsScrollable::-webkit-scrollbar-track {
+    background: transparent;
+}
+    
+.assetTagsScrollable::-webkit-scrollbar-thumb {
+    background-color: #3C98CF;
+}
+

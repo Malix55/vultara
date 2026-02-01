@@ -1,0 +1,31 @@
+<div style="position: relative;top: 50px;">
+  <mat-card class="user-profileCard">
+    <mat-card-subtitle>User Profile</mat-card-subtitle>
+    <mat-card-content>
+      <div class="user-profile-grid-container">
+        <div class="text-profile">
+          Username
+        </div>
+        <div class="text-profile">
+          {{userName}}
+        </div>
+        <div class="text-profile">
+          Role
+        </div>
+        <div class="text-profile">
+          {{userRole}}
+        </div>
+        <div class="user-email-field" style="grid-column:span 2; width:30vw">
+          <mat-form-field [appearance]="'fill'" style="width:70%">
+            <mat-label>Email</mat-label>
+            <input [(ngModel)]="subscribeEmail" matInput />
+          </mat-form-field>
+        </div>
+        <div style="grid-column:span 2; margin-top: 4%;">
+          <button (click)="addEmail()" mat-raised-button color="primary" style="width:33%;">Change Subscription
+            Email</button>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,55 @@
+<div id="homeViewMain">
+    <mat-grid-list cols="2" rowHeight="4:1">
+        <mat-grid-tile colspan=1 rowspan=1>
+            <button mat-raised-button color="accent" routerLink="/modeling">Start Modeling</button>
+        </mat-grid-tile>
+        <mat-grid-tile colspan=1 rowspan=2>
+            <ngx-charts-bar-vertical
+                [view]="view1"
+                [scheme]="colorScheme1"
+                [results]="residualRiskData"
+                [gradient]="gradient"
+                [xAxis]="showXAxis"
+                [yAxis]="showYAxis"
+                [legend]="showLegend"
+                [showXAxisLabel]="showXAxisLabel"
+                [showYAxisLabel]="showYAxisLabel"
+                [xAxisLabel]="xAxisLabel"
+                [yAxisLabel]="yAxisLabel"
+                (select)="onSelect1($event)">
+            </ngx-charts-bar-vertical>
+        </mat-grid-tile>
+        <mat-grid-tile colspan=1 rowspan=1>
+            <button mat-raised-button color="accent" routerLink="/threats">Review Modeling Result</button>
+        </mat-grid-tile>
+        <mat-grid-tile colspan=1 rowspan=2>
+            <ngx-charts-line-chart
+                [view]="view2"
+                [scheme]="colorScheme2"
+                [legend]="showLegend"
+                [showXAxisLabel]="showXAxisLabel2"
+                [showYAxisLabel]="showYAxisLabel2"
+                [xAxis]="xAxis"
+                [yAxis]="yAxis"
+                [xAxisLabel]="xAxisLabel2"
+                [yAxisLabel]="yAxisLabel2"
+                [timeline]="timeline"
+                [results]="multi"
+                (select)="onSelect2($event)"
+                (activate)="onActivate2($event)"
+                (deactivate)="onDeactivate2($event)">
+            </ngx-charts-line-chart>
+        </mat-grid-tile>
+        <mat-grid-tile colspan=1 rowspan=2>
+            <p>Risk Treatment Completion</p>
+            <ngx-charts-linear-gauge
+                [view]="view3"
+                [scheme]="colorScheme3"
+                [value]="value"
+                [previousValue]="previousValue"
+                (select)="onSelect3($event)"
+                [units]="units">
+            </ngx-charts-linear-gauge>
+        </mat-grid-tile>
+    </mat-grid-list>    
+</div>

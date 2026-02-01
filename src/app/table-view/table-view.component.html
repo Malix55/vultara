@@ -1,0 +1,1946 @@
+<div class="tableViewContainer">
+  <div id="tableViewMain" [class.tableViewFullScreen]="!openedMitreAttack">
+    <div class="threatListFilter">
+      <mat-form-field id="filterSection">
+        <mat-label>Filter</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Ex. spoof">
+      </mat-form-field>
+
+      <button mat-raised-button [matMenuTriggerFor]="filterThreatBtnMenu" style="margin: 5px;">
+        <mat-icon>filter_alt</mat-icon>
+      </button>
+      <mat-menu #filterThreatBtnMenu="matMenu">
+        <button mat-menu-item (click)="showAllThreats()">
+          Show All Threats
+        </button>
+        <button mat-menu-item (click)="showHighlightedThreats()">
+          Show Highlighted Threats
+        </button>
+        <button mat-menu-item (click)="showReviewedThreats()">
+          Show Reviewed Threats
+        </button>
+        <button mat-menu-item (click)="showNotReviewedThreats()">
+          Show Not-Reviewed Threats
+        </button>
+        <button mat-menu-item (click)="showValidatedThreats()">
+          Show Validated Threats
+        </button>
+        <button mat-menu-item (click)="showNotValidatedThreats()">
+          Show Not-Validated Threats
+        </button>
+        <button mat-menu-item (click)="filterThreatListByGoals()">
+          Filter By Goals & Claims
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item id="boundaryBtn" (click)="boundaryBtn()">
+          {{boundaryBtnDisplay}}
+        </button>
+      </mat-menu>
+    </div>
+
+    <div class="threatListTableContainer" id="myId" [class.mitreAttackPopup]="openedMitreAttack">
+      <table [class.threatListTable]="!openedMitreAttack" mat-table [dataSource]="dataSource" matSort (matSortChange)="sortValueChanges($event)"
+        multiTemplateDataRows [cdkDropListConnectedTo]="mitreAttackMethod | mitreAttackDropZones" cdkDropList
+        id="threatListTable" [cdkDropListDisabled]="!openedMitreAttack" [cdkDropListData]="dataSource.data"
+        (cdkDropListDropped)="drop($event)">
+        <ng-container matColumnDef="rowNumber">
+          <th mat-header-cell *matHeaderCellDef> No. </th>
+          <td mat-cell *matCellDef="let row">
+            {{row.threatRowNumber}}
+            <!-- <input matInput [(ngModel)]="row.threatRowNumber"> -->
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="asset">
+          <th mat-header-cell *matHeaderCellDef> Asset </th>
+          <td mat-cell *matCellDef="let row; let i = renderIndex;">
+            <mat-form-field appearance="none">
+              <textarea matInput inputchange [row]="row" [result]="resultShared" property="asset"
+                [(ngModel)]="row.asset" (ngModelChange)="onContentChange(row)"
+                [readonly]="row.reviewed || row.threatSource == 'ruleEngine'" cdkTextareaAutosize
+                #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1" cdkAutosizeMaxRows="5"></textarea>
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="securityPropertyCia">
+          <th mat-header-cell *matHeaderCellDef> Property </th>
+          <td mat-cell *matCellDef="let row; let i = renderIndex;">
+            <mat-form-field appearance="none">
+              <ng-container *ngIf="testThreatSource(row.threatSource) || row.reviewed">
+                <input matInput inputchange [row]="row" [result]="resultShared" property="reviewed" [readonly]="true"
+                  [ngModel]="row.securityPropertyCia">
+              </ng-container>
+              <ng-container *ngIf="!testThreatSource(row.threatSource) && !row.reviewed">
+                <mat-select inputchange [row]="row" [result]="resultShared" property="securityPropertyCia"
+                  [(ngModel)]="row.securityPropertyCia" (ngModelChange)="onContentChange(row)">
+                  <mat-option *ngFor="let selected of securityPropertyName; trackBy: trackByProperty"
+                    [value]="selected">
+                    {{selected}}
+                  </mat-option>
+                </mat-select>
+              </ng-container>
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <!-- <ng-container matColumnDef="nickName">
+          <th mat-header-cell *matHeaderCellDef> Component </th>
+          <td mat-cell *matCellDef="let row; let i = renderIndex;">
+            <mat-form-field appearance="none">
+              <ng-container *ngIf="testThreatSource(row.threatSource) || row.reviewed">
+                <textarea matInput inputchange [row]="row" [result]="resultShared" property="nickName"
+                  [ngModel]="row.nickName" [readonly]="true" cdkTextareaAutosize #autosize="cdkTextareaAutosize"
+                  cdkAutosizeMinRows="1" cdkAutosizeMaxRows="5"></textarea>
+              </ng-container>
+              <ng-container *ngIf="!testThreatSource(row.threatSource) && !row.reviewed">
+                <mat-select inputchange [row]="row" [result]="resultShared" property="nickName" [(ngModel)]="row.nickName"
+                  (ngModelChange)="onComponentChange(row)">
+                  <mat-option *ngFor="let selected of componentNickNameList.name; trackBy: trackByComponent"
+                    [value]="selected">
+                    {{selected}}
+                  </mat-option>
+                </mat-select>
+              </ng-container>
+  
+            </mat-form-field>
+          </td>
+        </ng-container> -->
+
+        <ng-container matColumnDef="threatScenario">
+          <th mat-header-cell *matHeaderCellDef> Threat Scenario </th>
+          <td mat-cell *matCellDef="let row; let i = renderIndex;">
+            <mat-form-field appearance="none">
+              <textarea matInput inputchange [row]="row" [result]="resultShared" property="threatScenario"
+                cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1" cdkAutosizeMaxRows="6"
+                [(ngModel)]="row.threatScenario" (ngModelChange)="onContentChange(row)"
+                [readonly]="row.reviewed"></textarea>
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="attackPath">
+          <th mat-header-cell *matHeaderCellDef> Attack Path </th>
+          <td mat-cell *matCellDef="let row; let i = renderIndex;">
+            <mat-form-field appearance="none">
+              <textarea matInput inputchange [row]="row" [result]="resultShared" property="attackPathName"
+                [(ngModel)]="row.attackPathName" (ngModelChange)="onContentChange(row)" [readonly]="row.reviewed"
+                cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1"
+                cdkAutosizeMaxRows="6"></textarea>
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="damageScenario">
+          <th mat-header-cell *matHeaderCellDef> Damage Scenario </th>
+          <td mat-cell *matCellDef="let row; let i = renderIndex;">
+            <mat-form-field appearance="none">
+              <textarea matInput inputchange [row]="row" [result]="resultShared" property="damageScenario"
+                [(ngModel)]="row.damageScenario" (ngModelChange)="onContentChange(row)" [readonly]="row.reviewed"
+                cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="2"
+                cdkAutosizeMaxRows="6"></textarea>
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="impact">
+          <th mat-header-cell *matHeaderCellDef> Impact </th>
+          <td mat-cell *matCellDef="let row">{{ (row.treatment == "no treatment") ? ( impactLevelName | impactLevelName
+            :
+            impactAggMethod: row.impactSLevel : row.impactFLevel : row.impactOLevel : row.impactPLevel) :
+            (row.impactSLevelAfter) ? (impactLevelName | impactLevelName : impactAggMethod : row.impactSLevelAfter :
+            row.impactFLevelAfter : row.impactOLevelAfter : row.impactPLevelAfter) :
+            (impactLevelName | impactLevelName : impactAggMethod : row.impactSLevel : row.impactFLevel :
+            row.impactOLevel
+            : row.impactPLevel) }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="attackFeasibility">
+          <th mat-header-cell *matHeaderCellDef> Feasibility </th>
+          <td mat-cell *matCellDef="let row">
+            {{row.attackFeasibilityLevelAfter ? row.attackFeasibilityLevelAfter: row.attackFeasibilityLevel }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="riskLevel">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Risk </th>
+          <!-- <td mat-cell *matCellDef="let row"> {{rateRisk(row.impactSLevel, row.impactFLevel, row.impactOLevel, row.impactPLevel, row.attackFeasibilityLevel)}} </td> -->
+          <td mat-cell *matCellDef="let row"> {{row.riskLevel}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="riskTreatment">
+          <th mat-header-cell *matHeaderCellDef> Treatment </th>
+          <td mat-cell *matCellDef="let row; let i = renderIndex" class="fullWidthInputColumn">
+            <mat-form-field floatLabel="never">
+              <mat-select inputchange [row]="row" [result]="resultShared" property="treatment"
+                [(ngModel)]="row.treatment" (ngModelChange)="onTreatmentChange($event, row)" *ngIf="!row.reviewed">
+                <mat-option *ngFor="let treatment of treatments; trackBy: trackByTreatment" [value]="treatment">
+                  {{treatment}}
+                </mat-option>
+              </mat-select>
+              <input matInput inputchange [row]="row" [result]="resultShared" property="treatment" *ngIf="row.reviewed"
+                [readonly]="row.reviewed" [ngModel]="row.treatment">
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="reviewed">
+          <th mat-header-cell *matHeaderCellDef> Reviewed </th>
+          <td mat-cell *matCellDef="let row">
+            <mat-checkbox [matTooltip]="row.reviewed ? 'uncheck to edit the threat' : 'check to lock this row'"
+              (ngModelChange)="reviewedChange($event, row)" [ngModel]="row.reviewed" inputchange [row]="row"
+              [result]="resultShared" property="reviewed" [ngModel]="row.reviewed"
+              [disabled]="currentUserProfile.role == 'Product Engineer'">
+              {{reviewedYN(row.reviewed)}}
+            </mat-checkbox>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="treatmentVal">
+          <th mat-header-cell *matHeaderCellDef> Validated </th>
+          <td mat-cell *matCellDef="let row; let i = renderIndex">
+            <mat-checkbox inputchange [row]="row" [result]="resultShared" property="treatmentVal"
+              [ngModel]="row.treatmentVal" (ngModelChange)="treatmentValChange($event, row)">
+              {{treatmentYN(row.treatmentVal)}}
+            </mat-checkbox>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="tableOp">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let row; let i = index">
+            <button mat-raised-button style="margin: 4px;" (click)="expandRow(row, i)">
+              <mat-icon>unfold_more</mat-icon>
+            </button>
+            <button mat-raised-button [matMenuTriggerFor]="threatBtnMenu" style="margin: 4px;">
+              <mat-icon>more_horiz</mat-icon>
+            </button>
+            <mat-menu #threatBtnMenu="matMenu">
+              <button mat-menu-item (click)="deleteRow(row)" [disabled]="row.reviewed">
+                <mat-icon>remove</mat-icon>
+                Delete Threat
+              </button>
+              <button mat-menu-item (click)="addRow(row, i)">
+                <mat-icon>add</mat-icon>
+                Add New Threat
+              </button>
+              <button mat-menu-item (click)="saveAsNewRow(row, i)">
+                <mat-icon>library_add</mat-icon>
+                Save As New Threat
+              </button>
+              <button mat-menu-item (click)="toggleHighlight(row, i)">
+                <mat-icon>help_outline</mat-icon>
+                {{ (row.highlight == "_highlight") ? "Remove Highlight" : "Highlight" }}
+              </button>
+              <button mat-menu-item *ngIf="row.threatSource == 'userManual'" (click)="linkThreat(row, i)"
+                matTooltip="add to your own threat library for re-use">
+                <mat-icon>scatter_plot</mat-icon>
+                Remember Threat - beta
+              </button>
+              <button mat-menu-item *ngIf="row.threatSource == 'merged'" (click)="showMergedThreat(row)">
+                <mat-icon>preview</mat-icon>
+                Show Merged Threat
+              </button>
+              <button mat-menu-item (click)="showThreatHistory(row)">
+                <mat-icon>history</mat-icon>
+                Threat History
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="expandedDetail">
+          <td mat-cell *matCellDef="let row; let i = index" [attr.colspan]="displayedColumns.length">
+            <div class="expanded-row-detail" [@detailExpand]="row.isExpanded ? 'expanded' : 'collapsed'"
+              *ngIf="row.isExpanded">
+              <div class="expanded-grid-container" [style.grid-template-columns]="row.treatment | threatFrameColumns">
+
+                <ng-container [ngTemplateOutlet]="expandedriskcontainer1" [ngTemplateOutletContext]="{row: row, i: i}">
+                </ng-container>
+
+                <div class="expanded-cybersecurity-container"
+                  *ngIf="row.treatment === 'retain' || row.treatment === 'share'">
+                  <div>
+                    Cybersecurity Claim:
+                    <br>
+                    <app-cybersecurity-goal-section [threatId]="row.id" [type]="'claim'">
+                    </app-cybersecurity-goal-section>
+                  </div>
+                </div>
+                <div class="expanded-cybersecurity-container" *ngIf="row.treatment === 'reduce'">
+                  <div>
+                    Cybersecurity Goal:
+                    <br>
+                    <app-cybersecurity-goal-section [threatId]="row.id" [type]="'goal'">
+                    </app-cybersecurity-goal-section>
+                  </div>
+                </div>
+                
+                <div class="expanded-cybersecurity-container" *ngIf="row.treatment === 'reduce'">
+                  <div>
+                    Cybersecurity Control:
+                    <br>
+                    <app-cybersecurity-goal-section [threatId]="row.id" [type]="'control'">
+                    </app-cybersecurity-goal-section>
+                  </div>
+                </div>
+
+                <div *ngIf="row.treatment!=='reduce'" class="expanded-note-container">
+                  <div class="notes-column" >
+                    <p>Notes:</p> 
+                    <mat-form-field appearance="outline" style="display: inline-block">
+                      <textarea id="notesTextArea" matInput [(ngModel)]="row.notes"
+                        (ngModelChange)="onContentChange(row)" cdkTextareaAutosize #autosize="cdkTextareaAutosize"
+                        cdkAutosizeMinRows="4" cdkAutosizeMaxRows="8"></textarea>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div class="grid-other-cell">
+                  <p>Others:</p>
+                  <div class="other-c-flex-container">
+                    <div class="other_c_1">
+                      <table class="other-flex-container">
+                        <!-- <colgroup>
+                          <col span="1" style="width: 40%; background-color:red">
+                          <col span="2" style="width: 60%; background-color: blue ">
+                        </colgroup> -->
+                        <tr class="other-row">
+                          <td >
+                            <p>Feature</p>
+                          </td>
+                          <td class="other-c-table-td">
+                            <mat-form-field appearance="none">
+                              <ng-container *ngIf="!row.reviewed && !testThreatSource(row.threatSource)">
+                                <mat-select [(ngModel)]="row.fromFeature" (ngModelChange)="onFeatureChange(row)">
+                                  <mat-option *ngFor="let selected of featureList.name; trackBy: trackByFeature"
+                                    [value]="selected">
+                                    {{selected}}
+                                  </mat-option>
+                                </mat-select>
+                              </ng-container>
+                              <ng-container *ngIf="row.reviewed || testThreatSource(row.threatSource)">
+                                <textarea matInput [ngModel]="row.fromFeature" [readonly]="true" cdkTextareaAutosize
+                                  #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1"
+                                  cdkAutosizeMaxRows="2"></textarea>
+                              </ng-container>
+                            </mat-form-field>
+                          </td>
+                        </tr>
+                        <tr class="other-row">
+                          <td>
+                            <p>
+                              Threat Source:
+                            </p>
+                          </td>
+                          <td class="other-c-table-td">
+                            <mat-form-field id="threatSourceOutput" appearance="none">
+                              <mat-select [ngModel]="row.threatSource" class="other-select"
+                                (selectionChange)="onThreatSourceChange(row, $event)"
+                                [disabled]="row.threatSource != 'ruleEngine' || row.reviewed">
+                                <mat-option *ngFor="let selected of threatSourceName; trackBy : trackByTreatSource"
+                                  [value]="selected.value">
+                                  {{selected.viewValue}}
+                                </mat-option>
+                              </mat-select>
+                            </mat-form-field>
+                          </td>
+                        </tr>
+                        <tr class="other-row">
+                          <td>
+                            <p>
+                              WP29 R155 Table A1:
+                            </p>
+                          </td>
+                          <td class="other-c-table-td">
+                            <mat-form-field id="threatSourceOutput" appearance="none">
+                              <mat-select class="other-select" multiple [(ngModel)]="row.wp29AttackIndex"
+                                [disabled]="!newDesign.project.mappedThreatList">
+                                <mat-option *ngFor="let attackIndex of wp29AttackIndexes; let i = index"
+                                  [value]="attackIndex">
+                                  {{attackIndex}}
+                                </mat-option>
+                              </mat-select>
+                            </mat-form-field>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                <ng-container [ngSwitch]="row.newRiskRatingAvailable">
+                  <ng-container *ngSwitchCase="true">
+                    <ng-container [ngTemplateOutlet]="expandedriskcontainer2"
+                      [ngTemplateOutletContext]="{impactSLevel: row.impactSLevel, attackFeasibilityElapsed: row.attackFeasibilityElapsed}">
+                    </ng-container>
+                  </ng-container>
+
+                  <ng-container *ngSwitchDefault></ng-container>
+                </ng-container>
+              </div>
+                <div *ngIf="row.treatment=='reduce'" style="width: -webkit-fill-available;max-width:unset;"
+                class="expanded-note-container">
+                <div>
+                  Notes:
+                  <br>
+                  <mat-form-field appearance="outline" style="display: inline-block">
+                    <textarea matInput [(ngModel)]="row.notes"
+                      (ngModelChange)="onContentChange(row)" cdkTextareaAutosize #autosize="cdkTextareaAutosize"
+                      cdkAutosizeMinRows="1" cdkAutosizeMaxRows="5"></textarea>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <div class="feasibility-expanded">
+                <ng-container *ngIf="row.feasibilityDetailsExpanded && row.treatment === 'no treatment'"
+                  [ngTemplateOutlet]="feasibilitynotreatment" [ngTemplateOutletContext]="{row: row, i: i}">
+                </ng-container>
+
+                <ng-container *ngIf="row.feasibilityDetailsExpanded && row.treatment !== 'no treatment'"
+                  [ngTemplateOutlet]="feasibilitytreatment" [ngTemplateOutletContext]="{row: row, i: i}">
+                </ng-container>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; let i=index; columns: displayedColumns;" class="threat-row" cdkDrag
+          [cdkDragData]="row" [class.dragEnabled]="openedMitreAttack" [id]="row.threatRuleEngineId"
+          [style.background-color]="(row.highlight == '_riskUpdate') ? 'rgba(198, 151, 155, 0.7)' : (row.highlight == '_highlight') ? 'rgba(255, 99, 71, 0.2)' : (row.reviewed ? 'rgba(252, 243, 207, 0.2)' : null)">
+          <span class="preview-style" *cdkDragPreview>{{row.threatRowNumber}}_{{row.securityPropertyCia}}_{{row.asset}}
+          </span>
+        </tr>
+        <tr mat-row *matRowDef="let row; columns: ['expandedDetail'];" class="expanded-row"
+          [style.background-color]="(row.highlight == '_riskUpdate') ? 'rgba(198, 151, 155, 0.7)' : (row.highlight == '_highlight') ? 'rgba(255, 99, 71, 0.2)' : (row.reviewed ? 'rgba(252, 243, 207, 0.2)' : null)">
+        </tr>
+      </table>
+
+      <mat-paginator #paginator [length]="totalRows" [pageIndex]="currentPage" [pageSize]="pageSize"
+        [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)" showFirstLastButtons>
+      </mat-paginator>
+    </div>
+    <!-- <div>
+      <ngx-datatable [columnMode]="ColumnMode.flex" [rows]="dataSource" [columns]="columns"></ngx-datatable>
+    </div> -->
+
+    <ng-template #feasibilitytreatment let-row="row" let-i="i">
+      <div class="feasibility-content">
+        <p>Feasibility Details</p>
+
+        <div class="feasibility-details">
+          <ng-container *ngIf="feasibilityMethod === 'Attack Potential'">
+            <table class="risk2-expanded-row-feasibility-table">
+              <colgroup>
+                <col span="1" style="width: 14%;">
+                <col span="1" style="width: 14%;">
+                <col span="1" style="width: 62%;">
+              </colgroup>
+              <tr class="traverse">
+                <td>
+                  <p>Elapsed Time:</p>
+                </td>
+                <td>
+                  <ng-container [ngSwitch]="feasibilityValue">
+                    <ng-container *ngSwitchCase="FeasibilityValue.Numeric">
+                      <input matInput type="number" [max]="19" [min]="0" [(ngModel)]="row.attackFeasibilityElapsedAfter"
+                        (ngModelChange)="onfeasibilityScoreChange(row)"
+                        [readonly]="row.validateStatusForFilter === 'validated'">
+                    </ng-container>
+                    <ng-container *ngSwitchCase="FeasibilityValue.Enumerate">
+                      <select class="attack-feasibility" [disabled]="row.validateStatusForFilter === 'validated'"
+                        (ngModelChange)="updateEnumerateValue($event, row, 'attackFeasibilityElapsedAfter', feasibilityRatingAPRubrics.time)"
+                        [ngModel]="feasibilityRatingAPRubrics.time | feasibilityEnumerate : row.attackFeasibilityElapsedAfter">
+                        <option *ngFor="let time of feasibilityRatingAPRubrics.time | objectKeys" [value]="time">
+                          {{ time | feasibilityTime }}
+                        </option>
+                      </select>
+                    </ng-container>
+                  </ng-container>
+                </td>
+                <td>
+                  <textarea matInput type="text" [(ngModel)]="row.attackFeasibilityElapsedAfterRationale"
+                    (ngModelChange)="onContentChange(row)" cdkTextareaAutosize #autosize="cdkTextareaAutosize"
+                    cdkAutosizeMinRows="1" cdkAutosizeMaxRows="3"
+                    [readonly]="row.validateStatusForFilter === 'validated'"></textarea>
+                </td>
+              </tr>
+              <tr class="traverse">
+                <td>
+                  <p>Expertise:</p>
+                </td>
+                <td>
+                  <ng-container [ngSwitch]="feasibilityValue">
+                    <ng-container *ngSwitchCase="FeasibilityValue.Numeric">
+                      <input matInput type="number" [max]="19" [min]="0"
+                        [(ngModel)]="row.attackFeasibilityExpertiseAfter"
+                        (ngModelChange)="onfeasibilityScoreChange(row)"
+                        [readonly]="row.validateStatusForFilter === 'validated'">
+                    </ng-container>
+                    <ng-container *ngSwitchCase="FeasibilityValue.Enumerate">
+                      <select class="attack-feasibility" [disabled]="row.validateStatusForFilter === 'validated'"
+                        (ngModelChange)="updateEnumerateValue($event, row, 'attackFeasibilityExpertiseAfter', feasibilityRatingAPRubrics.expertise)"
+                        [ngModel]="feasibilityRatingAPRubrics.expertise | feasibilityEnumerate : row.attackFeasibilityExpertiseAfter">
+                        <option *ngFor="let expertise of feasibilityRatingAPRubrics.expertise | objectKeys"
+                          [value]="expertise">
+                          {{ expertise | feasibilityText }}
+                        </option>
+                      </select>
+                    </ng-container>
+                  </ng-container>
+                </td>
+                <td>
+                  <textarea matInput type="text" [(ngModel)]="row.attackFeasibilityExpertiseAfterRationale"
+                    (ngModelChange)="onContentChange(row)" cdkTextareaAutosize #autosize="cdkTextareaAutosize"
+                    cdkAutosizeMinRows="1" cdkAutosizeMaxRows="3"
+                    [readonly]="row.validateStatusForFilter === 'validated'"></textarea>
+                </td>
+              </tr>
+              <tr class="traverse">
+                <td>
+                  <p>Knowledge:</p>
+                </td>
+                <td>
+                  <ng-container [ngSwitch]="feasibilityValue">
+                    <ng-container *ngSwitchCase="FeasibilityValue.Numeric">
+                      <input matInput type="number" [max]="19" [min]="0"
+                        [(ngModel)]="row.attackFeasibilityKnowledgeAfter"
+                        (ngModelChange)="onfeasibilityScoreChange(row)"
+                        [readonly]="row.validateStatusForFilter === 'validated'">
+                    </ng-container>
+                    <ng-container *ngSwitchCase="FeasibilityValue.Enumerate">
+                      <select class="attack-feasibility" [disabled]="row.validateStatusForFilter === 'validated'"
+                        (ngModelChange)="updateEnumerateValue($event, row, 'attackFeasibilityKnowledgeAfter', feasibilityRatingAPRubrics.knowledge)"
+                        [ngModel]="feasibilityRatingAPRubrics.knowledge | feasibilityEnumerate : row.attackFeasibilityKnowledgeAfter">
+                        <option *ngFor="let knowledge of feasibilityRatingAPRubrics.knowledge | objectKeys"
+                          [value]="knowledge">
+                          {{ knowledge | feasibilityText }}
+                        </option>
+                      </select>
+                    </ng-container>
+                  </ng-container>
+                </td>
+                <td>
+                  <textarea matInput type="text" [(ngModel)]="row.attackFeasibilityKnowledgeAfterRationale"
+                    (ngModelChange)="onContentChange(row)" cdkTextareaAutosize #autosize="cdkTextareaAutosize"
+                    cdkAutosizeMinRows="1" cdkAutosizeMaxRows="3"
+                    [readonly]="row.validateStatusForFilter === 'validated'"></textarea>
+                </td>
+              </tr>
+              <tr class="traverse">
+                <td>
+                  <p>Window:</p>
+                </td>
+                <td>
+                  <ng-container [ngSwitch]="feasibilityValue">
+                    <ng-container *ngSwitchCase="FeasibilityValue.Numeric">
+                      <input matInput type="number" [max]="19" [min]="0" [(ngModel)]="row.attackFeasibilityWindowAfter"
+                        (ngModelChange)="onfeasibilityScoreChange(row)"
+                        [readonly]="row.validateStatusForFilter === 'validated'">
+                    </ng-container>
+                    <ng-container *ngSwitchCase="FeasibilityValue.Enumerate">
+                      <select class="attack-feasibility" [disabled]="row.validateStatusForFilter === 'validated'"
+                        (ngModelChange)="updateEnumerateValue($event, row, 'attackFeasibilityWindowAfter', feasibilityRatingAPRubrics.window)"
+                        [ngModel]="feasibilityRatingAPRubrics.window | feasibilityEnumerate : row.attackFeasibilityWindowAfter">
+                        <option *ngFor="let window of feasibilityRatingAPRubrics.window | objectKeys" [value]="window">
+                          {{ window | feasibilityText }}
+                        </option>
+                      </select>
+                    </ng-container>
+                  </ng-container>
+                </td>
+                <td>
+                  <textarea matInput type="text" [(ngModel)]="row.attackFeasibilityWindowAfterRationale"
+                    (ngModelChange)="onContentChange(row)" cdkTextareaAutosize #autosize="cdkTextareaAutosize"
+                    cdkAutosizeMinRows="1" cdkAutosizeMaxRows="3"
+                    [readonly]="row.validateStatusForFilter === 'validated'"></textarea>
+                </td>
+              </tr>
+              <tr class="traverse">
+                <td>
+                  <p>Equipment:</p>
+                </td>
+                <td>
+                  <ng-container [ngSwitch]="feasibilityValue">
+                    <ng-container *ngSwitchCase="FeasibilityValue.Numeric">
+                      <input matInput type="number" [max]="19" [min]="0"
+                        [(ngModel)]="row.attackFeasibilityEquipmentAfter"
+                        (ngModelChange)="onfeasibilityScoreChange(row)"
+                        [readonly]="row.validateStatusForFilter === 'validated'">
+                    </ng-container>
+                    <ng-container *ngSwitchCase="FeasibilityValue.Enumerate">
+                      <select class="attack-feasibility" [disabled]="row.validateStatusForFilter === 'validated'"
+                        (ngModelChange)="updateEnumerateValue($event, row, 'attackFeasibilityEquipmentAfter', feasibilityRatingAPRubrics.equipment)"
+                        [ngModel]="feasibilityRatingAPRubrics.equipment | feasibilityEnumerate : row.attackFeasibilityEquipmentAfter">
+                        <option *ngFor="let equipment of feasibilityRatingAPRubrics.equipment | objectKeys"
+                          [value]="equipment">
+                          {{ equipment | feasibilityText }}
+                        </option>
+                      </select>
+                    </ng-container>
+                  </ng-container>
+                </td>
+                <td>
+                  <textarea matInput type="text" [(ngModel)]="row.attackFeasibilityEquipmentAfterRationale"
+                    (ngModelChange)="onContentChange(row)" cdkTextareaAutosize #autosize="cdkTextareaAutosize"
+                    cdkAutosizeMinRows="1" cdkAutosizeMaxRows="3"
+                    [readonly]="row.validateStatusForFilter === 'validated'"></textarea>
+                </td>
+              </tr>
+              <tr class="traverse">
+                <td>
+                  <p>Total:</p>
+                </td>
+                <td>
+                  <input matInput type="number" [max]="19" [min]="0" [ngModel]="row | feasibilityTotal" readonly>
+                </td>
+              </tr>
+            </table>
+          </ng-container>
+        </div>
+      </div>
+      <div class="feasibility-content">
+        <p>Feasibility Rubrics</p>
+
+        <div class="feasibility-rubrics">
+          <ng-container *ngIf="feasibilityMethod === 'Attack Potential' && feasibilityRatingAPRubrics">
+            <div class="rubrics-content">
+              <table class="rubrics-table">
+                <colgroup span="2"></colgroup>
+                <colgroup span="2"></colgroup>
+                <thead>
+                  <tr>
+                    <th colspan="3" scope="colgroup">Elapsed Time</th>
+                    <th colspan="3" scope="colgroup">Expertise</th>
+                    <th colspan="3" scope="colgroup">Knowledge</th>
+                    <th colspan="3" scope="colgroup">Window</th>
+                    <th colspan="3" scope="colgroup">Equipment</th>
+                  </tr>
+                  <tr>
+                    <th scope="col">Enumerate</th>
+                    <th scope="col">Value</th>
+                    <th scope="col">%</th>
+                    <th scope="col">Enumerate</th>
+                    <th scope="col">Value</th>
+                    <th scope="col">%</th>
+                    <th scope="col">Enumerate</th>
+                    <th scope="col">Value</th>
+                    <th scope="col">%</th>
+                    <th scope="col">Enumerate</th>
+                    <th scope="col">Value</th>
+                    <th scope="col">%</th>
+                    <th scope="col">Enumerate</th>
+                    <th scope="col">Value</th>
+                    <th scope="col">%</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of feasibilityRatingAPRubrics | feasibilityRubrics">
+                    <td scope="col">{{ row.timeEnumerate | feasibilityTime }}</td>
+                    <td scope="col">{{ row.timeValue }}</td>
+                    <td scope="col" [class]="row.timePercentage.class +' rubrics-percentage'">{{
+                      row.timePercentage.value }}</td>
+                    <td scope="col">{{ row.expertiseEnumerate | feasibilityText }}</td>
+                    <td scope="col">{{ row.expertiseValue }}</td>
+                    <td scope="col" [class]="row.expertisePercentage.class +' rubrics-percentage'">{{
+                      row.expertisePercentage.value }}</td>
+                    <td scope="col">{{ row.knowledgeEnumerate | feasibilityText }}</td>
+                    <td scope="col">{{ row.knowledgeValue }}</td>
+                    <td scope="col" [class]="row.knowledgePercentage.class +' rubrics-percentage'">{{
+                      row.knowledgePercentage.value }}</td>
+                    <td scope="col">{{ row.windowEnumerate | feasibilityText }}</td>
+                    <td scope="col">{{ row.windowValue }}</td>
+                    <td scope="col" [class]="row.windowPercentage.class +' rubrics-percentage'">{{
+                      row.windowPercentage.value }}</td>
+                    <td scope="col">{{ row.equipmentEnumerate | feasibilityText }}</td>
+                    <td scope="col">{{ row.equipmentValue }}</td>
+                    <td scope="col" [class]="row.equipmentPercentage.class +' rubrics-percentage'">{{
+                      row.equipmentPercentage.value }}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <table class="feasibility-ratings">
+                <thead>
+                  <tr>
+                    <th>Attack Feasibility Rating​</th>
+                    <th>Values</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let level of feasibilityLevelName; let i = index">
+                    <td>{{ level }}</td>
+                    <td>{{ feasibilityRatingAP | feasibilityRating : i }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template #feasibilitynotreatment let-row="row" let-i="i">
+      <div class="feasibility-content">
+        <p>Feasibility Details</p>
+
+        <div class="feasibility-details">
+          <ng-container *ngIf="feasibilityMethod === 'Attack Potential'">
+            <table class="risk2-expanded-row-feasibility-table">
+              <colgroup>
+                <col span="1" style="width: 14%;">
+                <col span="1" style="width: 14%;">
+                <col span="1" style="width: 62%;">
+              </colgroup>
+              <tr class="traverse">
+                <td>
+                  <p>Elapsed Time:</p>
+                </td>
+                <td>
+                  <ng-container [ngSwitch]="feasibilityValue">
+                    <ng-container *ngSwitchCase="FeasibilityValue.Numeric">
+                      <input matInput type="number" [max]="19" [min]="0" [(ngModel)]="row.attackFeasibilityElapsed"
+                        (ngModelChange)="onfeasibilityScoreChange(row)" [readonly]="row.reviewed">
+                    </ng-container>
+                    <ng-container *ngSwitchCase="FeasibilityValue.Enumerate">
+                      <select [disabled]="row.reviewed" class="attack-feasibility"
+                        (ngModelChange)="updateEnumerateValue($event, row, 'attackFeasibilityElapsed', feasibilityRatingAPRubrics.time)"
+                        [ngModel]="feasibilityRatingAPRubrics.time | feasibilityEnumerate : row.attackFeasibilityElapsed">
+                        <option *ngFor="let time of feasibilityRatingAPRubrics.time | objectKeys" [value]="time">
+                          {{ time | feasibilityTime }}
+                        </option>
+                      </select>
+                    </ng-container>
+                  </ng-container>
+                </td>
+                <td>
+                  <textarea matInput type="text" [(ngModel)]="row.attackFeasibilityElapsedRationale" cdkTextareaAutosize
+                    #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1" cdkAutosizeMaxRows="3"
+                    (ngModelChange)="onContentChange(row)" [readonly]="row.reviewed"></textarea>
+                </td>
+              </tr>
+              <tr class="traverse">
+                <td>
+                  <p>Expertise:</p>
+                </td>
+                <td>
+                  <ng-container [ngSwitch]="feasibilityValue">
+                    <ng-container *ngSwitchCase="FeasibilityValue.Numeric">
+                      <input matInput type="number" [max]="19" [min]="0" [(ngModel)]="row.attackFeasibilityExpertise"
+                        (ngModelChange)="onfeasibilityScoreChange(row)" [readonly]="row.reviewed">
+                    </ng-container>
+                    <ng-container *ngSwitchCase="FeasibilityValue.Enumerate">
+                      <select [disabled]="row.reviewed" class="attack-feasibility"
+                        (ngModelChange)="updateEnumerateValue($event, row, 'attackFeasibilityExpertise', feasibilityRatingAPRubrics.expertise)"
+                        [ngModel]="feasibilityRatingAPRubrics.expertise | feasibilityEnumerate : row.attackFeasibilityExpertise">
+                        <option *ngFor="let expertise of feasibilityRatingAPRubrics.expertise | objectKeys"
+                          [value]="expertise">
+                          {{ expertise | feasibilityText }}
+                        </option>
+                      </select>
+                    </ng-container>
+                  </ng-container>
+                </td>
+                <td>
+                  <textarea matInput type="text" [(ngModel)]="row.attackFeasibilityExpertiseRationale"
+                    cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1" cdkAutosizeMaxRows="3"
+                    (ngModelChange)="onContentChange(row)" [readonly]="row.reviewed"></textarea>
+                </td>
+              </tr>
+              <tr class="traverse">
+                <td>
+                  <p>Knowledge:</p>
+                </td>
+                <td>
+                  <ng-container [ngSwitch]="feasibilityValue">
+                    <ng-container *ngSwitchCase="FeasibilityValue.Numeric">
+                      <input matInput type="number" [max]="19" [min]="0" [(ngModel)]="row.attackFeasibilityKnowledge"
+                        (ngModelChange)="onfeasibilityScoreChange(row)" [readonly]="row.reviewed">
+                    </ng-container>
+                    <ng-container *ngSwitchCase="FeasibilityValue.Enumerate">
+                      <select [disabled]="row.reviewed" class="attack-feasibility"
+                        (ngModelChange)="updateEnumerateValue($event, row, 'attackFeasibilityKnowledge', feasibilityRatingAPRubrics.knowledge)"
+                        [ngModel]="feasibilityRatingAPRubrics.knowledge | feasibilityEnumerate : row.attackFeasibilityKnowledge">
+                        <option *ngFor="let knowledge of feasibilityRatingAPRubrics.knowledge | objectKeys"
+                          [value]="knowledge">
+                          {{ knowledge | feasibilityText }}
+                        </option>
+                      </select>
+                    </ng-container>
+                  </ng-container>
+                </td>
+                <td>
+                  <textarea matInput type="text" [(ngModel)]="row.attackFeasibilityKnowledgeRationale"
+                    cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1" cdkAutosizeMaxRows="3"
+                    (ngModelChange)="onContentChange(row)" [readonly]="row.reviewed"></textarea>
+                </td>
+              </tr>
+              <tr class="traverse">
+                <td>
+                  <p>Window:</p>
+                </td>
+                <td>
+                  <ng-container [ngSwitch]="feasibilityValue">
+                    <ng-container *ngSwitchCase="FeasibilityValue.Numeric">
+                      <input matInput type="number" [max]="19" [min]="0" [(ngModel)]="row.attackFeasibilityWindow"
+                        (ngModelChange)="onfeasibilityScoreChange(row)" [readonly]="row.reviewed">
+                    </ng-container>
+                    <ng-container *ngSwitchCase="FeasibilityValue.Enumerate">
+                      <select [disabled]="row.reviewed" class="attack-feasibility"
+                        (ngModelChange)="updateEnumerateValue($event, row, 'attackFeasibilityWindow', feasibilityRatingAPRubrics.window)"
+                        [ngModel]="feasibilityRatingAPRubrics.window | feasibilityEnumerate : row.attackFeasibilityWindow">
+                        <option *ngFor="let window of feasibilityRatingAPRubrics.window | objectKeys" [value]="window">
+                          {{ window | feasibilityText }}
+                        </option>
+                      </select>
+                    </ng-container>
+                  </ng-container>
+                </td>
+                <td>
+                  <textarea matInput type="text" [(ngModel)]="row.attackFeasibilityWindowRationale" cdkTextareaAutosize
+                    #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1" cdkAutosizeMaxRows="3"
+                    (ngModelChange)="onContentChange(row)" [readonly]="row.reviewed"></textarea>
+                </td>
+              </tr>
+              <tr class="traverse">
+                <td>
+                  <p>Equipment:</p>
+                </td>
+                <td>
+                  <ng-container [ngSwitch]="feasibilityValue">
+                    <ng-container *ngSwitchCase="FeasibilityValue.Numeric">
+                      <input matInput type="number" [max]="19" [min]="0" [(ngModel)]="row.attackFeasibilityEquipment"
+                        (ngModelChange)="onfeasibilityScoreChange(row)" [readonly]="row.reviewed">
+                    </ng-container>
+                    <ng-container *ngSwitchCase="FeasibilityValue.Enumerate">
+                      <select [disabled]="row.reviewed" class="attack-feasibility"
+                        (ngModelChange)="updateEnumerateValue($event, row, 'attackFeasibilityEquipment', feasibilityRatingAPRubrics.equipment)"
+                        [ngModel]="feasibilityRatingAPRubrics.equipment | feasibilityEnumerate : row.attackFeasibilityEquipment">
+                        <option *ngFor="let equipment of feasibilityRatingAPRubrics.equipment | objectKeys"
+                          [value]="equipment">
+                          {{ equipment | feasibilityText }}
+                        </option>
+                      </select>
+                    </ng-container>
+                  </ng-container>
+                </td>
+                <td>
+                  <textarea matInput type="text" [(ngModel)]="row.attackFeasibilityEquipmentRationale"
+                    cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1" cdkAutosizeMaxRows="3"
+                    (ngModelChange)="onContentChange(row)" [readonly]="row.reviewed"></textarea>
+                </td>
+              </tr>
+              <tr class="traverse">
+                <td>
+                  <p>Total:</p>
+                </td>
+                <td>
+                  <input matInput type="number" [max]="19" [min]="0" [ngModel]="row | feasibilityTotal" readonly>
+                </td>
+              </tr>
+            </table>
+          </ng-container>
+        </div>
+      </div>
+      <div class="feasibility-content">
+        <p>Feasibility Rubrics</p>
+
+        <div class="feasibility-rubrics">
+          <ng-container *ngIf="feasibilityMethod === 'Attack Potential' && feasibilityRatingAPRubrics">
+            <div class="rubrics-content">
+              <table class="rubrics-table">
+                <colgroup span="2"></colgroup>
+                <colgroup span="2"></colgroup>
+                <thead>
+                  <tr>
+                    <th colspan="3" scope="colgroup">Elapsed Time</th>
+                    <th colspan="3" scope="colgroup">Expertise</th>
+                    <th colspan="3" scope="colgroup">Knowledge</th>
+                    <th colspan="3" scope="colgroup">Window</th>
+                    <th colspan="3" scope="colgroup">Equipment</th>
+                  </tr>
+                  <tr>
+                    <th scope="col">Enumerate</th>
+                    <th scope="col">Value</th>
+                    <th scope="col">%</th>
+                    <th scope="col">Enumerate</th>
+                    <th scope="col">Value</th>
+                    <th scope="col">%</th>
+                    <th scope="col">Enumerate</th>
+                    <th scope="col">Value</th>
+                    <th scope="col">%</th>
+                    <th scope="col">Enumerate</th>
+                    <th scope="col">Value</th>
+                    <th scope="col">%</th>
+                    <th scope="col">Enumerate</th>
+                    <th scope="col">Value</th>
+                    <th scope="col">%</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of feasibilityRatingAPRubrics | feasibilityRubrics">
+                    <td scope="col">{{ row.timeEnumerate | feasibilityTime }}</td>
+                    <td scope="col">{{ row.timeValue }}</td>
+                    <td scope="col" [class]="row.timePercentage.class +' rubrics-percentage'">{{
+                      row.timePercentage.value }}</td>
+                    <td scope="col">{{ row.expertiseEnumerate | feasibilityText }}</td>
+                    <td scope="col">{{ row.expertiseValue }}</td>
+                    <td scope="col" [class]="row.expertisePercentage.class +' rubrics-percentage'">{{
+                      row.expertisePercentage.value }}</td>
+                    <td scope="col">{{ row.knowledgeEnumerate | feasibilityText }}</td>
+                    <td scope="col">{{ row.knowledgeValue }}</td>
+                    <td scope="col" [class]="row.knowledgePercentage.class +' rubrics-percentage'">{{
+                      row.knowledgePercentage.value }}</td>
+                    <td scope="col">{{ row.windowEnumerate | feasibilityText }}</td>
+                    <td scope="col">{{ row.windowValue }}</td>
+                    <td scope="col" [class]="row.windowPercentage.class +' rubrics-percentage'">{{
+                      row.windowPercentage.value }}</td>
+                    <td scope="col">{{ row.equipmentEnumerate | feasibilityText }}</td>
+                    <td scope="col">{{ row.equipmentValue }}</td>
+                    <td scope="col" [class]="row.equipmentPercentage.class +' rubrics-percentage'">{{
+                      row.equipmentPercentage.value }}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <table class="feasibility-ratings">
+                <thead>
+                  <tr>
+                    <th>Attack Feasibility Rating​</th>
+                    <th>Values</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let level of feasibilityLevelName; let i = index">
+                    <td>{{ level }}</td>
+                    <td>{{ feasibilityRatingAP | feasibilityRating : i }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template #expandedriskcontainer1 let-row="row" let-i="i">
+      <div class="expandedRiskContainer" style="width:100%;">
+        <div class="expanded-risk-container-child">
+          <p [innerHtml]="row.treatment | riskTitle : row.riskLevelBefore : row.riskLevel"></p>
+          <div class="risk-childflex-container">
+            <div class="risk-c-1">
+              <div class="risk-expanded-row-feasibility-div" *ngIf="feasibilityMethod == 'Attack Potential'">
+                <app-expanded-feasibility-header [threat]="row"></app-expanded-feasibility-header>
+
+                <ng-container [ngSwitch]="row.treatment">
+                  <ng-container *ngSwitchCase="TreatmentType.NoTreatment">
+                    <ng-container [ngTemplateOutlet]="notreatmentfeasibility"
+                      [ngTemplateOutletContext]="{row: row, i: i}">
+                    </ng-container>
+                  </ng-container>
+                  <ng-container *ngSwitchDefault>
+                    <ng-container [ngTemplateOutlet]="treatmentfeasibility"
+                      [ngTemplateOutletContext]="{row: row, i: i}">
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+              </div>
+            </div>
+            <div class="risk-c-2">
+              <div class="expanded-impact-feasibility-div" *ngIf="feasibilityMethod == 'Attack Potential'">
+                <app-expanded-impact-header></app-expanded-impact-header>
+
+                <ng-container [ngSwitch]="row.treatment">
+                  <ng-container *ngSwitchCase="TreatmentType.NoTreatment">
+                    <ng-container [ngTemplateOutlet]="notreatmentimpact" [ngTemplateOutletContext]="{row: row, i: i}">
+                    </ng-container>
+                  </ng-container>
+                  <ng-container *ngSwitchDefault>
+                    <ng-container [ngTemplateOutlet]="treatmentimpact" [ngTemplateOutletContext]="{row: row, i: i}">
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template #expandedriskcontainer2 let-attackFeasibilityElapsed="attackFeasibilityElapsed"
+      let-impactSLevel="impactSLevel">
+      <div class="expandedRiskContainer2">
+        <div class="expanded-risk-container-child">
+          <p>Updated Risk: </p>
+          <div class="risk-childflex-container">
+            <div class="risk2-c-flex-1 ">
+              <div class="expanded-row-feasibility-div" *ngIf="feasibilityMethod == 'Attack Potential'">
+                <p style="margin-bottom: 4px;">
+                  Updated Feasibility:
+                </p>
+                <table class="risk2-expanded-row-feasibility-table">
+                  <colgroup>
+                    <col span="1" style="width: 70%;">
+                    <col span="1" style="width: 30%;">
+                  </colgroup>
+                  <tr class="traverse">
+                    <td>
+                      <p>Elapsed Time:</p>
+                    </td>
+                    <td class="risk2-feasibility-td-dynamic"> {{attackFeasibilityElapsed}} </td>
+                  </tr>
+                  <tr class="traverse">
+                    <td>
+                      <p>Expertise:</p>
+                    </td>
+                    <td class="risk2-feasibility-td-dynamic"> {{attackFeasibilityElapsed}} </td>
+                  </tr>
+                  <tr class="traverse">
+                    <td>
+                      <p>Knowledge:</p>
+                    </td>
+                    <td class="risk2-feasibility-td-dynamic"> {{attackFeasibilityElapsed}} </td>
+                  </tr>
+                  <tr class="traverse">
+                    <td>
+                      <p>Window:</p>
+                    </td>
+                    <td class="risk2-feasibility-td-dynamic"> {{attackFeasibilityElapsed}} </td>
+                  </tr>
+                  <tr class="traverse">
+                    <td>
+                      <p>Equipment:</p>
+                    </td>
+                    <td class="risk2-feasibility-td-dynamic"> {{attackFeasibilityElapsed}} </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <div class="risk2-c-flex-2">
+              <div class="expanded-impact-feasibility-div" *ngIf="feasibilityMethod == 'Attack Potential'">
+                <p style="margin-bottom: 4px;">
+                  Updated Impact:
+                </p>
+                <table class="risk2-expanded-row-impact-table">
+                  <colgroup>
+                    <col span="1" style="width: 45%;">
+                    <col span="1" style="width: 25%;">
+                    <col span="1" style="width: 25%;">
+                  </colgroup>
+                  <tr class="traverse">
+                    <td>
+                      <p>Safety:</p>
+                    </td>
+                    <td class="matformcontainer">
+                      {{ impactSLevel }}
+                    </td>
+                  </tr>
+                  <tr class="traverse">
+                    <td>
+                      <p>Financial:</p>
+                    </td>
+                    <td class="matformcontainer">
+                      {{ impactSLevel }}
+                    </td>
+                  </tr>
+                  <tr class="traverse">
+                    <td>
+                      <p>Operational:</p>
+                    </td>
+                    <td class="matformcontainer">
+                      {{ impactSLevel }}
+                    </td>
+                  </tr>
+                  <tr class="traverse">
+                    <td>
+                      <p>Privacy:</p>
+                    </td>
+                    <td class="matformcontainer">
+                      {{ impactSLevel }}
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <div class="risk2-c-flex-3">
+              <p>Reason for the updates:</p>
+              <mat-form-field appearance="outline" style="width: 25em; display: inline-block">
+                <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="4"
+                  cdkAutosizeMaxRows="8"></textarea>
+              </mat-form-field>
+              <!-- <div style="display:flex;">
+              <div class="other-flex-container" style="flex:1;height:80px;width:90;margin-right:10px;border-radius:10px;">
+              </div>
+            </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template #treatmentfeasibility let-row="row" let-i="i">
+      <table class="risk-expanded-row-feasibility-table">
+        <colgroup>
+          <col span="1" style="width: 45%;">
+          <col span="1" style="width: 25%;">
+          <col span="1" style="width: 5%;">
+          <col span="1" style="width: 25%;">
+        </colgroup>
+        <tr>
+          <td></td>
+          <td>
+            <div class="feasibility-percent-bar">
+              <mat-progress-bar
+                [class]="(row | feasibilityPercentageValue : feasibilityRatingAPRubrics : 'time' : 'no treatment').class"
+                mode="determinate"
+                [value]="(row | feasibilityPercentageValue : feasibilityRatingAPRubrics : 'time' : 'no treatment').value">
+              </mat-progress-bar>
+            </div>
+          </td>
+          <td></td>
+          <td>
+            <div class="feasibility-percent-bar">
+              <mat-progress-bar
+                [class]="(row | feasibilityPercentageValue : feasibilityRatingAPRubrics : 'time' : 'treatment').class"
+                mode="determinate"
+                [value]="(row | feasibilityPercentageValue : feasibilityRatingAPRubrics : 'time' : 'treatment').value">
+              </mat-progress-bar>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>Elapsed Time:</p>
+          </td>
+          <td>
+            <div [class.risk-feasibility-treatment-container]="feasibilityValue === FeasibilityValue.Enumerate">
+              <ng-container [ngSwitch]="feasibilityValue">
+                <ng-container *ngSwitchCase="FeasibilityValue.Numeric">
+                  <input matInput type="number" [max]="19" [min]="0" class="attack-feasibility-numeric"
+                    [(ngModel)]="row.attackFeasibilityElapsed" (ngModelChange)="onfeasibilityScoreChange(row)"
+                    [readonly]="row.reviewed">
+                </ng-container>
+                <ng-container *ngSwitchCase="FeasibilityValue.Enumerate">
+                  <select matInput [disabled]="row.reviewed" class="attack-feasibility-before"
+                    (ngModelChange)="updateEnumerateValue($event, row, 'attackFeasibilityElapsed', feasibilityRatingAPRubrics.time)"
+                    [ngModel]="feasibilityRatingAPRubrics.time | feasibilityEnumerate : row.attackFeasibilityElapsed">
+                    <option *ngFor="let time of feasibilityRatingAPRubrics.time | objectKeys" [value]="time">
+                      {{ time | feasibilityTime }}
+                    </option>
+                  </select>
+                </ng-container>
+              </ng-container>
+            </div>
+          </td>
+          <td>
+            <mat-icon class="middle-arrow-forward">arrow_forward</mat-icon>
+          </td>
+          <td>
+            <div [class.risk-feasibility-treatment-container]="feasibilityValue === FeasibilityValue.Enumerate">
+              <ng-container [ngSwitch]="feasibilityValue">
+                <ng-container *ngSwitchCase="FeasibilityValue.Numeric">
+                  <input matInput type="number" [max]="19" [min]="0" class="attack-feasibility-numeric"
+                    [(ngModel)]="row.attackFeasibilityElapsedAfter" (ngModelChange)="onfeasibilityScoreChange(row)"
+                    [readonly]="row.treatmentVal">
+                </ng-container>
+                <ng-container *ngSwitchCase="FeasibilityValue.Enumerate">
+                  <select matInput [disabled]="row.treatmentVal" class="attack-feasibility-after"
+                    (ngModelChange)="updateEnumerateValue($event, row, 'attackFeasibilityElapsedAfter', feasibilityRatingAPRubrics.time)"
+                    [ngModel]="feasibilityRatingAPRubrics.time | feasibilityEnumerate : row.attackFeasibilityElapsedAfter">
+                    <option *ngFor="let time of feasibilityRatingAPRubrics.time | objectKeys" [value]="time">
+                      {{ time | feasibilityTime }}
+                    </option>
+                  </select>
+                </ng-container>
+              </ng-container>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <div class="feasibility-percent-bar">
+              <mat-progress-bar
+                [class]="(row | feasibilityPercentageValue : feasibilityRatingAPRubrics : 'expertise' : 'no treatment').class"
+                mode="determinate"
+                [value]="(row | feasibilityPercentageValue : feasibilityRatingAPRubrics : 'expertise' : 'no treatment').value">
+              </mat-progress-bar>
+            </div>
+          </td>
+          <td></td>
+          <td>
+            <div class="feasibility-percent-bar">
+              <mat-progress-bar
+                [class]="(row | feasibilityPercentageValue : feasibilityRatingAPRubrics : 'expertise' : 'treatment').class"
+                mode="determinate"
+                [value]="(row | feasibilityPercentageValue : feasibilityRatingAPRubrics : 'expertise' : 'treatment').value">
+              </mat-progress-bar>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>Expertise:</p>
+          </td>
+          <td>
+            <div [class.risk-feasibility-treatment-container]="feasibilityValue === FeasibilityValue.Enumerate">
+              <ng-container [ngSwitch]="feasibilityValue">
+                <ng-container *ngSwitchCase="FeasibilityValue.Numeric">
+                  <input matInput type="number" [max]="8" [min]="0" class="attack-feasibility-numeric"
+                    [(ngModel)]="row.attackFeasibilityExpertise" (ngModelChange)="onfeasibilityScoreChange(row)"
+                    [readonly]="row.reviewed">
+                </ng-container>
+                <ng-container *ngSwitchCase="FeasibilityValue.Enumerate">
+                  <select matInput [disabled]="row.reviewed" class="attack-feasibility-before"
+                    (ngModelChange)="updateEnumerateValue($event, row, 'attackFeasibilityExpertise', feasibilityRatingAPRubrics.expertise)"
+                    [ngModel]="feasibilityRatingAPRubrics.expertise | feasibilityEnumerate : row.attackFeasibilityExpertise">
+                    <option *ngFor="let expertise of feasibilityRatingAPRubrics.expertise | objectKeys"
+                      [value]="expertise">
+                      {{ expertise | feasibilityText }}
+                    </option>
+                  </select>
+                </ng-container>
+              </ng-container>
+            </div>
+          </td>
+          <td>
+            <mat-icon class="middle-arrow-forward">arrow_forward</mat-icon>
+          </td>
+          <td>
+            <div [class.risk-feasibility-treatment-container]="feasibilityValue === FeasibilityValue.Enumerate">
+              <ng-container [ngSwitch]="feasibilityValue">
+                <ng-container *ngSwitchCase="FeasibilityValue.Numeric">
+                  <input matInput type="number" [max]="8" [min]="0" class="attack-feasibility-numeric"
+                    [(ngModel)]="row.attackFeasibilityExpertiseAfter" (ngModelChange)="onfeasibilityScoreChange(row)"
+                    [readonly]="row.treatmentVal">
+                </ng-container>
+                <ng-container *ngSwitchCase="FeasibilityValue.Enumerate">
+                  <select matInput [disabled]="row.treatmentVal" class="attack-feasibility-after"
+                    (ngModelChange)="updateEnumerateValue($event, row, 'attackFeasibilityExpertiseAfter', feasibilityRatingAPRubrics.expertise)"
+                    [ngModel]="feasibilityRatingAPRubrics.expertise | feasibilityEnumerate : row.attackFeasibilityExpertiseAfter">
+                    <option *ngFor="let expertise of feasibilityRatingAPRubrics.expertise | objectKeys"
+                      [value]="expertise">
+                      {{ expertise | feasibilityText }}
+                    </option>
+                  </select>
+                </ng-container>
+              </ng-container>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <div class="feasibility-percent-bar">
+              <mat-progress-bar
+                [class]="(row | feasibilityPercentageValue : feasibilityRatingAPRubrics : 'knowledge' : 'no treatment').class"
+                mode="determinate"
+                [value]="(row | feasibilityPercentageValue : feasibilityRatingAPRubrics : 'knowledge' : 'no treatment').value">
+              </mat-progress-bar>
+            </div>
+          </td>
+          <td></td>
+          <td>
+            <div class="feasibility-percent-bar">
+              <mat-progress-bar
+                [class]="(row | feasibilityPercentageValue : feasibilityRatingAPRubrics : 'knowledge' : 'treatment').class"
+                mode="determinate"
+                [value]="(row | feasibilityPercentageValue : feasibilityRatingAPRubrics : 'knowledge' : 'treatment').value">
+              </mat-progress-bar>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>Knowledge:</p>
+          </td>
+          <td>
+            <div [class.risk-feasibility-treatment-container]="feasibilityValue === FeasibilityValue.Enumerate">
+              <ng-container [ngSwitch]="feasibilityValue">
+                <ng-container *ngSwitchCase="FeasibilityValue.Numeric">
+                  <input matInput type="number" [max]="11" [min]="0" class="attack-feasibility-numeric"
+                    [(ngModel)]="row.attackFeasibilityKnowledge" (ngModelChange)="onfeasibilityScoreChange(row)"
+                    [readonly]="row.reviewed">
+                </ng-container>
+                <ng-container *ngSwitchCase="FeasibilityValue.Enumerate">
+                  <select matInput [disabled]="row.reviewed" class="attack-feasibility-before"
+                    (ngModelChange)="updateEnumerateValue($event, row, 'attackFeasibilityKnowledge', feasibilityRatingAPRubrics.knowledge)"
+                    [ngModel]="feasibilityRatingAPRubrics.knowledge | feasibilityEnumerate : row.attackFeasibilityKnowledge">
+                    <option *ngFor="let knowledge of feasibilityRatingAPRubrics.knowledge | objectKeys"
+                      [value]="knowledge">
+                      {{ knowledge | feasibilityText }}
+                    </option>
+                  </select>
+                </ng-container>
+              </ng-container>
+            </div>
+          </td>
+          <td>
+            <mat-icon class="middle-arrow-forward">arrow_forward</mat-icon>
+          </td>
+          <td>
+            <div [class.risk-feasibility-treatment-container]="feasibilityValue === FeasibilityValue.Enumerate">
+              <ng-container [ngSwitch]="feasibilityValue">
+                <ng-container *ngSwitchCase="FeasibilityValue.Numeric">
+                  <input matInput type="number" [max]="11" [min]="0" class="attack-feasibility-numeric"
+                    [(ngModel)]="row.attackFeasibilityKnowledgeAfter" (ngModelChange)="onfeasibilityScoreChange(row)"
+                    [readonly]="row.treatmentVal">
+                </ng-container>
+                <ng-container *ngSwitchCase="FeasibilityValue.Enumerate">
+                  <select matInput [disabled]="row.treatmentVal" class="attack-feasibility-after"
+                    (ngModelChange)="updateEnumerateValue($event, row, 'attackFeasibilityKnowledgeAfter', feasibilityRatingAPRubrics.knowledge)"
+                    [ngModel]="feasibilityRatingAPRubrics.knowledge | feasibilityEnumerate : row.attackFeasibilityKnowledgeAfter">
+                    <option *ngFor="let knowledge of feasibilityRatingAPRubrics.knowledge | objectKeys"
+                      [value]="knowledge">
+                      {{ knowledge | feasibilityText }}
+                    </option>
+                  </select>
+                </ng-container>
+              </ng-container>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <div class="feasibility-percent-bar">
+              <mat-progress-bar
+                [class]="(row | feasibilityPercentageValue : feasibilityRatingAPRubrics : 'window' : 'no treatment').class"
+                mode="determinate"
+                [value]="(row | feasibilityPercentageValue : feasibilityRatingAPRubrics : 'window' : 'no treatment').value">
+              </mat-progress-bar>
+            </div>
+          </td>
+          <td></td>
+          <td>
+            <div class="feasibility-percent-bar">
+              <mat-progress-bar
+                [class]="(row | feasibilityPercentageValue : feasibilityRatingAPRubrics : 'window' : 'treatment').class"
+                mode="determinate"
+                [value]="(row | feasibilityPercentageValue : feasibilityRatingAPRubrics : 'window' : 'treatment').value">
+              </mat-progress-bar>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>Window:</p>
+          </td>
+          <td>
+            <div [class.risk-feasibility-treatment-container]="feasibilityValue === FeasibilityValue.Enumerate">
+              <ng-container [ngSwitch]="feasibilityValue">
+                <ng-container *ngSwitchCase="FeasibilityValue.Numeric">
+                  <input matInput type="number" [max]="10" [min]="0" class="attack-feasibility-numeric"
+                    [(ngModel)]="row.attackFeasibilityWindow" (ngModelChange)="onfeasibilityScoreChange(row)"
+                    [readonly]="row.reviewed">
+                </ng-container>
+                <ng-container *ngSwitchCase="FeasibilityValue.Enumerate">
+                  <select matInput [disabled]="row.reviewed" class="attack-feasibility-before"
+                    (ngModelChange)="updateEnumerateValue($event, row, 'attackFeasibilityWindow', feasibilityRatingAPRubrics.window)"
+                    [ngModel]="feasibilityRatingAPRubrics.window | feasibilityEnumerate : row.attackFeasibilityWindow">
+                    <option *ngFor="let window of feasibilityRatingAPRubrics.window | objectKeys" [value]="window">
+                      {{ window | feasibilityText }}
+                    </option>
+                  </select>
+                </ng-container>
+              </ng-container>
+            </div>
+          </td>
+          <td>
+            <mat-icon class="middle-arrow-forward">arrow_forward</mat-icon>
+          </td>
+          <td>
+            <div [class.risk-feasibility-treatment-container]="feasibilityValue === FeasibilityValue.Enumerate">
+              <ng-container [ngSwitch]="feasibilityValue">
+                <ng-container *ngSwitchCase="FeasibilityValue.Numeric">
+                  <input matInput type="number" [max]="10" [min]="0" class="attack-feasibility-numeric"
+                    [(ngModel)]="row.attackFeasibilityWindowAfter" (ngModelChange)="onfeasibilityScoreChange(row)"
+                    [readonly]="row.treatmentVal">
+                </ng-container>
+                <ng-container *ngSwitchCase="FeasibilityValue.Enumerate">
+                  <select matInput [disabled]="row.treatmentVal" class="attack-feasibility-after"
+                    (ngModelChange)="updateEnumerateValue($event, row, 'attackFeasibilityWindowAfter', feasibilityRatingAPRubrics.window)"
+                    [ngModel]="feasibilityRatingAPRubrics.window | feasibilityEnumerate : row.attackFeasibilityWindowAfter">
+                    <option *ngFor="let window of feasibilityRatingAPRubrics.window | objectKeys" [value]="window">
+                      {{ window | feasibilityText }}
+                    </option>
+                  </select>
+                </ng-container>
+              </ng-container>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <div class="feasibility-percent-bar">
+              <mat-progress-bar
+                [class]="(row | feasibilityPercentageValue : feasibilityRatingAPRubrics : 'equipment' : 'no treatment').class"
+                mode="determinate"
+                [value]="(row | feasibilityPercentageValue : feasibilityRatingAPRubrics : 'equipment' : 'no treatment').value">
+              </mat-progress-bar>
+            </div>
+          </td>
+          <td></td>
+          <td>
+            <div class="feasibility-percent-bar">
+              <mat-progress-bar
+                [class]="(row | feasibilityPercentageValue : feasibilityRatingAPRubrics : 'equipment' : 'treatment').class"
+                mode="determinate"
+                [value]="(row | feasibilityPercentageValue : feasibilityRatingAPRubrics : 'equipment' : 'treatment').value">
+              </mat-progress-bar>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>Equipment:</p>
+          </td>
+          <td>
+            <div [class.risk-feasibility-treatment-container]="feasibilityValue === FeasibilityValue.Enumerate">
+              <ng-container [ngSwitch]="feasibilityValue">
+                <ng-container *ngSwitchCase="FeasibilityValue.Numeric">
+                  <input matInput type="number" [max]="9" [min]="0" class="attack-feasibility-numeric"
+                    [(ngModel)]="row.attackFeasibilityEquipment" (ngModelChange)="onfeasibilityScoreChange(row)"
+                    [readonly]="row.reviewed">
+                </ng-container>
+                <ng-container *ngSwitchCase="FeasibilityValue.Enumerate">
+                  <select matInput [disabled]="row.reviewed" class="attack-feasibility-before"
+                    (ngModelChange)="updateEnumerateValue($event, row, 'attackFeasibilityEquipment', feasibilityRatingAPRubrics.equipment)"
+                    [ngModel]="feasibilityRatingAPRubrics.equipment | feasibilityEnumerate : row.attackFeasibilityEquipment">
+                    <option *ngFor="let equipment of feasibilityRatingAPRubrics.equipment | objectKeys"
+                      [value]="equipment">
+                      {{ equipment | feasibilityText }}
+                    </option>
+                  </select>
+                </ng-container>
+              </ng-container>
+            </div>
+          </td>
+          <td>
+            <mat-icon class="middle-arrow-forward">arrow_forward</mat-icon>
+          </td>
+          <td>
+            <div [class.risk-feasibility-treatment-container]="feasibilityValue === FeasibilityValue.Enumerate">
+              <ng-container [ngSwitch]="feasibilityValue">
+                <ng-container *ngSwitchCase="FeasibilityValue.Numeric">
+                  <input matInput type="number" [max]="9" [min]="0" class="attack-feasibility-numeric"
+                    [(ngModel)]="row.attackFeasibilityEquipmentAfter" (ngModelChange)="onfeasibilityScoreChange(row)"
+                    [readonly]="row.treatmentVal">
+                </ng-container>
+                <ng-container *ngSwitchCase="FeasibilityValue.Enumerate">
+                  <select matInput [disabled]="row.treatmentVal" class="attack-feasibility-before"
+                    (ngModelChange)="updateEnumerateValue($event, row, 'attackFeasibilityEquipmentAfter', feasibilityRatingAPRubrics.equipment)"
+                    [ngModel]="feasibilityRatingAPRubrics.equipment | feasibilityEnumerate : row.attackFeasibilityEquipmentAfter">
+                    <option *ngFor="let equipment of feasibilityRatingAPRubrics.equipment | objectKeys"
+                      [value]="equipment">
+                      {{ equipment | feasibilityText }}
+                    </option>
+                  </select>
+                </ng-container>
+              </ng-container>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </ng-template>
+
+    <ng-template #treatmentimpact let-row="row" let-i="i">
+      <table class="expanded-row-impact-table displayimpacttable">
+        <colgroup>
+          <col span="1" style="width: 45%;">
+          <col span="1" style="width: 25%;">
+          <col span="1" style="width: 5%;">
+          <col span="1" style="width: 25%;">
+        </colgroup>
+          <tr>
+            <td></td>
+            <td>
+              <div class="impact-percent-bar" *ngFor="let name of impactLevelName">
+                <mat-progress-bar *ngIf="row.impactSLevel === name" class={{getClassName(name)}} value={{getValueName(name)}}>
+                </mat-progress-bar>
+              </div>
+            </td>
+            <td></td>
+            <td>
+              <div class="impact-percent-bar" *ngFor="let name of impactLevelName">
+                <mat-progress-bar *ngIf="row.impactSLevelAfter === name" class={{getClassName(name)}} value={{getValueName(name)}}>
+                </mat-progress-bar>
+              </div>
+            </td>
+          </tr>
+        <tr class="traverse">
+          <td class="tcellspace">
+            <p>Safety:</p>
+          </td>
+          <td class="matformcontainer">
+            <select [(ngModel)]="row.impactSLevel" (ngModelChange)="recalculateRisk(row)" [disabled]="row.reviewed"
+              class="risk-impact-treatment-container">
+              <option *ngFor="let selected of impactLevelName; trackBy : trackByImpactLevel" [value]="selected">
+                {{selected}}
+              </option>
+            </select>
+          </td>
+          <td class="arrow">
+            <mat-icon class="middle-arrow-forward">arrow_forward</mat-icon>
+          </td>
+          <td class="matformcontainer">
+            <select [(ngModel)]="row.impactSLevelAfter" [disabled]="row.treatmentVal"
+              class="risk-impact-treatment-container" (ngModelChange)="recalculateRisk(row)">
+              <option *ngFor="let selected of impactLevelName; trackBy : trackByImpactLevelOptions" [value]="selected">
+                {{selected}}
+              </option>
+            </select>
+          </td>
+        </tr>
+          <tr>
+            <td></td>
+            <td>
+              <div class="impact-percent-bar" *ngFor="let name of impactLevelName">
+                <mat-progress-bar *ngIf="row.impactFLevel === name" class={{getClassName(name)}} value={{getValueName(name)}}>
+                </mat-progress-bar>
+              </div>
+            </td>
+            <td></td>
+            <td>
+              <div class="impact-percent-bar" *ngFor="let name of impactLevelName">
+                <mat-progress-bar *ngIf="row.impactFLevelAfter === name" class={{getClassName(name)}} value={{getValueName(name)}}>
+                </mat-progress-bar>
+              </div>
+            </td>
+          </tr>
+        <tr class="traverse">
+          <td>
+            <p>Financial:</p>
+          </td>
+          <td class="matformcontainer">
+            <select [(ngModel)]="row.impactFLevel" (ngModelChange)="recalculateRisk(row)" [disabled]="row.reviewed"
+              class="risk-impact-treatment-container">
+              <option *ngFor="let selected of impactLevelName; trackBy : trackByFinancialImpactLevel"
+                [value]="selected">
+                {{selected}}
+              </option>
+            </select>
+          </td>
+          <td class="arrow">
+            <mat-icon class="middle-arrow-forward">arrow_forward</mat-icon>
+          </td>
+          <td class="matformcontainer">
+            <select [(ngModel)]="row.impactFLevelAfter" [disabled]="row.treatmentVal"
+              class="risk-impact-treatment-container" (ngModelChange)="recalculateRisk(row)">
+              <option *ngFor="let selected of impactLevelName; trackBy : trackByFinanclImpactLebelOpt"
+                [value]="selected">
+                {{selected}}
+              </option>
+            </select>
+          </td>
+        </tr>
+          <tr>
+            <td></td>
+            <td>
+              <div class="impact-percent-bar" *ngFor="let name of impactLevelName">
+                <mat-progress-bar *ngIf="row.impactOLevel === name" class={{getClassName(name)}} value={{getValueName(name)}}>
+                </mat-progress-bar>
+              </div>
+            </td>
+            <td></td>
+            <td>
+                <div class="impact-percent-bar" *ngFor="let name of impactLevelName">
+                  <mat-progress-bar *ngIf="row.impactOLevelAfter === name" class={{getClassName(name)}} value={{getValueName(name)}}>
+                  </mat-progress-bar>
+                </div>
+            </td>
+          </tr>
+        <tr class="traverse">
+          <td>
+            <p>Operational:</p>
+          </td>
+          <td class="matformcontainer">
+            <select [(ngModel)]="row.impactOLevel" (ngModelChange)="recalculateRisk(row)" [disabled]="row.reviewed"
+              class="risk-impact-treatment-container">
+              <option *ngFor="let selected of impactLevelName; trackBy : trackByOperationalImpactLevel"
+                [value]="selected">
+                {{selected}}
+              </option>
+            </select>
+          </td>
+          <td class="arrow">
+            <mat-icon class="middle-arrow-forward">arrow_forward</mat-icon>
+          </td>
+          <td class="matformcontainer">
+            <select [(ngModel)]="row.impactOLevelAfter" [disabled]="row.treatmentVal"
+              class="risk-impact-treatment-container" (ngModelChange)="recalculateRisk(row)">
+              <option *ngFor="let selected of impactLevelName; trackBy : trackByOperationalImpactLevelOpt"
+                [value]="selected">
+                {{selected}}
+              </option>
+            </select>
+          </td>
+        </tr>
+          <tr>
+            <td></td>
+            <td>
+              <div class="impact-percent-bar" *ngFor="let name of impactLevelName">
+                <mat-progress-bar *ngIf="row.impactPLevel === name" class={{getClassName(name)}} value={{getValueName(name)}}>
+                </mat-progress-bar>
+              </div>
+            </td>
+            <td></td>
+            <td>
+              <div class="impact-percent-bar" *ngFor="let name of impactLevelName">
+                <mat-progress-bar *ngIf="row.impactPLevelAfter === name" class={{getClassName(name)}} value={{getValueName(name)}}>
+                </mat-progress-bar>
+              </div>
+            </td>
+          </tr>
+        <tr class="traverse">
+          <td>
+            <p>Privacy:</p>
+          </td>
+          <td class="matformcontainer">
+            <select [(ngModel)]="row.impactPLevel" (ngModelChange)="recalculateRisk(row)" [disabled]="row.reviewed"
+              class="risk-impact-treatment-container">
+              <option *ngFor="let selected of impactLevelName; trackBy : trackByPrivacyImpactLevel" [value]="selected">
+                {{selected}}
+              </option>
+            </select>
+          </td>
+          <td class="arrow">
+            <mat-icon class="middle-arrow-forward">arrow_forward</mat-icon>
+          </td>
+          <td class="matformcontainer">
+            <select [(ngModel)]="row.impactPLevelAfter" class="risk-impact-treatment-container"
+              [disabled]="row.treatmentVal" (ngModelChange)="recalculateRisk(row)">
+              <option *ngFor="let selected of impactLevelName; trackBy : trackByPrivacyImpactLevelOpt"
+                [value]="selected">
+                {{selected}}
+              </option>
+            </select>
+          </td>
+        </tr>
+      </table>
+    </ng-template>
+
+    <ng-template #notreatmentfeasibility let-row="row" let-i="i">
+      <table class="risk-expanded-row-feasibility-table">
+        <colgroup>
+          <col span="1" style="width: 45%;">
+          <col span="1" style="width: 50%;">
+        </colgroup>
+        <tr>
+          <td></td>
+          <td>
+            <div class="feasibility-percent-bar">
+              <mat-progress-bar
+                [class]="(row | feasibilityPercentageValue : feasibilityRatingAPRubrics : 'time' : 'no treatment').class"
+                mode="determinate"
+                [value]="(row | feasibilityPercentageValue : feasibilityRatingAPRubrics : 'time' : 'no treatment').value">
+              </mat-progress-bar>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>Elapsed Time:</p>
+          </td>
+          <td>
+            <div class="risk-feasibility-notreatment-container">
+              <ng-container [ngSwitch]="feasibilityValue">
+                <ng-container *ngSwitchCase="FeasibilityValue.Numeric">
+                  <mat-form-field appearance="none" style="height: 1em; padding: 0 !important; width: 100%;">
+                    <input matInput type="number" [max]="19" [min]="0" class="attack-feasibility-numeric"
+                      [(ngModel)]="row.attackFeasibilityElapsed" (ngModelChange)="onfeasibilityScoreChange(row)"
+                      [readonly]="row.reviewed">
+                  </mat-form-field>
+                </ng-container>
+                <ng-container *ngSwitchCase="FeasibilityValue.Enumerate">
+                  <select [disabled]="row.reviewed" class="attack-feasibility"
+                    (ngModelChange)="updateEnumerateValue($event, row, 'attackFeasibilityElapsed', feasibilityRatingAPRubrics.time)"
+                    [ngModel]="feasibilityRatingAPRubrics.time | feasibilityEnumerate : row.attackFeasibilityElapsed">
+                    <option *ngFor="let time of feasibilityRatingAPRubrics.time | objectKeys" [value]="time">
+                      {{ time | feasibilityTime }}
+                    </option>
+                  </select>
+                </ng-container>
+              </ng-container>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <div class="feasibility-percent-bar">
+              <mat-progress-bar
+                [class]="(row | feasibilityPercentageValue : feasibilityRatingAPRubrics : 'expertise' : 'no treatment').class"
+                mode="determinate"
+                [value]="(row | feasibilityPercentageValue : feasibilityRatingAPRubrics : 'expertise' : 'no treatment').value">
+              </mat-progress-bar>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>Expertise:</p>
+          </td>
+          <td>
+            <div class="risk-feasibility-notreatment-container">
+              <ng-container [ngSwitch]="feasibilityValue">
+                <ng-container *ngSwitchCase="FeasibilityValue.Numeric">
+                  <mat-form-field appearance="none" style="height: 1em; padding: 0 !important;">
+                    <input matInput type="number" [max]="8" [min]="0" class="attack-feasibility-numeric"
+                      [(ngModel)]="row.attackFeasibilityExpertise" (ngModelChange)="onfeasibilityScoreChange(row)"
+                      [readonly]="row.reviewed">
+                  </mat-form-field>
+                </ng-container>
+                <ng-container *ngSwitchCase="FeasibilityValue.Enumerate">
+                  <select [disabled]="row.reviewed" class="attack-feasibility"
+                    (ngModelChange)="updateEnumerateValue($event, row, 'attackFeasibilityExpertise', feasibilityRatingAPRubrics.expertise)"
+                    [ngModel]="feasibilityRatingAPRubrics.expertise | feasibilityEnumerate : row.attackFeasibilityExpertise">
+                    <option *ngFor="let expertise of feasibilityRatingAPRubrics.expertise | objectKeys"
+                      [value]="expertise">
+                      {{ expertise | feasibilityText }}
+                    </option>
+                  </select>
+                </ng-container>
+              </ng-container>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <div class="feasibility-percent-bar">
+              <mat-progress-bar
+                [class]="(row | feasibilityPercentageValue : feasibilityRatingAPRubrics : 'knowledge' : 'no treatment').class"
+                mode="determinate"
+                [value]="(row | feasibilityPercentageValue : feasibilityRatingAPRubrics : 'knowledge' : 'no treatment').value">
+              </mat-progress-bar>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>Knowledge:</p>
+          </td>
+          <td>
+            <div class="risk-feasibility-notreatment-container">
+              <ng-container [ngSwitch]="feasibilityValue">
+                <ng-container *ngSwitchCase="FeasibilityValue.Numeric">
+                  <mat-form-field appearance="none" style="height: 1em; padding: 0 !important;">
+                    <input matInput type="number" [max]="11" [min]="0" class="attack-feasibility-numeric"
+                      [(ngModel)]="row.attackFeasibilityKnowledge" (ngModelChange)="onfeasibilityScoreChange(row)"
+                      [readonly]="row.reviewed">
+                  </mat-form-field>
+                </ng-container>
+                <ng-container *ngSwitchCase="FeasibilityValue.Enumerate">
+                  <select [disabled]="row.reviewed" class="attack-feasibility"
+                    (ngModelChange)="updateEnumerateValue($event, row, 'attackFeasibilityKnowledge', feasibilityRatingAPRubrics.knowledge)"
+                    [ngModel]="feasibilityRatingAPRubrics.knowledge | feasibilityEnumerate : row.attackFeasibilityKnowledge">
+                    <option *ngFor="let knowledge of feasibilityRatingAPRubrics.knowledge | objectKeys"
+                      [value]="knowledge">
+                      {{ knowledge | feasibilityText }}
+                    </option>
+                  </select>
+                </ng-container>
+              </ng-container>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <div class="feasibility-percent-bar">
+              <mat-progress-bar
+                [class]="(row | feasibilityPercentageValue : feasibilityRatingAPRubrics : 'window' : 'no treatment').class"
+                mode="determinate"
+                [value]="(row | feasibilityPercentageValue : feasibilityRatingAPRubrics : 'window' : 'no treatment').value">
+              </mat-progress-bar>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>Window:</p>
+          </td>
+          <td>
+            <div class="risk-feasibility-notreatment-container">
+              <ng-container [ngSwitch]="feasibilityValue">
+                <ng-container *ngSwitchCase="FeasibilityValue.Numeric">
+                  <mat-form-field appearance="none" style="height: 1em; padding: 0 !important;">
+                    <input matInput type="number" [max]="10" [min]="0" class="attack-feasibility-numeric"
+                      [(ngModel)]="row.attackFeasibilityWindow" (ngModelChange)="onfeasibilityScoreChange(row)"
+                      [readonly]="row.reviewed">
+                  </mat-form-field>
+                </ng-container>
+                <ng-container *ngSwitchCase="FeasibilityValue.Enumerate">
+                  <select [disabled]="row.reviewed" class="attack-feasibility"
+                    (ngModelChange)="updateEnumerateValue($event, row, 'attackFeasibilityWindow', feasibilityRatingAPRubrics.window)"
+                    [ngModel]="feasibilityRatingAPRubrics.window | feasibilityEnumerate : row.attackFeasibilityWindow">
+                    <option *ngFor="let window of feasibilityRatingAPRubrics.window | objectKeys" [value]="window">
+                      {{ window | feasibilityText }}
+                    </option>
+                  </select>
+                </ng-container>
+              </ng-container>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <div class="feasibility-percent-bar">
+              <mat-progress-bar
+                [class]="(row | feasibilityPercentageValue : feasibilityRatingAPRubrics : 'equipment' : 'no treatment').class"
+                mode="determinate"
+                [value]="(row | feasibilityPercentageValue : feasibilityRatingAPRubrics : 'equipment' : 'no treatment').value">
+              </mat-progress-bar>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>Equipment:</p>
+          </td>
+          <td>
+            <div class="risk-feasibility-notreatment-container">
+              <ng-container [ngSwitch]="feasibilityValue">
+                <ng-container *ngSwitchCase="FeasibilityValue.Numeric">
+                  <mat-form-field appearance="none" style="height: 1em; padding: 0 !important;">
+                    <input matInput type="number" [max]="9" [min]="0" class="attack-feasibility-numeric"
+                      [(ngModel)]="row.attackFeasibilityEquipment" (ngModelChange)="onfeasibilityScoreChange(row)"
+                      [readonly]="row.reviewed">
+                  </mat-form-field>
+                </ng-container>
+                <ng-container *ngSwitchCase="FeasibilityValue.Enumerate">
+                  <select [disabled]="row.reviewed" class="attack-feasibility"
+                    (ngModelChange)="updateEnumerateValue($event, row, 'attackFeasibilityEquipment', feasibilityRatingAPRubrics.equipment)"
+                    [ngModel]="feasibilityRatingAPRubrics.equipment | feasibilityEnumerate : row.attackFeasibilityEquipment">
+                    <option *ngFor="let equipment of feasibilityRatingAPRubrics.equipment | objectKeys"
+                      [value]="equipment">
+                      {{ equipment | feasibilityText }}
+                    </option>
+                  </select>
+                </ng-container>
+              </ng-container>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </ng-template>
+
+    <ng-template #notreatmentimpact let-row="row" let-i="i">
+      <table class="expanded-row-impact-table">
+        <colgroup>
+          <col span="1" style="width: 10%;">
+          <col span="1" style="width: 10%;">
+          <col span="1" style="width: 12%;">
+          <col span="1" style="width: 10%;">
+        </colgroup>
+          <tr>
+            <td></td>
+            <td>
+              <div class="impact-percent-bar" *ngFor="let name of impactLevelName">
+                <mat-progress-bar *ngIf="row.impactSLevel === name" class={{getClassName(name)}} value={{getValueName(name)}}>
+                </mat-progress-bar>
+              </div>
+            </td>
+          </tr>
+        <tr class="traverse">
+          <td>
+            <p>Safety:</p>
+          </td>
+          <td class="matformcontainer">
+            <select [(ngModel)]="row.impactSLevel" class="risk-impact-notreatment-container"
+              (ngModelChange)="recalculateRisk(row)" [disabled]="row.reviewed">
+              <option *ngFor="let selected of impactLevelName; trackBy : trackBySafetyImpactLevel" [value]="selected">
+                {{selected}}
+              </option>
+            </select>
+          </td>
+        </tr>
+          <tr>
+            <td></td>
+            <td>
+              <div class="impact-percent-bar" *ngFor="let name of impactLevelName">
+                <mat-progress-bar *ngIf="row.impactFLevel === name" class={{getClassName(name)}} value={{getValueName(name)}}>
+                </mat-progress-bar>
+              </div>
+            </td>
+          </tr>
+        <tr class="traverse">
+          <td>
+            <p>Financial:</p>
+          </td>
+          <td class="matformcontainer">
+            <select [(ngModel)]="row.impactFLevel" class="risk-impact-notreatment-container"
+              (ngModelChange)="recalculateRisk(row)" [disabled]="row.reviewed">
+              <option *ngFor="let selected of impactLevelName; trackBy : trackByNoTraetmentFinancial"
+                [value]="selected">
+                {{selected}}
+              </option>
+            </select>
+          </td>
+        </tr>
+          <tr>
+            <td></td>
+            <td>
+              <div class="impact-percent-bar" *ngFor="let name of impactLevelName">
+                <mat-progress-bar *ngIf="row.impactOLevel === name" class={{getClassName(name)}} value={{getValueName(name)}}>
+                </mat-progress-bar>
+              </div>
+            </td>
+          </tr>
+        <tr class="traverse">
+          <td>
+            <p>Operational:</p>
+          </td>
+          <td class="matformcontainer">
+            <select [(ngModel)]="row.impactOLevel" class="risk-impact-notreatment-container"
+              (ngModelChange)="recalculateRisk(row)" [disabled]="row.reviewed">
+              <option *ngFor="let selected of impactLevelName; trackBy : trackByNoTreatmentOperational"
+                [value]="selected">
+                {{selected}}
+              </option>
+            </select>
+          </td>
+        </tr>
+          <tr>
+            <td></td>
+            <td>
+              <div class="impact-percent-bar" *ngFor="let name of impactLevelName">
+                <mat-progress-bar *ngIf="row.impactPLevel === name" class={{getClassName(name)}} value={{getValueName(name)}}>
+                </mat-progress-bar>
+              </div>
+            </td>
+          </tr>
+        <tr class="traverse">
+          <td>
+            <p>Privacy:</p>
+          </td>
+          <td class="matformcontainer">
+            <select [(ngModel)]="row.impactPLevel" class="risk-impact-notreatment-container"
+              (ngModelChange)="recalculateRisk(row)" [disabled]="row.reviewed">
+              <option *ngFor="let selected of impactLevelName; trackBy : trackByNoTreatmentPrivacy" [value]="selected">
+                {{selected}}
+              </option>
+            </select>
+          </td>
+        </tr>
+      </table>
+    </ng-template>
+  </div>
+
+  <ng-container *ngIf="openedMitreAttack">
+    <app-mitre-attack (action)="closeMitreAttackPopup($event)" [mitreAttackMethod]="mitreAttackMethod"
+      [threats]="dataSource.data" [impactAggMethod]="impactAggMethod" [impactLevelName]="impactLevelName"
+      [feasibilityLevelName]="feasibilityLevelName" [riskMatrix]="riskMatrix" [mergedThreat]="mergedThreat"
+      [toggleMergedThreatChanges]="toggleMergedThreatChanges">
+    </app-mitre-attack>
+  </ng-container>
+</div>
+
+<!-- Threat merge Feature is disabled -->
+<!-- <div class="mitreAttack" *ngIf="!openedMitreAttack && mitreAttackService.atmTactics?.length > 0">
+  <div class="toggleBar" (click)="openMitreAttack()" >
+    <mat-icon  aria-hidden="false" aria-label="Drag Icon">drag_handle</mat-icon>
+  </div>
+</div> -->

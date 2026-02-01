@@ -1,0 +1,30 @@
+@import '~@angular/material/theming';
+
+/* allow checkbox text to wrap. not working in IE */
+.mat-checkbox-layout { 
+  white-space: normal !important; 
+}
+
+@include mat-core();
+
+
+// define 3 theme color
+// mat-palette accepts $palette-name, main, lighter and darker variants
+$my-theme-primary: mat-palette($mat-indigo);
+$my-theme-accent: mat-palette($mat-amber);
+$my-theme-warn: mat-palette($mat-deep-orange);
+
+// create theme (use mat-dark-theme for themes with dark backgrounds)
+$my-theme: mat-light-theme(
+    $my-theme-primary,
+    $my-theme-accent,
+    $my-theme-warn
+);
+
+@include angular-material-theme($my-theme);
+.alternate-theme {
+  $alternate-primary: mat-palette($mat-light-blue);
+  $alternate-accent:  mat-palette($mat-yellow, 400);
+  $alternate-theme: mat-light-theme($alternate-primary, $alternate-accent);
+  @include angular-material-theme($alternate-theme);
+}

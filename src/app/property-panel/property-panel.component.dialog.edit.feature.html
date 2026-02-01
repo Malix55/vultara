@@ -1,0 +1,59 @@
+<h3 mat-dialog-title>
+    {{dialogTitle}}
+    <hr style="width:50%;height:3px;color:#2E86C1;background-color:#2E86C1;border-width:0;">
+</h3>
+<div mat-dialog-content>
+    <mat-form-field appearance="fill" class="inputForm">
+        <mat-label>Name of the feature chain is...</mat-label>
+        <input matInput [(ngModel)]="featureChainName">
+    </mat-form-field>
+    <br>
+    <h5>These following components have unchained {{dataInput.featureName}} feature.</h5>
+    <!-- <br>
+    <h5 style="position:absolute">Delete those irrelevant to {{dataInput.activeComponentNickName}}'s {{dataInput.featureName}} feature,</h5>
+    <br>
+    <h5 style="position:absolute">and assign proper feature roles to the rest.</h5> -->
+    <div style="display:block;margin-top:1em;">
+        <mat-list>
+            <mat-list-item style="margin-top:1em;" *ngFor="let microItem of involvedMicroTempArray; let i=index">
+                <mat-checkbox [(ngModel)]="confirmedMicroTempArray[i]" [disabled]="dataInput.microDisabled[i]" matTooltip="check to add component to the feature chain"></mat-checkbox>
+                <div style="margin-left: 1em;width:8em;text-align:center;">
+                    {{microItem.nickName}}
+                </div>
+                <mat-form-field class="inputForm" style="width:20em;margin-left:1em;" appearance="fill" matTooltip="assign the proper feature role">
+                    <mat-label>Feature Role</mat-label>
+                    <mat-select [(ngModel)]="microItem.featureRole[involvedMicroFeatureIndexTempArray[i]]" (selectionChange)="microFeatureRoleChange($event, i)">
+                        <mat-option *ngFor="let selectedFeatureRole of involvedMicroFeatureRolesTempArray[i]" [value]="selectedFeatureRole.value">
+                            {{selectedFeatureRole.viewValue}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </mat-list-item>
+        </mat-list>
+        <mat-list>
+            <mat-list-item style="margin-top:1em;" *ngFor="let controlUnitItem of involvedControlUnitTempArray; let i=index">
+                <mat-checkbox [(ngModel)]="confirmedControlUnitTempArray[i]" [disabled]="dataInput.controlUnitDisabled[i]" matTooltip="check to add component to the feature chain"></mat-checkbox>
+                <!-- <button mat-button (click)="removeControlUnit(i)" matTooltip="delete irrelevant component">
+                    <mat-icon>delete</mat-icon>
+                </button> -->
+                <div style="margin-left: 1em;width:8em;text-align:center;">
+                    {{controlUnitItem.nickName}}
+                </div>
+                <mat-form-field class="inputForm" style="width:20em;margin-left:1em;" appearance="fill" matTooltip="assign the proper feature role">
+                    <mat-label>Feature Role</mat-label>
+                    <mat-select [(ngModel)]="controlUnitItem.featureRole[involvedControlUnitFeatureIndexTempArray[i]]" (selectionChange)="controlUnitFeatureRoleChange($event, i)">
+                        <mat-option *ngFor="let selectedFeatureRole of involvedControlUnitFeatureRolesTempArray[i]" [value]="selectedFeatureRole.value">
+                            {{selectedFeatureRole.viewValue}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </mat-list-item>
+        </mat-list>
+    </div>
+
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button (click)="cancelEditFeature()">Cancel</button>
+  <button mat-raised-button (click)="confirmEditFeature()" [disabled]="(featureChainName | trimText) === ''">Confirm</button>
+  <button mat-raised-button (click)="removeFeatureChain()" style="margin-left: 21em;" matTooltip="Remove this feature chain">Remove</button>
+</div>

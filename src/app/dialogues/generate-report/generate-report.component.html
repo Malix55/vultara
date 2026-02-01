@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>Select Report Contents</h1>
+<div mat-dialog-content>
+    <section class="select-content-container" [formGroup]="reportContentGroup">
+        <p><mat-checkbox formControlName="project_risk_chart">Project Risk Chart</mat-checkbox></p>
+        <!-- <p *ngIf="isUserRoleAboveManager"><mat-checkbox formControlName="organization_risk_chart">Organizational Risk Chart</mat-checkbox></p> -->
+        <p><mat-checkbox formControlName="architecture_diagram">Architecture Diagram</mat-checkbox></p>
+        <p><mat-checkbox formControlName="high_risk_threat">High Risk Threats</mat-checkbox></p>
+        <p><mat-checkbox formControlName="all_threat">All Threats</mat-checkbox></p>
+        <p><mat-checkbox formControlName="vulnerability_list">Vulnerability List</mat-checkbox></p>
+      </section>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button mat-dialog-close>Cancel</button>
+  <button [disabled]="disableGenerateReportBtn()" mat-raised-button color="primary" (click)="generateReport()">Generate</button>
+</div>

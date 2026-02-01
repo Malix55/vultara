@@ -1,0 +1,403 @@
+.automotive-navigation-view {
+    position: relative;
+    /* top: 10rem; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.automotive-navigation-buttons {
+    /* margin-right: 14%; */
+    justify-content: center;
+    align-items: center;
+    background: url(../../assets//images/v-background.png);
+    background-repeat: no-repeat;
+    background-position: bottom;
+    background-size: cover;
+}
+
+.automotive-navigation-buttons>button.mat-raised-button {
+    border-radius: 0px;
+}
+
+/*Distributed activities and post-development buttons*/
+.top-buttons {
+    display: flex;
+    justify-content: space-around;
+    width: 55vw;
+    height: 7vh;
+}
+
+.top-buttons>button.mat-button {
+    width: 23.8%;
+    height: 86%;
+    border-radius: 0px;
+    color: white;
+    font-size: 0.8vw;
+}
+
+.distributed-activities-button {
+    margin-left: 7%;
+    transform: skewX(30deg);
+}
+
+.post-development-button {
+    margin-left: 14%;
+    transform: skewX(-30deg);
+}
+
+::ng-deep.top-button-width {
+    width: 13vw !important;
+    max-width: unset !important;
+    min-width: unset !important;
+    min-height: unset !important;
+}
+
+/*Concept and V&V buttons*/
+.column-buttons {
+    display: flex;
+    justify-content: space-around;
+    height: 14vh;
+    margin-bottom: 9.4%;
+}
+
+.column-buttons>button {
+    width: 25%;
+    height: 55%;
+    border-radius: 0px;
+    font-size: 0.8vw;
+}
+
+.concept {
+    display: inline-block;
+    transform: rotate(-251deg);
+    color: white;
+    cursor: pointer;
+    font-size: 0.8vw;
+}
+
+
+.concept-button {
+    margin-top: 8.2%;
+    margin-left: 24.1%;
+    transform: rotate(251deg);
+    clip-path: polygon(22% 7%, 100% 0%, 91% 100%, 5% 100%);
+}
+
+
+
+.vClass {
+    display: inline-block;
+    transform: rotate(-288deg);
+    color: white;
+    cursor: pointer;
+    font-size: 0.8vw;
+}
+
+.vv-button {
+    margin-top: 8.2%;
+    margin-right: 24%;
+    transform: rotate(288deg);
+    clip-path: polygon(6% 7%, 91% 0%, 100% 100%, 21% 95%);
+}
+
+
+/*Development button*/
+.development-button {
+    display: flex;
+    justify-content: center;
+    height: 10vh
+}
+
+.development-button>button {
+    width: 38.4%;
+    height: 19em;
+    width: 14vw;
+    clip-path: polygon(50% 0%, 64% 28%, 75% 50%, 100% 100%, 75% 96%, 62% 69%, 66% 74%, 36% 74%, 26% 96%, 0% 100%, 25% 50%, 37% 26%);
+    transform: rotate(180deg);
+    font-size: 0.8vw;
+}
+
+
+::ng-deep.mat-menu-content {
+    padding: 0 !important;
+}
+
+
+span>button {
+    text-align: center;
+    height: 40px;
+    line-height: 41px;
+}
+
+::ng-deep.distributed-activities-menu {
+    position: absolute;
+    right: 69rem;
+    bottom: 42.7rem;
+}
+
+::ng-deep.post-development-menu {
+    position: absolute;
+    right: 35.4rem;
+    bottom: 37.5rem;
+}
+
+::ng-deep.concept-menu {
+    position: absolute;
+    right: 51rem;
+    bottom: 31rem;
+}
+
+::ng-deep.vv-menu {
+    position: absolute;
+    left: 9rem;
+    bottom: 31rem;
+}
+
+::ng-deep.cybersecurity-organization-menu {
+    position: absolute;
+    right: 88.7rem;
+    bottom: 31rem;
+}
+
+::ng-deep.cybersecurity-management-menu {
+    translate: 21px 7px;
+}
+
+::ng-deep.development-button-menu {
+    width: 25rem !important;
+    /* max-width:unset !important; */
+    min-width: unset !important;
+    min-height: unset !important;
+    max-width: 100% !important;
+    position: absolute;
+    left: 15rem;
+    bottom: 12rem;
+}
+
+
+.mat-divider {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.blue-matDivider {
+    background-color: rgb(60, 152, 260, 0.6);
+}
+
+::ng-deep.activeMenu {
+    background-color: #365b9d !important;
+}
+
+::ng-deep.disabledSpan {
+    color:white !important;
+    background: solid(#7f7f7f);
+    background: linear-gradient(90deg, rgb(202, 201, 201), rgba(127, 127, 127, 1));
+}
+
+::ng-deep.disabledSpan:hover {
+    cursor: default;
+}
+
+
+.disabledHover {
+    background-color: #c6c6c6 !important;
+    opacity: 0.8;
+    color: rgba(0, 0, 0) !important;
+    cursor: default;
+}
+
+.disabledHover:hover {
+    background-color: #adadad !important;
+    opacity: 0.8;
+    color: rgba(0, 0, 0) !important;
+}
+
+
+
+
+/*Continual cybersecurity button*/
+.continual-cybersecurity-button {
+    display: flex;
+    justify-content: center;
+    margin-top: 23%;
+}
+
+.continual-cybersecurity-button>button {
+    position: absolute;
+    width: 23%;
+    height: 7%;
+    clip-path: polygon(4% 10%, 96% 10%, 100% 100%, 0 100%);
+    border-radius: 0px;
+    color: white;
+    font-size: 0.8vw;
+}
+
+/*Organizational cybersecurity and project cybersecurity buttons*/
+
+.side-buttons {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    /* margin-left: 14%; */
+    /* margin-bottom: 2%; */
+    height: 22vh;
+    margin-top: 4px;
+    right: 59%;
+}
+
+.side-buttons>button {
+    transform: skew(30deg);
+    height: 3rem;
+    width: 24rem;
+    border-radius: 0px;
+    font-size: 0.8vw;
+}
+
+
+.side-buttons>button:first-child {
+    margin-bottom: 14%;
+}
+
+
+.activeButton {
+    background-color: #3C98CF !important;
+    color: white;
+}
+
+.activeButton:hover {
+    background-color: #365b9d !important;
+    color: white;
+}
+
+
+.wrap-text {
+    white-space: pre-wrap !important;
+    line-height: 1.4rem !important;
+}
+
+
+@media screen and (min-width: 2560px) {
+
+    ::ng-deep.distributed-activities-menu {
+        position: absolute;
+        right: 92rem;
+        bottom: 63.6rem;
+    }
+
+    ::ng-deep.post-development-menu {
+        position: absolute;
+        right: 47.4rem;
+        bottom: 58rem;
+    }
+
+    ::ng-deep.cybersecurity-organization-menu {
+        position: absolute;
+        right: 112.7rem;
+        bottom: 47.7rem;
+    }
+
+    ::ng-deep.development-button-menu {
+        left: 19rem;
+        bottom: 25rem;
+    }
+
+    ::ng-deep.concept-menu {
+        right: 73rem;
+        bottom: 48rem;
+    }
+
+    ::ng-deep.vv-menu {
+        position: absolute;
+        left: 9rem;
+        bottom: 47rem;
+    }
+
+
+    .back {
+        bottom: 20%;
+        left: 30.3%;
+    }
+
+    .top-buttons>button.mat-button {
+        height: 75%;
+        margin-top: 2rem;
+    }
+
+    .column-buttons>button {
+        height: 49%;
+        margin-top: 9rem;
+    }
+
+    .side-buttons {
+        right: 94rem;
+    }
+
+    .side-buttons>button {
+        width: 30rem;
+        height: 4rem;
+    }
+
+    .development-button>button {
+        height: 27vh;
+    }
+}
+
+@media screen and (min-width: 3840px) {
+
+    .back {
+        left: 36.9%;
+    }
+
+    ::ng-deep.distributed-activities-menu {
+        bottom: 95rem;
+        right: 140rem;
+    }
+
+    ::ng-deep.post-development-menu {
+        position: absolute;
+        right: 70.4rem;
+        bottom: 91rem;
+    }
+
+
+    ::ng-deep.concept-menu {
+        right: 115rem;
+        bottom: 76rem;
+    }
+
+
+    ::ng-deep.vv-menu {
+        left: 16rem;
+        bottom: 78rem;
+    }
+
+    ::ng-deep.development-button-menu {
+        left: 23rem;
+        bottom: 35rem;
+    }
+
+    .top-buttons>button.mat-button {
+        margin-top: 3rem;
+    }
+
+    .column-buttons>button {
+        height: 49%;
+        margin-top: 13rem;
+    }
+
+    .side-buttons {
+        right: 142rem;
+    }
+
+    ::ng-deep.cybersecurity-organization-menu {
+        right: 165.7rem;
+        bottom: 70.7rem;
+    }
+
+    .side-buttons>button {
+        width: 42rem;
+        height: 6rem;
+    }
+}

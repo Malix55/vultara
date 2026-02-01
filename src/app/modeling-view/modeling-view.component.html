@@ -1,0 +1,34 @@
+
+<mat-sidenav-container class="modelingViewSidenavContainer" id="modelingViewSidenavContainer" hasBackdrop="false">
+    <mat-sidenav id="modelingViewSidenav" mode="over" [(opened)]="sidePanelOpened" position="end">
+        <app-property-panel *ngIf="systemConfig" [activeComponentId]="activeComponentId" 
+        [threatList]="threatList" [systemConfig]="systemConfig" (threatAttackPath)="hightlightAttackPath($event)" (terminalIds)="clearCommLinesTerminals($event)">
+    </app-property-panel>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <div class="modelViewContent" id="modelViewContent">
+            <div class="sidebar" #sidebar (dragstart)="dragStart($event)">
+                <h3 class="sidebarTitle">Component Library</h3>
+                <div class="sideTools">
+                    <a class="item" *ngFor="let items of componentLibrary" [draggable]="!(editDesignShared.projectStatus?.milestoneView)">
+                        <div>
+                            <img draggable="false" class={{items.id}} width="80px" height="80px" src={{items.image}}>
+                        </div>
+                        <small class="tool-name">{{ items.name }}</small>
+                    </a>       
+                </div>
+            </div>
+            <div class="drawingCanvas"  id="drawingCanvas" (dragover)="allowDrop()" (drop)="dropped($event)" (dragstart)="moveStart($event)" (contextmenu)="rightClickOnCanvas($event)">
+                <svg id="svgViewBox" viewBox="0 0 3800 2900" width="3800" height="2900" (mousemove)="mouseMoveSvg($event)" (mouseup)="endSvgMove($event)" (mouseout)="endSvgMove($event)">
+                    <defs>
+                        <filter id="shadow">
+                            <feDropShadow dx="0" dy="0" stdDeviation="1" flood-color="red" flood-opacity="1"/>
+                            <feDropShadow dx="0" dy="0" stdDeviation="40" flood-color="red" flood-opacity="1"/>
+                        </filter>
+                    </defs>
+                </svg>
+            </div>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>
+<ngx-spinner></ngx-spinner> 

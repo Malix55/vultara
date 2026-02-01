@@ -1,0 +1,22 @@
+.user-profileCard{
+    width: 30vw;
+    height: 36vh;
+    margin-top: 1.5rem;
+    margin-left: 1rem;
+    font-family: Bahnschrift;
+}
+
+.user-profile-grid-container{
+    display: grid;
+    grid-template-columns: 40% 60%;
+    column-gap: 4rem;
+    row-gap: 1rem;
+}
+
+.text-profile{
+    font-size: 1vw;
+}
+
+.user-email-field{
+    margin-top: 2rem;
+}

@@ -1,0 +1,54 @@
+table.expanded-feasibility-level-table {
+    width: 100%;
+    line-height: 20px;
+    padding: 4px;
+    border-spacing: 5px 0px;
+    border-collapse: separate;
+}
+
+.treatment-table input {
+    width: 140px;
+}
+
+.feasibility-title {
+    /* display: flex; */
+    display: flex;
+    justify-content: flex-start;
+    /* flex-wrap: wrap; */
+    /* justify-content: baseline;
+    align-items: flex-start; */
+}
+
+.feasibility-title p {
+    margin: 0px 2px 0px 0px;
+}
+
+.feasibility-title mat-icon {
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.feasibility-rating-actions {
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.feasibility-rating-actions mat-icon {
+    height: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 21px;
+    width: auto !important;
+    cursor: pointer;
+    user-select: none;
+}
+
+.expanded-feasibility-disabled input, .expanded-feasibility-disabled mat-icon {
+    color: grey;
+}
+
+.expanded-feasibility-disabled mat-icon {
+    cursor: not-allowed;
+}

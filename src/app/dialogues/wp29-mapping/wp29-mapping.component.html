@@ -1,0 +1,59 @@
+<div mat-dialog-title class="header">
+  <button mat-flat-button color="primary" (click)="exportToExcel()">
+    Export To Excel</button>
+  <span></span>
+  <mat-icon aria-hidden="false" mat-dialog-close>close</mat-icon>
+</div>
+<mat-dialog-content>
+  <table class="wp29-threats-table">
+    <colgroup span="3"></colgroup>
+    <colgroup span="2"></colgroup>
+    <colgroup span="1"></colgroup>
+    <colgroup span="1"></colgroup>
+    <thead>
+      <tr>
+        <th colspan="3" scope="colgroup">High level and sub-level descriptions of vulnerability/threat</th>
+        <th colspan="2" scope="colgroup">Example of vulnerability or attack method</th>
+        <th colspan="1" scope="colgroup">Mapping Status</th>
+        <th colspan="1" scope="colgroup">Threat No.</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let threat of wp29ThreatService.threatGroup | highLevelThreat; let i = index">
+        <td *ngIf="threat.highLevelThreat"
+          [attr.rowspan]="wp29ThreatService.threatGroup | highLevelThreatRowSpan : threat.highLevelThreatId">
+          {{ threat.highLevelThreat }}
+        </td>
+        <td *ngIf="threat.subLevelThreatId" [attr.rowspan]="threat.spanLength">
+          {{ threat.subLevelThreatId }}
+        </td>
+        <td *ngIf="threat.subLevelThreat" [attr.rowspan]="threat.spanLength">
+          {{ threat.subLevelThreat }}
+        </td>
+        <td>{{ threat.wp29AttackIndex }}</td>
+        <td>{{ threat.wp29Attack }}</td>
+        <td>
+          <mat-form-field appearance="none">
+            <mat-label *ngIf="!wp29ThreatService.mappingStatus[i]">Select Status</mat-label>
+            <mat-select [ngModel]="data.result | threatMappingStatus : i : threat.wp29AttackIndex : data.project.wp29"
+              (ngModelChange)="changeMappingStatus($event, i, threat.wp29AttackIndex)"
+              [ngClass]="wp29ThreatService.mappingStatus[i] ? wp29ThreatService.mappingStatus[i] : ''">
+              <mat-option value="green">
+                Checked
+              </mat-option>
+              <mat-option value="red">
+                Not Checked
+              </mat-option>
+              <mat-option value="orange">
+                Not Applicable
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </td>
+        <td class="threat-column">
+          {{ data.result | threatRowNumbers : threat.wp29AttackIndex }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</mat-dialog-content>

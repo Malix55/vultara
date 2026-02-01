@@ -1,0 +1,294 @@
+<div id="DatabaseViewMain">
+  <mat-tab-group [(selectedIndex)]="selectedTabIndex" (selectedTabChange)="settingsTabClick($event)">
+    <mat-tab label="Module Library">
+      <ng-template matTabContent>
+        <br />
+        <div style="margin-bottom: 1rem">
+          <h3 class="title">Available Modules</h3>
+          <button style="margin-left: 50px" mat-raised-button (click)="refreshModuleLib()">
+            Refresh
+          </button>
+          <button style="margin-left: 20px" mat-raised-button (click)="showAllModules()">
+            Show All
+          </button>
+          <button style="margin-left: 20px" mat-raised-button (click)="createNewModule()" color="primary">
+            Create New Module
+          </button>
+          <button mat-raised-button [matMenuTriggerFor]="moduleLibTopRowBtnMenu" style="margin-left: 20px">
+            <mat-icon>more_horiz</mat-icon>
+          </button>
+          <mat-menu #moduleLibTopRowBtnMenu="matMenu">
+            <button mat-menu-item (click)="editModuleCategory()">
+              Edit Module Category
+            </button>
+            <button mat-menu-item (click)="submitModuleChange()" matTooltip="This operation could take long.">
+              Commit All Modules
+            </button>
+          </mat-menu>
+          <br />
+          <mat-form-field class="featureInputForm" appearance="fill">
+            <mat-label>Search Available Modules</mat-label>
+            <input matInput [(ngModel)]="searchTerm" (ngModelChange)="availableModuleChangedHandler(1)"/>
+          </mat-form-field>
+          <br />
+        </div>
+        <!-- <button style="margin-left: 50px" mat-raised-button (click)="editModuleCategory()">Edit Module Category</button>
+        <button style="margin-left: 50px" mat-raised-button (click)="createNewModule()">Create New Module</button>
+        <button style="margin-left: 50px" mat-raised-button (click)="submitModuleChange()"
+            matTooltip="This operation could take long.">Commit All Modules</button> -->
+        <mat-list class="existingModuleList">
+          <mat-progress-spinner diameter="20" [color]="'primary'" [mode]="'indeterminate'" *ngIf="modulesloading" class="spinPosition">
+          </mat-progress-spinner>
+          <mat-list-item *ngFor="let moduleItem of controlUnitDatabase; let i = index" class="assetItemClass" style="height: 80px">
+            <mat-form-field style="width: 300px; line-height: 2" appearance="fill">
+              <mat-label>Category</mat-label>
+              <mat-select style=" margin-top: 4px;" [(ngModel)]="moduleItem.category">
+                <mat-option *ngFor="let selectedCategory of moduleCategoryArray" [value]="selectedCategory">
+                  {{ selectedCategory }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field style="width: 300px; margin-left: 2em; line-height: 2" appearance="fill">
+              <mat-label>Module Name</mat-label>
+              <input  style="margin-top:4px" matInput [ngModel]="moduleItem.model" (ngModelChange)="moduleNameChange($event, i)"/>
+            </mat-form-field>
+
+            <mat-form-field class="libraryChip assetChipsForm horizontal-scrollable" style="margin-top: 0; line-height: 2" *ngIf="moduleItem._id" appearance="fill">
+
+              <mat-label>Module Features</mat-label>
+              <div class="chipsScrollable">
+              <mat-chip-list *ngIf="moduleItem.feature && moduleItem.feature.length > 0">
+                <mat-chip *ngFor="let _feature of moduleItem.feature">
+                  {{ _feature }}
+                </mat-chip>
+              </mat-chip-list>
+
+              <mat-chip-list *ngIf="!moduleItem.feature || moduleItem.feature.length == 0">
+                <mat-chip style="opacity: 0"></mat-chip>
+              </mat-chip-list>
+              </div>
+
+            </mat-form-field>
+
+
+            <!-- <mat-form-field style="width: 800px; margin-left: 2em;">
+                    <mat-label>Features</mat-label>
+                    <mat-select [(ngModel)]="moduleItem.feature" multiple>
+                        <mat-option *ngFor="let moduleFeature of controlUnitDatabaseFeatureBackup.feature[i]; let ind=index" [value]="moduleFeature"
+                        (onSelectionChange)="moduleFeatureSelectionChange($event, i, ind)" >{{moduleFeature}}</mat-option>
+                    </mat-select>
+                </mat-form-field> -->
+            <button mat-button [matMenuTriggerFor]="moduleLibBtnMenu" style="margin-left: 10px">
+              <mat-icon>expand_more</mat-icon>
+            </button>
+            <mat-menu #moduleLibBtnMenu="matMenu">
+              <button mat-menu-item (click)="commitOneModule(i)">
+                <mat-icon>cloud_upload</mat-icon>
+                Commit Module
+              </button>
+              <button mat-menu-item (click)="cancelNewModule(i)" *ngIf="!controlUnitDatabase[i]._id">
+                <mat-icon>clear</mat-icon>
+                Cancel New Module
+              </button>
+              <button mat-menu-item (click)="deleteModule(i)" *ngIf="controlUnitDatabase[i]._id">
+                <mat-icon>remove</mat-icon>
+                Delete Module
+              </button>
+              <button mat-menu-item (click)="getModuleFeatures(moduleItem)" *ngIf="moduleItem._id">
+                <mat-icon>edit</mat-icon>
+                Edit / Delete Module Features
+              </button>
+            </mat-menu>
+          </mat-list-item>
+        </mat-list>
+      </ng-template>
+    </mat-tab>
+
+    <mat-tab label="Feature Library">
+      <ng-template matTabContent>
+        <br />
+        <h3 class="title">Available Features</h3>
+        <button style="margin-left: 50px" mat-raised-button (click)="refreshFeature()">
+          Refresh
+        </button>
+        <button style="margin-left: 20px" mat-raised-button (click)="showAllFeatures()">
+          Show All
+        </button>
+        <button class="buttonClass" style="margin-left: 20px" mat-raised-button (click)="createNewFeature(-1)" color="primary">
+          Create New Feature
+        </button>
+        <br />
+        <mat-form-field class="featureInputForm" appearance="fill">
+          <mat-label>Search Available Features</mat-label>
+          <input matInput [(ngModel)]="searchFeatures" (ngModelChange)="availableFeatureChangedHandler(0)"/>
+        </mat-form-field>
+        <br />
+        <mat-list class="existingFeatureList">
+          <mat-progress-spinner diameter="20" [color]="'primary'" [mode]="'indeterminate'" *ngIf="featuresLoading" class="featSpin"></mat-progress-spinner>
+          <mat-list-item *ngFor="let feature of featureList; let i = index" class="featureItemClass">
+            <div style="width: 500px">
+              <p>{{ feature.name }}</p>
+            </div>
+            <button mat-raised-button (click)="createNewFeature(i)">
+              <mat-icon>edit</mat-icon>
+              Edit Feature
+            </button>
+            <mat-divider style="width: 500px"></mat-divider>
+          </mat-list-item>
+        </mat-list>
+        <br />
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Asset Library">
+      <ng-template matTabContent>
+        <br />
+        <h3 class="title">Available Assets</h3>
+        <button style="margin-left: 50px" mat-raised-button (click)="refreshAssetLib()">
+          Refresh
+        </button>
+        <button style="margin-left: 20px" mat-raised-button (click)="showAllAssets()">
+          Show All
+        </button>
+        <button style="margin-left: 20px" mat-raised-button (click)="createNewAsset()" color="primary">
+          Create New Asset
+        </button>
+        <br />
+
+        <mat-form-field style="margin-bottom:10px;" class="featureInputForm" appearance="fill">
+          <mat-label>Search Available Assets</mat-label>
+          <input matInput [(ngModel)]="searchTerm" (ngModelChange)="availableAssetChangedHandler(1)"/>
+        </mat-form-field>
+        <br />
+
+        <mat-list class="existingAssetList">
+          <mat-progress-spinner diameter="20" [color]="'primary'" [mode]="'indeterminate'" *ngIf="assetsloading" class="assetSpin"></mat-progress-spinner>
+          <mat-list-item *ngFor="let assetItem of assetList; let i = index" style="margin-bottom: 40px;">
+            <mat-form-field class="existingAssetInputFormFirstCol" appearance="fill">
+              <mat-label>Asset Name</mat-label>
+              <input matInput [(ngModel)]="assetItem.name" name="assetName"/>
+            </mat-form-field>
+            <mat-form-field class="assetTypeInputForm" appearance="fill">
+              <mat-label>Asset Type</mat-label>
+              <mat-select [(ngModel)]="assetItem.assetType" (ngModelChange)="typeChanges(assetItem)">
+                <mat-option *ngFor="let selectedAssetType of AssetTypes" [value]="selectedAssetType.value">
+                  {{ selectedAssetType.viewValue }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field class="assetSubTypeInputForm" appearance="fill">
+              <mat-label>Subtype</mat-label>
+              <mat-select [ngModel]="assetItem.subType"  [disabled]="assetItem.assetType | databaseSubtypeStatus" (ngModelChange)="subTypeChanges($event, assetItem)">
+                <mat-option *ngFor="let selectedAssetSubType of assetItem.assetType | databaseSubType: assetItem.subType" [value]="selectedAssetSubType.value">
+                  {{ selectedAssetSubType.viewValue }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field (click)="focusInput(i)" class="libraryChip assetTagInputForm"  appearance="fill">
+              <mat-label>Tags</mat-label>
+              <div [ngClass]="(assetItem.tag|showScrollBar)&&'chipsScrollable'">
+              <mat-chip-list #chipList>
+                <mat-chip style="background-color:rgb(88, 87, 87)!important;" *ngFor="let tag of assetItem.tag" (removed)="removeTag(tag,assetItem)">
+                  {{tag}}
+                  <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip>
+                <input #chipInput placeholder="New Tag..."
+                       [matChipInputFor]="chipList"
+                       [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                       (matChipInputTokenEnd)="add($event,assetItem)"
+                        maxlength="45">
+              </mat-chip-list>
+              </div>
+            </mat-form-field>
+            <button class="updateAssetBtn" mat-raised-button (click)="updateAsset(i)" [disabled]="checkEmpty(i)">
+              Update
+            </button>
+            <button class="updateAssetBtn" mat-raised-button (click)="cancelNewAsset(i)" *ngIf="!assetItem._id">
+              Cancel
+            </button>
+            <button class="updateAssetBtn" mat-raised-button (click)="deleteAsset(i)" *ngIf="assetItem._id">
+              Delete
+            </button>
+          </mat-list-item>
+        </mat-list>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Goal Library" [disabled]="(currentUserProfile.role == 'Product Engineer' || currentUserProfile.role == 'Threat Researcher' || currentUserProfile.role == 'Threat Reviewer')">
+      <ng-template matTabContent>
+        <app-cybersecurity-goal [library]="true" [tabIndex]="0"></app-cybersecurity-goal>  
+      </ng-template>
+    </mat-tab>
+
+    <mat-tab label="Control Library">
+      <ng-template matTabContent>
+        <div style="padding:1.5rem 1.5rem 0;">
+          <mat-form-field appearance="fill" style="width:376px;">
+              <mat-label>Search Available Controls</mat-label>
+              <input [formControl]="searchValueControl" matInput/>
+          </mat-form-field>
+          <button class="buttonClass" style="margin-left: 20px" mat-raised-button (click)="loadControls()">
+              Refresh
+          </button>
+          <button class="buttonClass" style="margin-left: 20px" mat-raised-button (click)="showAllControls()">
+              Show All
+          </button>
+          <button class="buttonClass" (click)="addControl()" style="margin-left: 20px" mat-raised-button color="primary">
+              Create New Control
+          </button>
+          <mat-progress-spinner diameter="20" [color]="'primary'" [mode]="'indeterminate'" *ngIf="controlLoading || controlSearchLoading" class="spinPosition">
+          </mat-progress-spinner>
+      </div>
+      <div id="cybersecurity-goal-page" style="padding-top:0">
+          <table mat-table [dataSource]="dataSourceControl" class="cybersecurity-page-table" *ngIf="dataSourceControl.data?.length > 0; else emptycontrols">
+              <ng-container matColumnDef="serial">
+                  <th mat-header-cell *matHeaderCellDef> Serial </th>
+                  <td mat-cell *matCellDef="let element"> CTR{{element.rowNumber}} </td>
+              </ng-container>
+      
+              <ng-container matColumnDef="control">
+                  <th mat-header-cell *matHeaderCellDef> Control </th>
+                  <td mat-cell *matCellDef="let element">
+                      <mat-form-field appearance="none">
+                          <textarea matInput [readonly]="true" class="cybersecurity-page-content" cdkTextareaAutosize
+                            [ngModel]="element.content"  #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="3" cdkAutosizeMaxRows="3"></textarea>
+                      </mat-form-field>
+                  </td>
+              </ng-container>
+      
+              <ng-container matColumnDef="action">
+                  <th mat-header-cell *matHeaderCellDef> Action </th>
+                  <td mat-cell *matCellDef="let element; let i = index">
+                      <button mat-raised-button [matMenuTriggerFor]="goalaction"
+                          [matMenuTriggerData]="{element: element, index: i}"
+                          >
+                          <mat-icon aria-hidden="false" aria-label="Loading Icon">more_horiz
+                          </mat-icon>
+                      </button>
+                  </td>
+              </ng-container>
+      
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="cybersecurity-goal-row"></tr>
+          </table>
+      
+          <mat-menu #goalaction="matMenu" class="goalLibDropdown">
+              <ng-template matMenuContent let-selectedControl="element" let-index="index">
+                  <button mat-menu-item (click)="addControl(selectedControl)">
+                      <mat-icon aria-hidden="false" aria-label="Add Icon">edit</mat-icon> Update Control
+                  </button>
+                  <button mat-menu-item (click)="removeControl(selectedControl)">
+                      <mat-icon aria-hidden="false" aria-label="Remove Icon">remove
+                      </mat-icon> Delete Control
+                  </button>
+              </ng-template>
+          </mat-menu>
+      
+          <ng-template #emptycontrols>
+              <ng-container *ngIf="!controlLoading">
+                  <p>No cybersecurity control found</p>
+              </ng-container>
+          </ng-template>
+      </div>
+      </ng-template>
+    </mat-tab>
+
+  </mat-tab-group>
+</div>

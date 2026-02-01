@@ -1,0 +1,25 @@
+<div class="cybersecurity-goal-container">
+    <div class="cybersecurity-goal-list">
+        <table mat-table [dataSource]="dataSource" class="cybersecurity-goal-table">
+
+            <ng-container matColumnDef="serial">
+                <th mat-header-cell *matHeaderCellDef> Serial </th>
+                <td [ngStyle]="type=='control'&&{'padding-left':'15px'}" mat-cell *matCellDef="let element">{{this.type=="goal"?'GL':this.type=="claim"?'CL':'CTR'}} {{element.rowNumber}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="goal">
+                <th mat-header-cell *matHeaderCellDef> Goal </th>
+                <td mat-cell *matCellDef="let element"> {{element.content | textLength : 30}} </td>
+            </ng-container>
+
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="cybersecurity-goal-row" (click)="updateCybersecurityGoal(row.id, row.content,row.libraryId)"></tr>
+        </table>
+    </div>
+
+    <div class="cybersecurity-goal-actions">
+    
+    <button mat-raised-button aria-label="Add Goal Icon" (click)="addCybersecurityGoal()"  [disabled]="editDesignShared.projectStatus?.milestoneView">
+            <mat-icon>add</mat-icon>
+        </button>
+    </div>
+</div>

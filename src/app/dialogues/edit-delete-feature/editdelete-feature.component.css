@@ -1,0 +1,58 @@
+.feature-popup .featureModuleInputForm {
+    width: 15%;
+  }
+  .mat-form-field {
+    margin-right: 5px;
+  }
+  .mat-dialog-content {
+    padding: 0px !important;
+  }
+  .feature-popup .featureImpactInputForm {
+    width: 8%;
+  }
+  .featureRole {
+     width: 12%
+  }
+  
+  .horizontal-scrollable mat-chip-list .mat-chip-list-wrapper {
+    /* justify-content: center; */
+    align-items: center;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: scroll;
+    margin-top: 5px;
+  }
+  .horizontal-scrollable mat-chip-list .mat-chip-list-wrapper::-webkit-scrollbar {
+    display: none;
+  }
+  .horizontal-scrollable  mat-chip-list .mat-chip-list-wrapper mat-chip {
+    flex: 0 0 auto;
+  }
+  .horizontal-scrollable  .scrolling-wrapper {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+  .horizontal-scrollable  .scrolling-wrapper .card {
+    flex: 0 0 auto;
+    padding: 16px;
+  }
+  
+.cdk-overlay-pane.my-dialog {
+    position: relative!important;
+    min-width: 100% !important;
+  }
+   .hedingPosition {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+   }
+   :host /deep/ .mat-list-base .mat-list-item .mat-list-item-content, .mat-list-base .mat-list-option .mat-list-item-content {
+     justify-content: space-between !important;
+   }
+
+   .mat-progress-spinner {
+    bottom: 0px;
+    left: 20px;
+   }
+  

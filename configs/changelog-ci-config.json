@@ -1,0 +1,36 @@
+{
+    "changelog_type": "commit_message",
+    "header_prefix": "Version:",
+    "commit_changelog": true,
+    "comment_changelog": true,
+    "include_unlabeled_changes": true,
+    "unlabeled_group_title": "Unlabeled Changes",
+    "pull_request_title_regex": "^Release",
+    "version_regex": "v?([0-9]{1,2})+[.]+([0-9]{1,2})+[.]+([0-9]{1,2})\\s\\(\\d{1,2}-\\d{1,2}-\\d{4}\\)",
+    "group_config": [
+      {
+        "title": "Frontend",
+        "labels": ["Angular/HTML"]
+      },
+      {
+        "title": "Backend",
+        "labels": ["backend"]
+      },
+      {
+        "title": "Bug Fixes",
+        "labels": ["bug"]
+      },
+      {
+        "title": "help wanted",
+        "labels": ["help wanted"]
+      },
+      {
+        "title": "Good First Issue",
+        "labels": ["good first issue"]
+      },
+      {
+        "title": "Documentation Updates",
+        "labels": ["docs", "documentation", "doc"]
+      }
+    ]
+  }

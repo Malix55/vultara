@@ -1,0 +1,48 @@
+
+#cybersecurity-goal-page {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+#cybersecurity-goal-page .cybersecurity-page-table {
+    margin-top: 36px;
+    width: 100%;
+}
+
+#cybersecurity-goal-page .mat-column-no {
+    width: 10% !important;
+    font-size:14px;
+}
+
+#cybersecurity-goal-page .mat-column-control {
+    width: 80% !important;
+    font-size:14px;
+}
+
+#cybersecurity-goal-page .mat-column-action {
+    text-align: center;
+    width: 10% !important;
+}
+
+::ng-deep #cybersecurity-goal-page .mat-form-field {
+    width: 100%;
+    height: 100%;
+}
+
+::ng-deep #cybersecurity-goal-page .mat-column-goal .mat-form-field-wrapper {
+    padding: 0 !important;
+}
+
+::ng-deep .cybersecurity-dialog-container .mat-dialog-container {
+    overflow: hidden !important;
+}
+
+::ng-deep .cybersecurity-dialog-container .mat-dialog-content {
+    max-height: 32vh !important;
+}
+
+::ng-deep.goalLibDropdown {
+    width:215px;
+}

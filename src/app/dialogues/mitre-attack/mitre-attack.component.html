@@ -1,0 +1,228 @@
+<div class="mitreAttackContainer">
+  <div class="mitreAttackHeader" (click)="closeMitreAttack()">
+    <mat-icon aria-hidden="false" aria-label="Collapse Popup">drag_handle</mat-icon>
+  </div>
+  <div class="mitreAttackContent">
+    <div class="mitreAttackActions">
+      <div class="mitreAttackBottomPanel">
+        <span
+          [ngClass]="mitreAttackService.mitreAttackBottomPanelType == BOTTOMPANEL.Attack ? 'mitreAttackActive' : 'mitreAttackDiabled'">ATTACK</span>
+        <mat-slide-toggle [checked]="mitreAttackService.mitreAttackBottomPanelType === 'Control'" class="mitre-attack-toggle"
+          (change)="bottomPanelSelectionChanged($event)">
+        </mat-slide-toggle>
+        <span
+          [ngClass]="mitreAttackService.mitreAttackBottomPanelType == BOTTOMPANEL.Control ? 'mitreAttackActive' : 'mitreAttackDiabled'">Control</span>
+      </div>
+      <span class="mitreAttackActionsGap"></span>
+      <button mat-button class="buttoncolor" (click)="clearTacticsThreats()">Clear</button>
+      <button mat-button class="buttoncolor" (click)="mergeAttackControlConfirmation()"
+        [disabled]="mitreAttackService.mitreAttackBottomPanelType | disableMerge">Merge</button>
+    </div>
+
+    <div class="threatList">
+      <ng-container [ngSwitch]="mitreAttackService.mitreAttackBottomPanelType">
+        <ng-container *ngSwitchCase="BOTTOMPANEL.Attack">
+          <table class="tacticsTable">
+            <tr>
+              <th *ngFor="let tactic of (mitreAttackMethod | mitreAttackTactics); index as i">{{ tactic.name }}</th>
+            </tr>
+            <tr>
+              <td
+                *ngFor="let tactic of (mitreAttackMethod | mitreAttackTactics); index as i; trackBy: trackTacticByIndex"
+                cdkDropList [id]="'mitre-attack-component-'+i" (cdkDropListDropped)="drop($event, i, tactic)"
+                [cdkDropListConnectedTo]="mitreAttackMethod | mitreAttackDropZones : i"
+                [cdkDropListData]="mitreAttackMethod | tacticThreats : tactic.vId">
+                <ul>
+                  <li class="tacticThreat" cdkDrag
+                    [ngClass]="{'editTacticThreat': editTacticThreat[i] && editTacticThreat[i][threatIndex]}"
+                    [cdkDragData]="{index: i, threat: threat, mitreAttackMethod: mitreAttackMethod, tactic: tactic}"
+                    *ngFor="let threat of (mitreAttackMethod | tacticThreats : tactic.vId); let threatIndex = index; trackBy: trackTacticThreatByIndex.bind(this, i)"
+                    (click)="tacticTechnique(i, threatIndex, mitreAttackMethod, threat, tactic.vId)">
+                    <div class="tacticThreatPlaceholder" *cdkDragPlaceholder></div>
+                    {{threat.threatRowNumber}}_{{threat.securityPropertyCia}}_{{threat.asset}}
+                  </li>
+                </ul>
+              </td>
+            </tr>
+          </table>
+        </ng-container>
+        <ng-container *ngSwitchCase="BOTTOMPANEL.Control">
+          <div class="mitreAttackBottomPanelType">
+            <div class="mitreAttackBeforeControl">
+              <span class="threatControlLabel">Threat Before Control</span>
+              <table class="mitreAttackControlTable">
+                <tr>
+                  <th>No.</th>
+                  <th>Asset</th>
+                  <th>Property</th>
+                  <th>Impact</th>
+                  <th>Feasibility</th>
+                  <th>Risk</th>
+                  <th>Threat Scenario</th>
+                  <th>Attack Path</th>
+                </tr>
+                <tr cdkDropList id="mitreBeforeControl" (cdkDropListDropped)="dropBeforeControlThreat($event)"
+                  [cdkDropListConnectedTo]="['threatListTable']" class="mitreControlThreatContainer">
+                  <td cdkDrag [cdkDragDisabled]="!mitreAttackService.mitreControlBeforeThreat">
+                    {{ mitreAttackService.mitreControlBeforeThreat ?
+                    mitreAttackService.mitreControlBeforeThreat.threatRowNumber : "" }}
+                    <span *cdkDragPreview>{{ mitreAttackService.mitreControlBeforeThreat.threatRowNumber }}_{{
+                      mitreAttackService.mitreControlBeforeThreat.asset }}</span>
+                  </td>
+                  <td cdkDrag [cdkDragDisabled]="!mitreAttackService.mitreControlBeforeThreat">
+                    {{ mitreAttackService.mitreControlBeforeThreat ? mitreAttackService.mitreControlBeforeThreat.asset
+                    :
+                    "" }}
+                    <span *cdkDragPreview>{{ mitreAttackService.mitreControlBeforeThreat.threatRowNumber }}_{{
+                      mitreAttackService.mitreControlBeforeThreat.asset }}</span>
+                  </td>
+                  <td cdkDrag [cdkDragDisabled]="!mitreAttackService.mitreControlBeforeThreat">
+                    {{ mitreAttackService.mitreControlBeforeThreat ?
+                    mitreAttackService.mitreControlBeforeThreat.securityPropertyCia : "" }}
+                    <span *cdkDragPreview>{{ mitreAttackService.mitreControlBeforeThreat.threatRowNumber }}_{{
+                      mitreAttackService.mitreControlBeforeThreat.asset }}</span>
+                  </td>
+                  <td cdkDrag [cdkDragDisabled]="!mitreAttackService.mitreControlBeforeThreat">
+                    <ng-container *ngIf="mitreAttackService.mitreControlBeforeThreat">
+                      {{
+                      impactLevelName | impactLevelName : impactAggMethod:
+                      mitreAttackService.mitreControlBeforeThreat.impactSLevel :
+                      mitreAttackService.mitreControlBeforeThreat.impactFLevel :
+                      mitreAttackService.mitreControlBeforeThreat.impactOLevel :
+                      mitreAttackService.mitreControlBeforeThreat.impactPLevel
+                      }}
+                      <span *cdkDragPreview>{{ mitreAttackService.mitreControlBeforeThreat.threatRowNumber }}_{{
+                        mitreAttackService.mitreControlBeforeThreat.asset }}</span>
+                    </ng-container>
+                  </td>
+                  <td cdkDrag [cdkDragDisabled]="!mitreAttackService.mitreControlBeforeThreat">
+                    <ng-container *ngIf="mitreAttackService.mitreControlBeforeThreat">
+                      {{mitreAttackService.mitreControlBeforeThreat &&
+                      mitreAttackService.mitreControlBeforeThreat.attackFeasibilityLevel ?
+                      mitreAttackService.mitreControlBeforeThreat.attackFeasibilityLevel :
+                      '' }}
+                      <span *cdkDragPreview>{{ mitreAttackService.mitreControlBeforeThreat.threatRowNumber }}_{{
+                        mitreAttackService.mitreControlBeforeThreat.asset }}</span>
+                    </ng-container>
+                  </td>
+                  <td cdkDrag [cdkDragDisabled]="!mitreAttackService.mitreControlBeforeThreat">
+                    {{mitreAttackService.mitreControlBeforeThreat ?
+                    (mitreAttackService.mitreControlBeforeThreat.treatment != 'no treatment' ?
+                    mitreAttackService.mitreControlBeforeThreat.riskLevelBefore :
+                    mitreAttackService.mitreControlBeforeThreat.riskLevel) : ""}}
+                    <span *cdkDragPreview>{{ mitreAttackService.mitreControlBeforeThreat.threatRowNumber }}_{{
+                      mitreAttackService.mitreControlBeforeThreat.asset }}</span>
+                  </td>
+                  <td cdkDrag [cdkDragDisabled]="!mitreAttackService.mitreControlBeforeThreat">
+                    {{ (mitreAttackService.mitreControlBeforeThreat &&
+                    mitreAttackService.mitreControlBeforeThreat.threatScenario) ?
+                    mitreAttackService.mitreControlBeforeThreat.threatScenario : "" }}
+                    <span *cdkDragPreview>{{ mitreAttackService.mitreControlBeforeThreat.threatRowNumber }}_{{
+                      mitreAttackService.mitreControlBeforeThreat.asset }}</span>
+                  </td>
+                  <td cdkDrag [cdkDragDisabled]="!mitreAttackService.mitreControlBeforeThreat">
+                    {{mitreAttackService.mitreControlBeforeThreat ?
+                    mitreAttackService.mitreControlBeforeThreat.attackPathName : ""}}
+                    <span *cdkDragPreview>{{ mitreAttackService.mitreControlBeforeThreat.threatRowNumber }}_{{
+                      mitreAttackService.mitreControlBeforeThreat.asset }}</span>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="mitreAttackAfterControl">
+              <span class="threatControlLabel">Threat After Control</span>
+              <table class="mitreAttackControlTable">
+                <tr>
+                  <th>No.</th>
+                  <th>Asset</th>
+                  <th>Property</th>
+                  <th>Impact</th>
+                  <th>Feasibility</th>
+                  <th>Risk</th>
+                  <th>Threat Scenario</th>
+                  <th>Attack Path</th>
+                </tr>
+                <tr cdkDropList id="mitreAfterControl" [cdkDropListConnectedTo]="['threatListTable']"
+                  (cdkDropListDropped)="dropAfterControlThreat($event)" class="mitreControlThreatContainer">
+                  <td cdkDrag [cdkDragDisabled]="!mitreAttackService.mitreControlAfterThreat">
+                    {{ mitreAttackService.mitreControlAfterThreat ?
+                    mitreAttackService.mitreControlAfterThreat.threatRowNumber : "" }}
+                    <span *cdkDragPreview>{{ mitreAttackService.mitreControlAfterThreat.threatRowNumber }}_{{
+                      mitreAttackService.mitreControlAfterThreat.asset }}</span>
+                  </td>
+                  <td cdkDrag [cdkDragDisabled]="!mitreAttackService.mitreControlAfterThreat">
+                    {{ mitreAttackService.mitreControlAfterThreat ? mitreAttackService.mitreControlAfterThreat.asset :
+                    "" }}
+                    <span *cdkDragPreview>{{ mitreAttackService.mitreControlAfterThreat.threatRowNumber }}_{{
+                      mitreAttackService.mitreControlAfterThreat.asset }}</span>
+                  </td>
+                  <td cdkDrag [cdkDragDisabled]="!mitreAttackService.mitreControlAfterThreat">
+                    {{ mitreAttackService.mitreControlAfterThreat ?
+                    mitreAttackService.mitreControlAfterThreat.securityPropertyCia : "" }}
+                    <span *cdkDragPreview>{{ mitreAttackService.mitreControlAfterThreat.threatRowNumber }}_{{
+                      mitreAttackService.mitreControlAfterThreat.asset }}</span>
+                  </td>
+                  <td cdkDrag [cdkDragDisabled]="!mitreAttackService.mitreControlAfterThreat">
+                    <ng-container *ngIf="mitreAttackService.mitreControlAfterThreat">
+                      {{
+                      (mitreAttackService.mitreControlAfterThreat.treatment == "no treatment") ? ( impactLevelName |
+                      impactLevelName
+                      :
+                      impactAggMethod: mitreAttackService.mitreControlAfterThreat.impactSLevel :
+                      mitreAttackService.mitreControlAfterThreat.impactFLevel :
+                      mitreAttackService.mitreControlAfterThreat.impactOLevel :
+                      mitreAttackService.mitreControlAfterThreat.impactPLevel) :
+                      (mitreAttackService.mitreControlAfterThreat.impactSLevelAfter) ? (impactLevelName |
+                      impactLevelName
+                      : impactAggMethod :
+                      mitreAttackService.mitreControlAfterThreat.impactSLevelAfter :
+                      mitreAttackService.mitreControlAfterThreat.impactFLevelAfter :
+                      mitreAttackService.mitreControlAfterThreat.impactOLevelAfter :
+                      mitreAttackService.mitreControlAfterThreat.impactPLevelAfter) :
+                      (impactLevelName | impactLevelName : impactAggMethod :
+                      mitreAttackService.mitreControlAfterThreat.impactSLevel :
+                      mitreAttackService.mitreControlAfterThreat.impactFLevel :
+                      mitreAttackService.mitreControlAfterThreat.impactOLevel
+                      : mitreAttackService.mitreControlAfterThreat.impactPLevel)
+                      }}
+                      <span *cdkDragPreview>{{ mitreAttackService.mitreControlAfterThreat.threatRowNumber }}_{{
+                        mitreAttackService.mitreControlAfterThreat.asset }}</span>
+                    </ng-container>
+                  </td>
+                  <td cdkDrag [cdkDragDisabled]="!mitreAttackService.mitreControlAfterThreat">
+                    <ng-container *ngIf="mitreAttackService.mitreControlAfterThreat">
+                      {{ mitreAttackService.mitreControlAfterThreat.attackFeasibilityLevelAfter ?
+                      mitreAttackService.mitreControlAfterThreat.attackFeasibilityLevelAfter:
+                      mitreAttackService.mitreControlAfterThreat.attackFeasibilityLevel }}
+                      <span *cdkDragPreview>{{ mitreAttackService.mitreControlAfterThreat.threatRowNumber }}_{{
+                        mitreAttackService.mitreControlAfterThreat.asset }}</span>
+                    </ng-container>
+                  </td>
+                  <td cdkDrag [cdkDragDisabled]="!mitreAttackService.mitreControlAfterThreat">
+                    {{ mitreAttackService.mitreControlAfterThreat ? mitreAttackService.mitreControlAfterThreat.riskLevel
+                    : "" }}
+                    <span *cdkDragPreview>{{ mitreAttackService.mitreControlAfterThreat.threatRowNumber }}_{{
+                      mitreAttackService.mitreControlAfterThreat.asset }}</span>
+                  </td>
+                  <td cdkDrag [cdkDragDisabled]="!mitreAttackService.mitreControlAfterThreat">
+                    {{ (mitreAttackService.mitreControlAfterThreat &&
+                    mitreAttackService.mitreControlAfterThreat.threatScenario) ?
+                    mitreAttackService.mitreControlAfterThreat.threatScenario : "" }}
+                    <span *cdkDragPreview>{{ mitreAttackService.mitreControlAfterThreat.threatRowNumber }}_{{
+                      mitreAttackService.mitreControlAfterThreat.asset }}</span>
+                  </td>
+                  <td cdkDrag [cdkDragDisabled]="!mitreAttackService.mitreControlAfterThreat">
+                    {{ mitreAttackService.mitreControlAfterThreat ?
+                    mitreAttackService.mitreControlAfterThreat.attackPathName : "" }}
+                    <span *cdkDragPreview>{{ mitreAttackService.mitreControlAfterThreat.threatRowNumber }}_{{
+                      mitreAttackService.mitreControlAfterThreat.asset }}</span>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+</div>

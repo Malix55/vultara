@@ -1,0 +1,61 @@
+<ng-container *ngIf="!loadingAsset; else assetloading">
+    <div mat-dialog-title class="asset-properties-header">
+        <h4>Asset Properties</h4>
+        <span class="asset-properties-header-close">
+            <mat-icon aria-hidden="false" mat-dialog-close>close</mat-icon>
+        </span>
+    </div>
+    <mat-dialog-content>
+        <mat-form-field class="asset-property" appearance="fill">
+            <mat-label>Asset Name</mat-label>
+            <input type="text" matInput [value]="assetDetails.name ? assetDetails.name : ''" readonly
+                class="assetDisabledText">
+        </mat-form-field>
+        <mat-form-field class="asset-property" appearance="fill">
+            <mat-label>Asset Type</mat-label>
+            <input type="text" matInput [value]="assetDetails.assetType ? assetDetails.assetType : ''" readonly
+                class="assetDisabledText">
+        </mat-form-field>
+        <mat-form-field class="asset-property" appearance="fill">
+            <mat-label>Subtype</mat-label>
+            <input type="text" matInput [value]="assetDetails.subType ? assetDetails.subType : ''" readonly
+                class="assetDisabledText">
+        </mat-form-field>
+        <mat-form-field class="asset-property" appearance="fill">
+            <mat-label>Feature</mat-label>
+            <ng-container *ngIf="data.editable; else featurenoteditable">
+                <mat-select matInput (selectionChange)="selectAssetFeature($event)">
+                    <mat-option *ngFor="let singleFeature of data.module.feature" [value]="singleFeature">
+                        {{singleFeature}}
+                    </mat-option>
+                </mat-select>
+            </ng-container>
+            <ng-template #featurenoteditable>
+                <input type="text" matInput [value]="feature ? feature : ''" readonly class="assetDisabledText">
+            </ng-template>
+        </mat-form-field>
+        <mat-form-field class="asset-property" appearance="fill">
+            <mat-label>Tags</mat-label>
+            <div [ngClass]="(assetDetails.tag|showScrollBar)&&'assetTagsScrollable'">
+              <mat-chip-list #chipList>
+                <mat-chip style="padding-right:10px;background-color:rgb(88, 87, 87)!important;" *ngFor="let tag of assetDetails.tag">
+                  {{tag}}
+                </mat-chip>
+                <mat-chip *ngIf="assetDetails.tag.length==0" style="opacity: 0"></mat-chip>
+              </mat-chip-list>
+              </div>
+        </mat-form-field>
+    </mat-dialog-content>
+    <mat-dialog-acitons>
+        <div class="asset-properties-actions">
+            <button mat-raised-button color="primary" (click)="confirmAssetProperties()"
+                [disabled]="data.editable | assetPropertyAction : selectedFeature">Confirm</button>
+        </div>
+    </mat-dialog-acitons>
+</ng-container>
+
+<ng-template #assetloading>
+    <div class="asset-property-loading">
+        <mat-spinner></mat-spinner>
+    </div>
+</ng-template>

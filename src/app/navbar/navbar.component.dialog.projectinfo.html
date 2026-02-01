@@ -1,0 +1,15 @@
+<p mat-dialog-title>Project Details</p>
+<div mat-dialog-content>
+        <p mat-menu-item style="cursor:default;padding: 0px"> Project creation time:  {{createdTime | date :'short'}}</p>
+        <p mat-menu-item style="cursor:default;padding: 0px">  Project model last modified by: {{lastSavedBy}}</p>
+        <p mat-menu-item style="cursor:default;padding: 0px"> Project last save time:   {{updatedTime | date :'short'}}</p>
+</div>
+<mat-form-field  appearance="outline" style="width: 100%;margin-top: 18px;">
+  <mat-label>Project Notes</mat-label>
+  <textarea matInput rows="5" cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1" cdkAutosizeMaxRows="5" cdkTextareaAutosize type=text [(ngModel)]="input" #note="ngModel">
+    </textarea>
+  </mat-form-field>
+<div style="float: right; margin-bottom: -16px;" mat-dialog-actions>
+  <button mat-raised-button mat-dialog-close #data  color="primary" (click)="notesAdded(input)">Confirm</button>
+  <button mat-raised-button mat-dialog-close (click)="cancel()" >Cancel</button>
+</div>

@@ -1,0 +1,44 @@
+#registerViewMain {
+    position: absolute;
+    /* top: 50px; */
+    background-color: #f0ebc1;
+    width: 100%;
+    height: 100%;
+}
+
+.mat-card-div {
+    top:40%; 
+    width:100%; 
+    text-align:center; 
+    position:fixed;
+    background-color: #f0ebc1;
+}
+
+.mat-toolbar-single-row {
+    height: 50px;
+}
+
+/* #logo {
+    font-family: Bahnschrift;
+    text-align: center;
+} */
+
+/* .loginHeaderImage {
+    background-image: url('../../assets/images/Logo_blueBackground_tight.jpg');
+    background-size: cover;
+} */
+
+.registerCardClass {
+    margin:0 auto; 
+    display:inline-block; 
+}
+
+.registerInputForm {
+    width: 400px;
+}
+
+#registerBtn {
+    width: 150px;
+}
+
+

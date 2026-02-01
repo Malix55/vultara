@@ -1,0 +1,39 @@
+.displayHeading {
+    display: inline-block;
+}
+.featureInputForm {
+    width: 28%;
+}
+.assetChipsForm{
+    width: 56%;
+}
+.assetChipsForm {
+    margin-top: 10px;
+    width:60%;
+    height: auto;
+}
+.featureImpactInputForm {
+  width:7%;
+  margin-top: 5px;
+  margin-left: 10px;
+}
+.featureModuleInputForm {
+  width:15%;
+  margin-top: 5px;
+}
+.featureSettingTitle {
+  width:40%;
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.featureSettingTopTitle {
+  display: block;
+  overflow: hidden;
+  color: gray;
+  margin-bottom: 5px;
+}
+::ng-deep .cdk-overlay-pane{
+  max-width: 80%;
+}

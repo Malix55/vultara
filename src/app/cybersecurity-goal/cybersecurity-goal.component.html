@@ -1,0 +1,171 @@
+<div style="position: relative;border-top: 1px solid #3D98D0;margin-top: 2px;" [ngStyle]="!library&&{'top': '48px'}">
+<mat-tab-group [selectedIndex]="0" (selectedTabChange)="searchTypeChanged($event)">
+    <mat-tab label="Cybersecurity Goal"> 
+        <div *ngIf="library" style="padding:1.5rem 1.5rem 0;">
+            <h3 class="cybersecurity-title">Available Goals</h3>
+             <button class="buttonClass" style="margin-left: 50px" mat-raised-button (click)="refreshGoals('goal')">
+                Refresh
+            </button>
+            <button class="buttonClass" style="margin-left: 20px" mat-raised-button (click)="loadAllGoals('goal')">
+                Show All
+            </button>
+            <button class="buttonClass" style="margin-left: 20px" mat-raised-button color="primary"
+                (click)="openGoalDialog('goal')">
+                Create New Goal
+            </button>
+            <br/>
+            <br/>
+            <mat-form-field class="featureInputForm" appearance="fill" style="width:376px;">
+                <mat-label>Search Available Goals</mat-label>
+                <input [formControl]="searchValue" matInput/>
+            </mat-form-field>
+            <mat-progress-spinner diameter="20" [color]="'primary'" [mode]="'indeterminate'" *ngIf="library && loading || searchLoading" class="spinPosition">
+            </mat-progress-spinner>
+        </div>
+        <div id="cybersecurity-goal-page" style="padding-top:0">
+            <table mat-table [dataSource]="dataSourceGoal" class="cybersecurity-page-table" *ngIf="dataSourceGoal.data?.length > 0; else emptygoals">
+                <ng-container matColumnDef="serial">
+                    <th mat-header-cell *matHeaderCellDef> Serial </th>
+                    <td mat-cell *matCellDef="let element"> GL{{element.rowNumber}} </td>
+                </ng-container>
+        
+                <ng-container matColumnDef="goal">
+                    <th mat-header-cell *matHeaderCellDef> Goal </th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="none">
+                            <textarea matInput [readonly]="library" class="cybersecurity-page-content" placeholder="Please type in Cybersecurity goal here" cdkTextareaAutosize
+                                #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="3" cdkAutosizeMaxRows="3"
+                                [ngModel]="element.content" (ngModelChange)="changeGoalContent($event, element.id)"></textarea>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+        
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef> Action </th>
+                    <td mat-cell *matCellDef="let element; let i = index">
+                        <button mat-raised-button [matMenuTriggerFor]="goalaction"
+                            [matMenuTriggerData]="{element: element, index: i}"
+                            [disabled]="editDesignShared.projectStatus?.milestoneView && !library"
+                            >
+                            <mat-icon aria-hidden="false" aria-label="Loading Icon">more_horiz
+                            </mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+        
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="cybersecurity-goal-row"></tr>
+            </table>
+        
+            <mat-menu #goalaction="matMenu" class="goalLibDropdown">
+                <ng-template matMenuContent let-selectedGoal="element" let-index="index">
+                    <button *ngIf="library" mat-menu-item (click)="openGoalDialog('goal',selectedGoal)">
+                        <mat-icon aria-hidden="false" aria-label="Add Icon">edit</mat-icon> Update Goal
+                    </button>
+                    <button mat-menu-item (click)="removeGoal(selectedGoal.id,selectedGoal.type,selectedGoal.content)">
+                        <mat-icon aria-hidden="false" aria-label="Remove Icon">remove
+                        </mat-icon> Delete Goal
+                    </button>
+                    <button *ngIf="!library" mat-menu-item (click)="addNewGoal('goal')">
+                        <mat-icon aria-hidden="false" aria-label="Add Icon">add</mat-icon> Add New Goal
+                    </button>
+                    <button *ngIf="!library" mat-menu-item [disabled]="selectedGoal.content | whiteSpaceValidation" (click)="addGoalToLibrary(index,'goal')">
+                        <mat-icon aria-hidden="false" aria-label="Add Icon">add</mat-icon> Add Goal to Library
+                    </button>
+                </ng-template>
+            </mat-menu>
+        
+            <ng-template #emptygoals>
+                <ng-container *ngIf="!loading">
+                    <p>No cybersecurity goal found</p>
+                </ng-container>
+                <button [disabled]="editDesignShared.projectStatus?.milestoneView" *ngIf="!library" mat-raised-button color="primary" (click)="addNewGoal('goal')" style="width:160px;">
+                    <mat-icon aria-hidden="false" aria-label="Add Icon">add</mat-icon> Add New Goal
+                </button>
+            </ng-template>
+        </div>
+    </mat-tab>
+    <mat-tab label="Cybersecurity Claim">
+        <div *ngIf="library" style="padding:1.5rem 1.5rem 0;">
+            <h3 class="cybersecurity-title">Available Claims</h3>
+            <button class="buttonClass" style="margin-left: 50px" mat-raised-button (click)="refreshGoals('claim')">
+                Refresh
+            </button>
+            <button class="buttonClass" style="margin-left: 20px" mat-raised-button (click)="loadAllGoals('claim')">
+                Show All
+            </button>
+            <button class="buttonClass" style="margin-left: 20px" mat-raised-button color="primary"
+                (click)="openGoalDialog('claim')">
+                Create New Claim
+            </button>
+            <br/>
+            <br/>
+            <mat-form-field class="featureInputForm" appearance="fill" style="width:376px;">
+                <mat-label>Search Available Claims</mat-label>
+                <input [formControl]="searchValue" matInput />
+            </mat-form-field>
+            <mat-progress-spinner diameter="20" [color]="'primary'" [mode]="'indeterminate'" *ngIf="library && loading || searchLoading" class="spinPosition">
+            </mat-progress-spinner>
+        </div>
+        <div id="cybersecurity-goal-page" style="padding-top:0">
+            <table mat-table [dataSource]="dataSourceClaim" class="cybersecurity-page-table" *ngIf="dataSourceClaim.data?.length > 0; else emptyclaims">
+                <ng-container matColumnDef="serial">
+                    <th mat-header-cell *matHeaderCellDef> Serial </th>
+                    <td mat-cell *matCellDef="let element"> CLM{{element.rowNumber}} </td>
+                </ng-container>
+        
+                <ng-container matColumnDef="goal">
+                    <th mat-header-cell *matHeaderCellDef> Claim </th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="none">
+                            <textarea [readonly]="library" matInput class="cybersecurity-page-content" placeholder="Please type in Cybersecurity claim here" cdkTextareaAutosize
+                                #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="3" cdkAutosizeMaxRows="3"
+                                [ngModel]="element.content" (ngModelChange)="changeGoalContent($event, element.id)"></textarea>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+        
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef> Action </th>
+                    <td mat-cell *matCellDef="let element; let i = index">
+                        <button mat-raised-button [matMenuTriggerFor]="claimaction"
+                            [matMenuTriggerData]="{element: element, index: i}"
+                            [disabled]="editDesignShared.projectStatus?.milestoneView">
+                            <mat-icon aria-hidden="false" aria-label="Loading Icon">more_horiz
+                            </mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+        
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="cybersecurity-goal-row"></tr>
+            </table>
+        
+            <mat-menu #claimaction="matMenu" class="goalLibDropdown">
+                <ng-template matMenuContent let-selectedGoal="element" let-index="index">
+                    <button *ngIf="library" mat-menu-item (click)="openGoalDialog('claim',selectedGoal)">
+                        <mat-icon aria-hidden="false" aria-label="Add Icon">edit</mat-icon> Update Claim
+                    </button>
+                    <button mat-menu-item (click)="removeGoal(selectedGoal.id,selectedGoal.type,selectedGoal.content)">
+                        <mat-icon aria-hidden="false" aria-label="Remove Icon">remove
+                        </mat-icon> Delete Claim
+                    </button>
+                    <button *ngIf="!library" mat-menu-item (click)="addNewGoal('claim')">
+                        <mat-icon aria-hidden="false" aria-label="Add Icon">add</mat-icon> Add New Claim
+                    </button>
+                    <button *ngIf="!library" mat-menu-item [disabled]="selectedGoal.content | whiteSpaceValidation" (click)="addGoalToLibrary(index,'claim')">
+                        <mat-icon aria-hidden="false" aria-label="Add Icon">add</mat-icon> Add Claim to Library
+                    </button>
+                </ng-template>
+            </mat-menu>
+        
+            <ng-template #emptyclaims>
+                <ng-container *ngIf="!loading">
+                    <p>No cybersecurity claim found</p>
+                </ng-container>
+                <button [disabled]="editDesignShared.projectStatus?.milestoneView" *ngIf="!library" mat-raised-button color="primary" (click)="addNewGoal('claim')" style="width:160px;">
+                    <mat-icon aria-hidden="false" aria-label="Add Icon">add</mat-icon> Add New Claim
+                </button>
+            </ng-template>
+        </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

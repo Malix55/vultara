@@ -1,0 +1,278 @@
+<ng-container *ngIf="data.notification && feasibilityRatingAPRubrics; else loadingriskupdate">
+    <div class="action-progress" *ngIf="acceptRiskUpdateLoading || rejectRiskUpdateLoading">
+        <mat-spinner diameter="70"></mat-spinner>
+    </div>
+    <div [class.risk-update-container]="acceptRiskUpdateLoading || rejectRiskUpdateLoading">
+        <div mat-dialog-title class="risk-update-header">
+            <h3 class="risk-update-header-title"><span *ngIf="data.notification.treatment != 'no treatment'">Before
+                    Treatment</span>
+                Risk Level Update Details</h3>
+            <div class="risk-update-actions">
+                <ng-container *ngIf="data.notification.acceptStatus">
+                    <button mat-flat-button color="primary" disabled>Accepted</button>
+                </ng-container>
+                <ng-container *ngIf="data.notification.rejectStatus">
+                    <button mat-flat-button color="warn" disabled>Rejected</button>
+                </ng-container>
+                <ng-container *ngIf="!data.notification.acceptStatus && !data.notification.rejectStatus">
+                    <button mat-flat-button color="primary" (click)="acceptThreatRiskUpdate()"
+                        [disabled]="acceptRiskUpdateLoading || rejectRiskUpdateLoading || editDesignShared.projectStatus?.milestoneView"
+                        *ngIf="!rejectRiskUpdate && !acceptRiskUpdate">Accept</button>
+                    <button mat-flat-button color="warn" (click)="rejectThreatRiskUpdate()"
+                        [disabled]="acceptRiskUpdateLoading || rejectRiskUpdateLoading || editDesignShared.projectStatus?.milestoneView"
+                        *ngIf="!rejectRiskUpdate && !acceptRiskUpdate">Reject</button>
+                </ng-container>
+                <button mat-flat-button (click)="closeRiskUpdateDialog()">
+                    <mat-icon aria-hidden="false" aria-label="Close">close</mat-icon>
+                </button>
+            </div>
+        </div>
+        <mat-dialog-content>
+            <p class="risk-updated-value">
+                <span *ngIf="data.notification.treatment != 'no treatment'">Before Treatment</span> Risk: <span>{{
+                    data.notification | notificationRiskLevel }}</span><span>
+                    <mat-icon class="material-arrow-forward arrow-middle">arrow_forward</mat-icon>
+                </span> <span class="riskUpdated">{{
+                    data.notification.riskLevel }}</span>
+            </p>
+            <p class="risk-update-title">Feasibility:</p>
+            <table class="risk-update-table">
+                <tr>
+                    <td class="name">Elapsed Time:</td>
+                    <ng-container [ngSwitch]="feasibilityValue">
+                        <ng-container *ngSwitchCase="FeasibilityValue.Numeric">
+                            <td class="type">
+                                {{ data.notification.attackFeasibilityElapsedUpdated }}</td>
+                            <td class="arrow"
+                                *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.time : 'elapsed'">
+                                <mat-icon class="material-arrow-forward">arrow_forward</mat-icon>
+                            </td>
+                            <td class="value"
+                                *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.time : 'elapsed'">
+                                {{ data.notification.attackFeasibilityElapsed }}
+                            </td>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="FeasibilityValue.Enumerate">
+                            <td class="type">{{ (feasibilityRatingAPRubrics.time |
+                                feasibilityEnumerate :
+                                data.notification.attackFeasibilityElapsedUpdated) | feasibilityText }}</td>
+                            <td class="arrow"
+                                *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.time : 'elapsed'">
+                                <mat-icon class="material-arrow-forward">arrow_forward</mat-icon>
+                            </td>
+                            <td class="value"
+                                *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.time : 'elapsed'">
+                                {{
+                                (feasibilityRatingAPRubrics.time | feasibilityEnumerate :
+                                data.notification.attackFeasibilityElapsed) | feasibilityText }}</td>
+                        </ng-container>
+                    </ng-container>
+                    <td class="before"><textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" readonly
+                            *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.time : 'elapsed'"
+                            [(ngModel)]="data.notification.attackFeasibilityElapsedUpdatedRationale"
+                            cdkAutosizeMinRows="1" cdkAutosizeMaxRows="3"></textarea></td>
+                    <td class="arrow">
+                        <mat-icon
+                            *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.time : 'elapsed'"
+                            class="material-arrow-forward">arrow_forward</mat-icon>
+                    </td>
+                    <td class="after"><textarea matInput cdkTextareaAutosize readonly
+                            *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.time : 'elapsed'"
+                            #autosize="cdkTextareaAutosize"
+                            [(ngModel)]="data.notification.attackFeasibilityElapsedRationale" cdkAutosizeMinRows="1"
+                            cdkAutosizeMaxRows="3"></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="name">Expertise:</td>
+                    <ng-container [ngSwitch]="feasibilityValue">
+                        <ng-container *ngSwitchCase="FeasibilityValue.Numeric">
+                            <td class="type">
+                                {{ data.notification.attackFeasibilityExpertiseUpdated }}</td>
+                            <td class="arrow"
+                                *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.expertise : 'expertise'">
+                                <mat-icon class="material-arrow-forward">arrow_forward</mat-icon>
+                            </td>
+                            <td class="value"
+                                *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.expertise : 'expertise'">
+                                {{ data.notification.attackFeasibilityExpertise }}
+                            </td>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="FeasibilityValue.Enumerate">
+                            <td class="type">{{
+                                (feasibilityRatingAPRubrics.expertise | feasibilityEnumerate :
+                                data.notification.attackFeasibilityExpertiseUpdated) | feasibilityText }}</td>
+                            <td class="arrow"
+                                *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.expertise : 'expertise'">
+                                <mat-icon class="material-arrow-forward">arrow_forward</mat-icon>
+                            </td>
+                            <td class="value"
+                                *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.expertise : 'expertise'">
+                                {{ (feasibilityRatingAPRubrics.expertise | feasibilityEnumerate :
+                                data.notification.attackFeasibilityExpertise) | feasibilityText }}</td>
+                        </ng-container>
+                    </ng-container>
+                    <td class="before"><textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" readonly
+                            *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.expertise : 'expertise'"
+                            [(ngModel)]="data.notification.attackFeasibilityExpertiseUpdatedRationale"
+                            cdkAutosizeMinRows="1" cdkAutosizeMaxRows="3"></textarea>
+                    </td>
+                    <td class="arrow"
+                        *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.expertise : 'expertise'">
+                        <mat-icon class="material-arrow-forward">arrow_forward</mat-icon>
+                    </td>
+                    <td class="after"><textarea matInput cdkTextareaAutosize readonly
+                            *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.expertise : 'expertise'"
+                            #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1"
+                            [(ngModel)]="data.notification.attackFeasibilityExpertiseRationale"
+                            cdkAutosizeMaxRows="3"></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="name">Knowledge:</td>
+                    <ng-container [ngSwitch]="feasibilityValue">
+                        <ng-container *ngSwitchCase="FeasibilityValue.Numeric">
+                            <td class="type">{{
+                                data.notification.attackFeasibilityKnowledgeUpdated }}</td>
+                            <td class="arrow"
+                                *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.knowledge : 'knowledge'">
+                                <mat-icon class="material-arrow-forward">arrow_forward</mat-icon>
+                            </td>
+                            <td class="value"
+                                *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.knowledge : 'knowledge'">
+                                {{ data.notification.attackFeasibilityKnowledge }}
+                            </td>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="FeasibilityValue.Enumerate">
+                            <td class="type">{{
+                                (feasibilityRatingAPRubrics.knowledge | feasibilityEnumerate :
+                                data.notification.attackFeasibilityKnowledgeUpdated) | feasibilityText }}</td>
+                            <td class="arrow"
+                                *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.knowledge : 'knowledge'">
+                                <mat-icon class="material-arrow-forward">arrow_forward</mat-icon>
+                            </td>
+                            <td class="value"
+                                *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.knowledge : 'knowledge'">
+                                {{ (feasibilityRatingAPRubrics.knowledge | feasibilityEnumerate :
+                                data.notification.attackFeasibilityKnowledge) | feasibilityText }}</td>
+                        </ng-container>
+                    </ng-container>
+                    <td class="before"><textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" readonly
+                            *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.knowledge : 'knowledge'"
+                            cdkAutosizeMinRows="1"
+                            [(ngModel)]="data.notification.attackFeasibilityKnowledgeUpdatedRationale"
+                            cdkAutosizeMaxRows="3"></textarea>
+                    </td>
+                    <td class="arrow"
+                        *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.knowledge : 'knowledge'">
+                        <mat-icon class="material-arrow-forward">arrow_forward</mat-icon>
+                    </td>
+                    <td class="after"><textarea matInput cdkTextareaAutosize readonly
+                            *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.knowledge : 'knowledge'"
+                            #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1"
+                            [(ngModel)]="data.notification.attackFeasibilityKnowledgeRationale"
+                            cdkAutosizeMaxRows="3"></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="name">Window:</td>
+                    <ng-container [ngSwitch]="feasibilityValue">
+                        <ng-container *ngSwitchCase="FeasibilityValue.Numeric">
+                            <td class="type">
+                                {{ data.notification.attackFeasibilityWindowUpdated }}
+                            </td>
+                            <td class="arrow"
+                                *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.window : 'window'">
+                                <mat-icon class="material-arrow-forward">arrow_forward</mat-icon>
+                            </td>
+                            <td class="value"
+                                *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.window : 'window'">
+                                {{ data.notification.attackFeasibilityWindow }}
+                            </td>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="FeasibilityValue.Enumerate">
+                            <td class="type">{{ (feasibilityRatingAPRubrics.window
+                                | feasibilityEnumerate :
+                                data.notification.attackFeasibilityWindowUpdated) | feasibilityText }}</td>
+                            <td class="arrow"
+                                *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.window : 'window'">
+                                <mat-icon class="material-arrow-forward">arrow_forward</mat-icon>
+                            </td>
+                            <td class="value"
+                                *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.window : 'window'">
+                                {{ (feasibilityRatingAPRubrics.window | feasibilityEnumerate :
+                                data.notification.attackFeasibilityWindow) | feasibilityText }}
+                            </td>
+                        </ng-container>
+                    </ng-container>
+                    <td class="before"><textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" readonly
+                            *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.window : 'window'"
+                            cdkAutosizeMinRows="1"
+                            [(ngModel)]="data.notification.attackFeasibilityWindowUpdatedRationale"
+                            cdkAutosizeMaxRows="3"></textarea></td>
+                    <td class="arrow"
+                        *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.window : 'window'">
+                        <mat-icon class="material-arrow-forward">arrow_forward</mat-icon>
+                    </td>
+                    <td class="after"><textarea matInput cdkTextareaAutosize readonly
+                            *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.window : 'window'"
+                            #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1"
+                            [(ngModel)]="data.notification.attackFeasibilityWindowRationale"
+                            cdkAutosizeMaxRows="3"></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="name">Equipment:</td>
+                    <ng-container [ngSwitch]="feasibilityValue">
+                        <ng-container *ngSwitchCase="FeasibilityValue.Numeric">
+                            <td class="type">{{
+                                data.notification.attackFeasibilityEquipmentUpdated }}</td>
+                            <td class="arrow"
+                                *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.equipment : 'equipment'">
+                                <mat-icon class="material-arrow-forward">arrow_forward</mat-icon>
+                            </td>
+                            <td class="value"
+                                *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.equipment : 'equipment'">
+                                {{ data.notification.attackFeasibilityEquipment }}
+                            </td>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="FeasibilityValue.Enumerate">
+                            <td class="type">{{
+                                (feasibilityRatingAPRubrics.equipment | feasibilityEnumerate :
+                                data.notification.attackFeasibilityEquipmentUpdated) | feasibilityText }}</td>
+                            <td class="arrow"
+                                *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.equipment : 'equipment'">
+                                <mat-icon class="material-arrow-forward">arrow_forward</mat-icon>
+                            </td>
+                            <td class="value"
+                                *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.equipment : 'equipment'">
+                                {{ (feasibilityRatingAPRubrics.equipment | feasibilityEnumerate :
+                                data.notification.attackFeasibilityEquipment) | feasibilityText }}</td>
+                        </ng-container>
+                    </ng-container>
+                    <td class="before"><textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" readonly
+                            *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.equipment : 'equipment'"
+                            cdkAutosizeMinRows="1"
+                            [(ngModel)]="data.notification.attackFeasibilityEquipmentUpdatedRationale"
+                            cdkAutosizeMaxRows="3"></textarea>
+                    </td>
+                    <td class="arrow"
+                        *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.equipment : 'equipment'">
+                        <mat-icon class="material-arrow-forward">arrow_forward</mat-icon>
+                    </td>
+                    <td class="after"><textarea matInput cdkTextareaAutosize readonly
+                            *ngIf="feasibilityValue | feasibilityRowAppearance : data.notification : feasibilityRatingAPRubrics.equipment : 'equipment'"
+                            #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1"
+                            [(ngModel)]="data.notification.attackFeasibilityEquipmentRationale"
+                            cdkAutosizeMaxRows="3"></textarea>
+                    </td>
+                </tr>
+            </table>
+        </mat-dialog-content>
+    </div>
+</ng-container>
+<ng-template #loadingriskupdate>
+    <div class="risk-update-loader">
+        <mat-spinner diameter="70"></mat-spinner>
+    </div>
+</ng-template>
